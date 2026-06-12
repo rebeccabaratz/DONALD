@@ -20,3 +20,5 @@ debug.keystore
 /app-debug.zip
 /.build-outputs/
 
+*.txt
+*.png
