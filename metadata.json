@@ -1,0 +1,8 @@
+{
+  "name": "Разговорный Агент",
+  "description": "Персональный русскоязычный агент и преподаватель английского с непрерывнымHands-free голосовым общением и чтением книги об истории Тома Сойера.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

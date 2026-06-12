@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Central Speech Bubble with Glowing Wave effect -->
+    <path
+        android:fillColor="#818CF8"
+        android:pathData="M 54,20 C 35.2,20 20,32.5 20,48 C 20,56.8 25.1,64.6 33.1,69.5 L 29,83 L 44,77.5 C 47.1,78.5 50.5,79 54,79 C 72.8,79 88,66.5 88,48 C 88,32.5 72.8,20 54,20 Z" />
+
+    <!-- Open Book in Amber sitting on top, creating overlapping conceptual visual cue -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M 38,40 C 38,40 45,37 54,42 C 63,37 70,40 70,40 L 70,65 C 70,65 63,61 54,66 C 45,61 38,65 38,65 Z" />
+
+    <!-- Middle Divider Gutter in book -->
+    <path
+        android:fillColor="#12141C"
+        android:pathData="M 53.5,41.5 L 54.5,41.5 L 54.5,66.5 L 53.5,66.5 Z" />
+</vector>
