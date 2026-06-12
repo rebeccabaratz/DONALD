@@ -127,6 +127,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
         return JSONObject()
             .put("type", "session.update")
             .put("session", JSONObject()
+                .put("type", "realtime")
                 .put("instructions", lastSystemPrompt)
                 .put("voice", openAiVoice)
                 .put("input_audio_format", "pcm16")
