@@ -123,32 +123,25 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
     }
 
     private fun buildSessionConfig(): String {
-        val openAiVoice = mapVoice(lastVoiceName)
+        val openAiVoice = if (lastVoiceName in listOf("alloy","echo","shimmer","ash","ballad","coral","sage","verse","marin","cedar"))
+            lastVoiceName else "marin"
         return JSONObject()
             .put("type", "session.update")
             .put("session", JSONObject()
                 .put("type", "realtime")
                 .put("instructions", lastSystemPrompt)
-                .put("voice", openAiVoice)
-                .put("input_audio_format", "pcm16")
-                .put("output_audio_format", "pcm16")
-                .put("input_audio_transcription", JSONObject().put("model", "whisper-1"))
-                .put("turn_detection", JSONObject()
-                    .put("type", "server_vad")
-                    .put("threshold", 0.5)
-                    .put("prefix_padding_ms", 300)
-                    .put("silence_duration_ms", 600))
-                .put("modalities", JSONArray().put("audio").put("text")))
+                .put("output_modalities", JSONArray().put("audio").put("text"))
+                .put("audio", JSONObject()
+                    .put("output", JSONObject()
+                        .put("voice", openAiVoice)
+                        .put("format", JSONObject().put("type", "audio/pcm")))
+                    .put("input", JSONObject()
+                        .put("format", JSONObject()
+                            .put("type", "audio/pcm")
+                            .put("rate", 24000))
+                        .put("turn_detection", JSONObject()
+                            .put("type", "semantic_vad")))))
             .toString()
-    }
-
-    private fun mapVoice(geminiVoiceName: String): String {
-        return when (geminiVoiceName.lowercase()) {
-            "algieba", "aoede", "kore", "leda", "fenrir" -> "alloy"
-            "charon", "orus", "puck", "iapetus" -> "echo"
-            "schedar", "sulafat", "umbriel", "zephyr" -> "shimmer"
-            else -> "alloy"
-        }
     }
 
     private fun parseMessage(text: String) {

@@ -67,7 +67,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     private val _customApiKey = MutableStateFlow("")
     val customApiKey: StateFlow<String> = _customApiKey.asStateFlow()
 
-    val allowedVoices = listOf("alloy", "echo", "shimmer", "ash", "ballad", "coral", "sage", "verse")
+    val allowedVoices = listOf("marin", "cedar", "alloy", "echo", "shimmer", "ash", "ballad", "coral", "sage", "verse")
 
     private val voiceRecorder = VoiceRecorder(context)
     private val audioPlayer = AudioPlayer(context)
@@ -116,8 +116,8 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         _threshold.value = prefs.getInt("voice_threshold", 18) * 100
         if (_threshold.value == 0) _threshold.value = 1800
         _silenceDurationMs.value = prefs.getLong("silence_duration", 1800L)
-        val savedVoice = prefs.getString("selected_voice", "alloy") ?: "alloy"
-        _selectedVoice.value = if (savedVoice in allowedVoices) savedVoice else "alloy"
+        val savedVoice = prefs.getString("selected_voice", "marin") ?: "marin"
+        _selectedVoice.value = if (savedVoice in allowedVoices) savedVoice else "marin"
         _customApiKey.value = prefs.getString("custom_openai_api_key", "") ?: ""
 
         collectRealtimeEvents()

@@ -646,14 +646,16 @@ fun SettingsDialog(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 val voices = listOf(
-                    "alloy" to "Alloy (Мужской, нейтральный) 👨‍💼",
+                    "marin" to "Marin (Мужской, рекомендован ⭐) 👨‍💼",
+                    "cedar" to "Cedar (Мужской, рекомендован ⭐) 👨",
+                    "alloy" to "Alloy (Мужской, нейтральный) 🎙️",
                     "echo" to "Echo (Мужской, глубокий) 👨",
                     "shimmer" to "Shimmer (Женский, нежный) 👩",
                     "ash" to "Ash (Мужской, спокойный) 👱",
                     "coral" to "Coral (Женский, тёплый) 👧",
                     "sage" to "Sage (Нейтральный, чёткий) 🧑",
-                    "verse" to "Verse (Мужской, выразительный) 🎙️",
-                    "ballad" to "Ballad (Мужской, мягкий) 🎵"
+                    "verse" to "Verse (Мужской, выразительный) 🎵",
+                    "ballad" to "Ballad (Мужской, мягкий) 🎶"
                 )
 
                 voices.forEach { (voiceId, displayName) ->
