@@ -191,9 +191,9 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private fun speakFirstIntro() {
-        Log.d(TAG, "speakFirstIntro: sending greeting request")
+        Log.d(TAG, "speakFirstIntro: requestGreeting (no user turn)")
         _state.value = AgentState.PROCESSING
-        realtimeClient.sendText("Поприветствуй меня коротко и скажи что готов помочь с английским.")
+        realtimeClient.requestGreeting()
     }
 
     private suspend fun handleTurnComplete() {
@@ -207,17 +207,10 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
               "ADVANCE=$hasAdvance REPEAT=$hasRepeat SWITCH=$hasSwitch")
 
         if (fullText.isNotEmpty()) {
-            val userTranscript = extractUserTranscript(fullText)
-            val cleanReply = removeTranscriptHeader(fullText)
-
-            if (userTranscript != null) {
-                Log.d(TAG, "user transcript: \"${userTranscript.take(80)}\"")
-                addTranscriptBubble("Вы", userTranscript)
-            }
-
-            processTextTags(cleanReply)
-            val displayReply = removeCommandTags(cleanReply)
+            processTextTags(fullText)
+            val displayReply = removeCommandTags(fullText)
             if (displayReply.isNotEmpty()) {
+                Log.d(TAG, "AI reply: \"${displayReply.take(80)}\"")
                 addTranscriptBubble("Дональд", displayReply)
             }
         } else {
@@ -246,7 +239,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
         Log.d(TAG, "startCycle: key=${apiKey.take(8)}... voice=${_selectedVoice.value}")
         _state.value = AgentState.PROCESSING
-        realtimeClient.connect(apiKey, _selectedVoice.value, buildSystemPrompt())
+        realtimeClient.connect(apiKey, _selectedVoice.value, buildFullInstructions())
     }
 
     fun stopCycle() {
@@ -267,11 +260,12 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         }
         Log.d(TAG, "reconnectSession: key=${apiKey.take(8)}... voice=${_selectedVoice.value}")
         _state.value = AgentState.PROCESSING
-        realtimeClient.connect(apiKey, _selectedVoice.value, buildSystemPrompt())
+        realtimeClient.connect(apiKey, _selectedVoice.value, buildFullInstructions())
     }
 
     private fun startListening() {
         Log.d(TAG, "startListening: threshold=${_threshold.value} silence=${_silenceDurationMs.value}ms")
+        updateSessionContext()
         _state.value = AgentState.LISTENING
         _errorMessage.value = null
 
@@ -287,7 +281,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             onSilenceDetected = {
                 Log.d(TAG, "silence detected after $chunksSent chunks — committing buffer")
                 _state.value = AgentState.PROCESSING
-                realtimeClient.commitAndRespond(buildContextText())
+                realtimeClient.commitAndRespond()
             },
             onError = { err ->
                 _errorMessage.value = err
@@ -350,13 +344,17 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     private fun buildContextText(): String {
         return when (_mode.value) {
             AgentMode.BOOK_READING ->
-                "[Context: Mode=TOM_SAWYER_READING. Phrase index ${_bookIndex.value}: " +
-                "'${tomSawyerPhrases[_bookIndex.value]}' = '${tomSawyerTranslations[_bookIndex.value]}'. " +
-                "Check if user repeated correctly, expressed confusion, or wants to stop.]"
+                "Режим: ЧТЕНИЕ КНИГИ. Текущая фраза №${_bookIndex.value + 1}: " +
+                "\"${tomSawyerPhrases[_bookIndex.value]}\" (по-русски: \"${tomSawyerTranslations[_bookIndex.value]}\")."
             AgentMode.CONVERSATION ->
-                "[Context: Mode=CONVERSATION. Current book phrase index ${_bookIndex.value}: " +
-                "'${tomSawyerPhrases[_bookIndex.value]}' = '${tomSawyerTranslations[_bookIndex.value]}'.]"
+                "Режим: БЕСЕДА."
         }
+    }
+
+    private fun buildFullInstructions(): String = buildSystemPrompt() + "\n\n" + buildContextText()
+
+    private fun updateSessionContext() {
+        realtimeClient.updateInstructions(buildFullInstructions())
     }
 
     private fun processTextTags(rawText: String) {
@@ -376,15 +374,6 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             .trim()
     }
 
-    private fun extractUserTranscript(text: String): String? {
-        val match = Regex("\\[User:\\s*(.*?)\\]").find(text)
-        return match?.groupValues?.getOrNull(1)
-    }
-
-    private fun removeTranscriptHeader(text: String): String {
-        return text.replace(Regex("\\[User:\\s*.*?\\]\\s*"), "").trim()
-    }
-
     private fun addTranscriptBubble(sender: String, messageText: String) {
         val bubble = BubbleMessage(id = System.nanoTime(), sender = sender, text = messageText)
         _transcripts.value = _transcripts.value + bubble
@@ -392,28 +381,26 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
     private fun buildSystemPrompt(): String {
         return """
-        Вы — Donald (Дональд), дружелюбный личный голосовой собеседник и опытный преподаватель английского языка.
+        Ты — Дональд, дружелюбный голосовой помощник и преподаватель английского языка.
 
-        ОСНОВНЫЕ ПРАВИЛА ОБЩЕНИЯ:
-        1. Пользователь может говорить с вами НА РУССКОМ языке или НА ИВРИТЕ. Вы прекрасно понимаете оба этих языка.
-        2. Вы отвечаете ИСКЛЮЧИТЕЛЬНО на русском языке. Говорите чистым русским языком, без какого-либо акцента, мужским голосом.
-        3. Будьте теплым, поддерживающим и чутким преподавателем. Если пользователь делает ошибки в английском во время разговора, тепло исправляйте его ошибки и просто объясняйте правила на русском языке.
+        ПРАВИЛА:
+        1. Пользователь говорит на русском или иврите. Отвечай только на русском языке.
+        2. Будь тёплым и кратким — 1-3 предложения, не больше.
+        3. Если нет предыдущих сообщений в разговоре — поприветствуй коротко и скажи, что готов помочь с английским.
 
-        РЕЖИМ ЧТЕНИЯ КНИГИ "ТOM SAWYER":
-        Когда пользователь явно просит почитать книгу про Тома Сойера вы отвечаете по-русски, что вы рады почитать, переходите в режим чтения и озвучиваете текущую английскую фразу. Обязательно вставьте в конце ответа тег [SWITCH_TO_READING].
+        РЕЖИМ ЧТЕНИЯ "ТОМ СОЙЕР":
+        Когда пользователь просит читать книгу — переходи в режим чтения, добавь [SWITCH_TO_READING] в конце.
 
-        В РЕЖИМЕ ЧТЕНИЯ КНИГИ:
-        - Вы читаете книгу строго по одной фразе за раз вслух на английском языке.
-        - Когда пользователь повторил фразу правильно: похвалите кратко на русском, прочитайте СЛЕДУЮЩУЮ фразу, добавьте [ADVANCE_BOOK].
-        - Когда пользователь повторил с ошибкой: укажите на ошибку, повторите ТУ ЖЕ фразу, добавьте [REPEAT_BOOK].
-        - Если пользователь выражает непонимание: переведите фразу, объясните, добавьте [SWITCH_TO_CONVERSATION].
-        - Если пользователь хочет продолжить после объяснения: вернитесь в режим чтения, добавьте [SWITCH_TO_READING].
-        - Если пользователь устал: добавьте [SWITCH_TO_CONVERSATION].
+        В РЕЖИМЕ ЧТЕНИЯ:
+        - Произнеси текущую английскую фразу вслух.
+        - Оценивай только ПРАВИЛЬНОСТЬ СЛОВ, не произношение и не акцент.
+        - Акцент — это нормально. Пользователь НЕ обязан говорить как носитель языка.
+        - Если пользователь произнёс все слова (даже с акцентом или не идеально) → похвали коротко, добавь [ADVANCE_BOOK] в конце.
+        - Если пользователь пропустил или явно перепутал слова → мягко поправь, повтори ту же фразу, добавь [REPEAT_BOOK] в конце.
+        - Если пользователь не понял → объясни, добавь [SWITCH_TO_CONVERSATION] в конце.
+        - Если пользователь устал → добавь [SWITCH_TO_CONVERSATION] в конце.
 
-        ФОРМАТ ОТВЕТА:
-        Начните ответ строго с: [User: <транскрипция слов пользователя>]
-        Затем с новой строки — ваш ответ.
-        В конце (если применимо) — один из тегов: [ADVANCE_BOOK], [REPEAT_BOOK], [SWITCH_TO_CONVERSATION], [SWITCH_TO_READING].
+        Теги [ADVANCE_BOOK], [REPEAT_BOOK], [SWITCH_TO_CONVERSATION], [SWITCH_TO_READING] ставь ТОЛЬКО в самом конце ответа.
         """.trimIndent()
     }
 

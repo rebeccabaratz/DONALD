@@ -40,6 +40,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
 
     private val httpClient = OkHttpClient.Builder()
         .readTimeout(0, TimeUnit.MILLISECONDS)
+        .pingInterval(25, TimeUnit.SECONDS)
         .build()
 
     private var webSocket: WebSocket? = null
@@ -257,14 +258,27 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
         webSocket?.send(JSONObject().put("type", "response.create").toString())
     }
 
-    fun commitAndRespond(contextHint: String) {
+    fun commitAndRespond() {
         if (!ready) return
+        Log.d(TAG, "commitAndRespond: committing buffer → response.create")
         webSocket?.send(JSONObject().put("type", "input_audio_buffer.commit").toString())
-        val responseJson = JSONObject().put("type", "response.create")
-        if (contextHint.isNotEmpty()) {
-            responseJson.put("response", JSONObject().put("instructions", contextHint))
-        }
-        webSocket?.send(responseJson.toString())
+        webSocket?.send(JSONObject().put("type", "response.create").toString())
+    }
+
+    fun requestGreeting() {
+        if (!ready) return
+        Log.d(TAG, "requestGreeting: sending response.create (no user turn)")
+        webSocket?.send(JSONObject().put("type", "response.create").toString())
+    }
+
+    fun updateInstructions(newInstructions: String) {
+        if (!ready) return
+        Log.d(TAG, "updateInstructions: ${newInstructions.length} chars")
+        webSocket?.send(
+            JSONObject().put("type", "session.update")
+                .put("session", JSONObject().put("instructions", newInstructions))
+                .toString()
+        )
     }
 
     fun disconnect() {
