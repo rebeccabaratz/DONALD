@@ -27,6 +27,10 @@ import os
 import sys
 import time
 
+# Fix UTF-8 output on Windows terminals
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 WS_URL = "wss://api.openai.com/v1/realtime?model=gpt-realtime-2"
 
 # Matches VoiceAgentViewModel.tomSawyerPhrases (first 4)
