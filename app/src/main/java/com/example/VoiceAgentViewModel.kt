@@ -255,8 +255,6 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         _state.value = AgentState.LISTENING
         _errorMessage.value = null
 
-        realtimeClient.sendText(buildContextText())
-
         voiceRecorder.startRecording(
             threshold = _threshold.value,
             silenceDurationMs = _silenceDurationMs.value,
@@ -265,6 +263,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             },
             onSilenceDetected = {
                 _state.value = AgentState.PROCESSING
+                realtimeClient.commitAndRespond(buildContextText())
             },
             onError = { err ->
                 _errorMessage.value = err

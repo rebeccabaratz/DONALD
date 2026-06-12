@@ -21,7 +21,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
 
     companion object {
         private const val TAG = "OpenAiRealtimeClient"
-        private const val WS_URL = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17"
+        private const val WS_URL = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview"
         private const val SETUP_TIMEOUT_MS = 15_000L
     }
 
@@ -150,11 +150,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                 .put("voice", openAiVoice)
                 .put("input_audio_format", "pcm16")
                 .put("output_audio_format", "pcm16")
-                .put("turn_detection", JSONObject()
-                    .put("type", "server_vad")
-                    .put("threshold", 0.5)
-                    .put("prefix_padding_ms", 300)
-                    .put("silence_duration_ms", 500)))
+                .put("turn_detection", JSONObject.NULL))  // client-side VAD, manual commit
             .toString()
     }
 
@@ -163,10 +159,13 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
             val json = JSONObject(text)
             val type = json.optString("type", "")
             when (type) {
-                "session.created", "session.updated" -> {
+                "session.created" -> {
+                    Log.d(TAG, "Session created, waiting for config to apply...")
+                }
+                "session.updated" -> {
                     ready = true
                     setupTimeoutJob?.cancel()
-                    Log.d(TAG, "Session ready")
+                    Log.d(TAG, "Session configured and ready")
                     scope.launch { _events.emit(Event.SetupComplete) }
                 }
                 "response.audio.delta" -> {
@@ -185,9 +184,9 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     scope.launch { _events.emit(Event.TurnComplete) }
                 }
                 "input_audio_buffer.speech_started" ->
-                    Log.d(TAG, "Speech started (server VAD)")
+                    Log.d(TAG, "Speech started")
                 "input_audio_buffer.speech_stopped" ->
-                    Log.d(TAG, "Speech stopped (server VAD)")
+                    Log.d(TAG, "Speech stopped")
                 else -> {
                     if (type == "error") {
                         val msg = json.optJSONObject("error")?.optString("message") ?: "Ошибка OpenAI"
@@ -227,6 +226,16 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                 .toString()
         )
         webSocket?.send(JSONObject().put("type", "response.create").toString())
+    }
+
+    fun commitAndRespond(contextHint: String) {
+        if (!ready) return
+        webSocket?.send(JSONObject().put("type", "input_audio_buffer.commit").toString())
+        val responseJson = JSONObject().put("type", "response.create")
+        if (contextHint.isNotEmpty()) {
+            responseJson.put("response", JSONObject().put("instructions", contextHint))
+        }
+        webSocket?.send(responseJson.toString())
     }
 
     fun disconnect() {
