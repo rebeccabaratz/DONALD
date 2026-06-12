@@ -140,6 +140,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                             is OpenAiRealtimeClient.Event.AudioChunk -> {
                                 if (_state.value == AgentState.PROCESSING || _state.value == AgentState.SPEAKING) {
                                     if (_state.value == AgentState.PROCESSING) {
+                                        Log.d(TAG, "First audio chunk → SPEAKING, starting playback")
                                         _state.value = AgentState.SPEAKING
                                         voiceRecorder.stopRecording()
                                         audioPlayer.startStreamingPlayback(sampleRate = 24000)
@@ -149,6 +150,8 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                                     } catch (e: Exception) {
                                         Log.e(TAG, "Error writing PCM chunk: ${e.message}")
                                     }
+                                } else {
+                                    Log.w(TAG, "AudioChunk ignored — state=${_state.value}")
                                 }
                             }
                             is OpenAiRealtimeClient.Event.TextChunk -> {
@@ -188,6 +191,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private fun speakFirstIntro() {
+        Log.d(TAG, "speakFirstIntro: sending greeting request")
         _state.value = AgentState.PROCESSING
         realtimeClient.sendText("Поприветствуй меня коротко и скажи что готов помочь с английским.")
     }
@@ -196,11 +200,18 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         val fullText = accumulatedText.toString().trim()
         accumulatedText.clear()
 
+        val hasAdvance = fullText.contains("[ADVANCE_BOOK]")
+        val hasRepeat = fullText.contains("[REPEAT_BOOK]")
+        val hasSwitch = fullText.contains("[SWITCH_TO_CONVERSATION]") || fullText.contains("[SWITCH_TO_READING]")
+        Log.d(TAG, "handleTurnComplete: textLen=${fullText.length} state=${_state.value} " +
+              "ADVANCE=$hasAdvance REPEAT=$hasRepeat SWITCH=$hasSwitch")
+
         if (fullText.isNotEmpty()) {
             val userTranscript = extractUserTranscript(fullText)
             val cleanReply = removeTranscriptHeader(fullText)
 
             if (userTranscript != null) {
+                Log.d(TAG, "user transcript: \"${userTranscript.take(80)}\"")
                 addTranscriptBubble("Вы", userTranscript)
             }
 
@@ -209,12 +220,17 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             if (displayReply.isNotEmpty()) {
                 addTranscriptBubble("Дональд", displayReply)
             }
+        } else {
+            Log.w(TAG, "handleTurnComplete: no text accumulated")
         }
 
         audioPlayer.drainAndStopStreaming()
 
         if (_state.value != AgentState.PAUSED) {
+            Log.d(TAG, "handleTurnComplete: resuming → startListening")
             startListening()
+        } else {
+            Log.d(TAG, "handleTurnComplete: state=PAUSED, not restarting")
         }
     }
 
@@ -228,6 +244,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             return
         }
 
+        Log.d(TAG, "startCycle: key=${apiKey.take(8)}... voice=${_selectedVoice.value}")
         _state.value = AgentState.PROCESSING
         realtimeClient.connect(apiKey, _selectedVoice.value, buildSystemPrompt())
     }
@@ -244,24 +261,31 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     private fun reconnectSession() {
         val apiKey = getActiveApiKey()
         if (apiKey.isEmpty()) {
+            Log.w(TAG, "reconnectSession: no API key, staying PAUSED")
             _state.value = AgentState.PAUSED
             return
         }
+        Log.d(TAG, "reconnectSession: key=${apiKey.take(8)}... voice=${_selectedVoice.value}")
         _state.value = AgentState.PROCESSING
         realtimeClient.connect(apiKey, _selectedVoice.value, buildSystemPrompt())
     }
 
     private fun startListening() {
+        Log.d(TAG, "startListening: threshold=${_threshold.value} silence=${_silenceDurationMs.value}ms")
         _state.value = AgentState.LISTENING
         _errorMessage.value = null
 
+        var chunksSent = 0
         voiceRecorder.startRecording(
             threshold = _threshold.value,
             silenceDurationMs = _silenceDurationMs.value,
             onAudioChunk = { pcm ->
+                chunksSent++
+                if (chunksSent == 1) Log.d(TAG, "first audio chunk sent (${pcm.size} bytes)")
                 realtimeClient.sendAudioChunk(pcm)
             },
             onSilenceDetected = {
+                Log.d(TAG, "silence detected after $chunksSent chunks — committing buffer")
                 _state.value = AgentState.PROCESSING
                 realtimeClient.commitAndRespond(buildContextText())
             },

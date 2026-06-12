@@ -88,20 +88,25 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
 
         override fun onOpen(ws: WebSocket, response: Response) {
             try {
-                Log.d(TAG, "WS open, sending session config")
-                ws.send(buildSessionConfig())
+                val config = buildSessionConfig()
+                Log.d(TAG, "WS open (HTTP ${response.code}), sending session config")
+                Log.d(TAG, "Session config: $config")
+                ws.send(config)
             } catch (e: Exception) {
-                Log.e(TAG, "onOpen error: ${e.message}")
+                Log.e(TAG, "onOpen error: ${e.message}", e)
                 scope.launch { _events.emit(Event.Error("Ошибка настройки сессии: ${e.message}")) }
             }
         }
 
         override fun onMessage(ws: WebSocket, text: String) {
             try {
-                Log.d(TAG, "Server ← ${text.take(200)}")
+                val t = try { org.json.JSONObject(text).optString("type") } catch (e: Exception) { "?" }
+                if (t != "response.output_audio.delta") {
+                    Log.d(TAG, "← [$t] ${text.take(300)}")
+                }
                 parseMessage(text)
             } catch (e: Exception) {
-                Log.e(TAG, "onMessage error: ${e.message}")
+                Log.e(TAG, "onMessage error: ${e.message}", e)
             }
         }
 
@@ -110,8 +115,8 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                 ready = false
                 setupTimeoutJob?.cancel()
                 val code = response?.code
-                val body = try { response?.body?.string()?.take(200) } catch (e: Exception) { null }
-                Log.e(TAG, "WS failure code=$code body=$body err=${t.message}")
+                val body = try { response?.body?.string()?.take(400) } catch (e: Exception) { null }
+                Log.e(TAG, "WS failure code=$code body=$body err=${t.message}", t)
                 val msg = when (code) {
                     401 -> "Неверный OpenAI API ключ (401).\nПроверь ключ в настройках ⚙️"
                     429 -> "Превышен лимит запросов OpenAI (429).\nПодожди минуту и попробуй снова."
@@ -119,7 +124,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                 }
                 scope.launch { _events.emit(Event.Error(msg)) }
             } catch (e: Exception) {
-                Log.e(TAG, "onFailure handler error: ${e.message}")
+                Log.e(TAG, "onFailure handler error: ${e.message}", e)
             }
         }
 
@@ -127,14 +132,14 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
             try {
                 ready = false
                 setupTimeoutJob?.cancel()
-                Log.d(TAG, "WS closed code=$code reason=$reason")
+                Log.d(TAG, "WS closed code=$code reason='$reason'")
                 if (code == 1000) {
                     scope.launch { _events.emit(Event.Disconnected) }
                 } else {
                     scope.launch { _events.emit(Event.Error("Соединение закрыто (код $code): $reason")) }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "onClosed handler error: ${e.message}")
+                Log.e(TAG, "onClosed handler error: ${e.message}", e)
             }
         }
     }
@@ -169,12 +174,14 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
             val type = json.optString("type", "")
             when (type) {
                 "session.created" -> {
-                    Log.d(TAG, "Session created, waiting for config to apply...")
+                    Log.d(TAG, "session.created — waiting for session.updated...")
                 }
                 "session.updated" -> {
                     ready = true
                     setupTimeoutJob?.cancel()
-                    Log.d(TAG, "Session configured and ready")
+                    val voice = json.optJSONObject("session")
+                        ?.optJSONObject("audio")?.optJSONObject("output")?.optString("voice")
+                    Log.d(TAG, "session.updated — ready! voice=$voice")
                     scope.launch { _events.emit(Event.SetupComplete) }
                 }
                 "response.output_audio.delta" -> {
@@ -190,17 +197,30 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     }
                 }
                 "response.done" -> {
+                    val status = json.optJSONObject("response")?.optString("status")
+                    val usage = json.optJSONObject("response")?.optJSONObject("usage")
+                    Log.d(TAG, "response.done status=$status usage=$usage")
                     scope.launch { _events.emit(Event.TurnComplete) }
                 }
-                "input_audio_buffer.speech_started" ->
-                    Log.d(TAG, "Speech started")
-                "input_audio_buffer.speech_stopped" ->
-                    Log.d(TAG, "Speech stopped")
+                "response.created" ->
+                    Log.d(TAG, "response.created id=${json.optJSONObject("response")?.optString("id")}")
+                "response.output_item.added" ->
+                    Log.d(TAG, "output_item.added type=${json.optJSONObject("item")?.optString("type")}")
+                "input_audio_buffer.committed" ->
+                    Log.d(TAG, "audio buffer committed item=${json.optString("item_id")}")
+                "input_audio_buffer.cleared" ->
+                    Log.d(TAG, "audio buffer cleared")
+                "conversation.item.created" ->
+                    Log.d(TAG, "conversation.item.created id=${json.optJSONObject("item")?.optString("id")}")
                 else -> {
                     if (type == "error") {
-                        val msg = json.optJSONObject("error")?.optString("message") ?: "Ошибка OpenAI"
-                        Log.e(TAG, "API error: $msg raw=${text.take(200)}")
+                        val err = json.optJSONObject("error")
+                        val msg = err?.optString("message") ?: "Ошибка OpenAI"
+                        val code = err?.optString("code") ?: ""
+                        Log.e(TAG, "API error code=$code message=$msg")
                         scope.launch { _events.emit(Event.Error(msg)) }
+                    } else if (type.isNotEmpty()) {
+                        Log.d(TAG, "unhandled event: $type")
                     }
                 }
             }
