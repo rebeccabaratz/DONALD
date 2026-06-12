@@ -21,7 +21,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
 
     companion object {
         private const val TAG = "OpenAiRealtimeClient"
-        private const val WS_URL = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview"
+        private const val WS_URL = "wss://api.openai.com/v1/realtime?model=gpt-4o-mini-realtime-preview"
         private const val SETUP_TIMEOUT_MS = 15_000L
     }
 
