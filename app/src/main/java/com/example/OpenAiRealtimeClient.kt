@@ -147,20 +147,21 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
     private fun parseMessage(text: String) {
         try {
             val json = JSONObject(text)
-            when (json.getString("type")) {
+            val type = json.optString("type", "")
+            when (type) {
                 "session.created", "session.updated" -> {
                     ready = true
                     setupTimeoutJob?.cancel()
                     Log.d(TAG, "Session ready")
                     scope.launch { _events.emit(Event.SetupComplete) }
                 }
-                "response.audio.delta" -> {
+                "response.output_audio.delta" -> {
                     val delta = json.optString("delta", "")
                     if (delta.isNotEmpty()) {
                         scope.launch { _events.emit(Event.AudioChunk(delta)) }
                     }
                 }
-                "response.audio_transcript.delta" -> {
+                "response.output_audio_transcript.delta" -> {
                     val delta = json.optString("delta", "")
                     if (delta.isNotEmpty()) {
                         scope.launch { _events.emit(Event.TextChunk(delta)) }
@@ -169,17 +170,17 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                 "response.done" -> {
                     scope.launch { _events.emit(Event.TurnComplete) }
                 }
-                "error" -> {
-                    val err = json.optJSONObject("error")
-                    val msg = err?.optString("message") ?: "Ошибка OpenAI"
-                    Log.e(TAG, "API error: $msg")
-                    scope.launch { _events.emit(Event.Error(msg)) }
-                }
-                "input_audio_buffer.speech_started" -> {
-                    Log.d(TAG, "Speech started (server VAD)")
-                }
-                "input_audio_buffer.speech_stopped" -> {
-                    Log.d(TAG, "Speech stopped (server VAD)")
+                "input_audio_buffer.speech_started" ->
+                    Log.d(TAG, "Speech started (semantic VAD)")
+                "input_audio_buffer.speech_stopped" ->
+                    Log.d(TAG, "Speech stopped (semantic VAD)")
+                else -> {
+                    if (type.contains("error") || type == "invalid_request_error") {
+                        val msg = json.optString("message",
+                            json.optJSONObject("error")?.optString("message") ?: "Ошибка OpenAI")
+                        Log.e(TAG, "API error type=$type: $msg")
+                        scope.launch { _events.emit(Event.Error(msg)) }
+                    }
                 }
             }
         } catch (e: Exception) {
