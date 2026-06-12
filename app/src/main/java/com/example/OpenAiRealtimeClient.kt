@@ -21,7 +21,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
 
     companion object {
         private const val TAG = "OpenAiRealtimeClient"
-        private const val WS_URL = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview"
+        private const val WS_URL = "wss://api.openai.com/v1/realtime?model=gpt-realtime-2"
         private const val SETUP_TIMEOUT_MS = 15_000L
     }
 
@@ -141,16 +141,23 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
 
     private fun buildSessionConfig(): String {
         val openAiVoice = if (lastVoiceName in listOf("alloy","echo","shimmer","ash","ballad","coral","sage","verse","marin","cedar"))
-            lastVoiceName else "alloy"
+            lastVoiceName else "marin"
         return JSONObject()
             .put("type", "session.update")
             .put("session", JSONObject()
-                .put("modalities", JSONArray().put("text").put("audio"))
+                .put("type", "realtime")
+                .put("model", "gpt-realtime-2")
                 .put("instructions", lastSystemPrompt)
-                .put("voice", openAiVoice)
-                .put("input_audio_format", "pcm16")
-                .put("output_audio_format", "pcm16")
-                .put("turn_detection", JSONObject.NULL))  // client-side VAD, manual commit
+                .put("output_modalities", JSONArray().put("audio").put("text"))
+                .put("audio", JSONObject()
+                    .put("output", JSONObject()
+                        .put("voice", openAiVoice)
+                        .put("format", JSONObject().put("type", "audio/pcm")))
+                    .put("input", JSONObject()
+                        .put("format", JSONObject()
+                            .put("type", "audio/pcm")
+                            .put("rate", 24000))
+                        .put("turn_detection", JSONObject.NULL))))  // manual commit, no server VAD
             .toString()
     }
 
@@ -168,13 +175,13 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     Log.d(TAG, "Session configured and ready")
                     scope.launch { _events.emit(Event.SetupComplete) }
                 }
-                "response.audio.delta" -> {
+                "response.output_audio.delta" -> {
                     val delta = json.optString("delta", "")
                     if (delta.isNotEmpty()) {
                         scope.launch { _events.emit(Event.AudioChunk(delta)) }
                     }
                 }
-                "response.audio_transcript.delta" -> {
+                "response.output_audio_transcript.delta" -> {
                     val delta = json.optString("delta", "")
                     if (delta.isNotEmpty()) {
                         scope.launch { _events.emit(Event.TextChunk(delta)) }
