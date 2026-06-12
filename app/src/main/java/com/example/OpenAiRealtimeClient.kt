@@ -21,7 +21,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
 
     companion object {
         private const val TAG = "OpenAiRealtimeClient"
-        private const val WS_URL = "wss://api.openai.com/v1/realtime?model=gpt-realtime-2"
+        private const val WS_URL = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17"
         private const val SETUP_TIMEOUT_MS = 15_000L
     }
 
@@ -87,60 +87,74 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
     private inner class ConnectionListener : WebSocketListener() {
 
         override fun onOpen(ws: WebSocket, response: Response) {
-            Log.d(TAG, "WS open, sending session config")
-            ws.send(buildSessionConfig())
+            try {
+                Log.d(TAG, "WS open, sending session config")
+                ws.send(buildSessionConfig())
+            } catch (e: Exception) {
+                Log.e(TAG, "onOpen error: ${e.message}")
+                scope.launch { _events.emit(Event.Error("Ошибка настройки сессии: ${e.message}")) }
+            }
         }
 
         override fun onMessage(ws: WebSocket, text: String) {
-            Log.d(TAG, "Server ← ${text.take(200)}")
-            parseMessage(text)
+            try {
+                Log.d(TAG, "Server ← ${text.take(200)}")
+                parseMessage(text)
+            } catch (e: Exception) {
+                Log.e(TAG, "onMessage error: ${e.message}")
+            }
         }
 
         override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
-            ready = false
-            setupTimeoutJob?.cancel()
-            val code = response?.code
-            val body = try { response?.body?.string()?.take(200) } catch (e: Exception) { null }
-            Log.e(TAG, "WS failure code=$code body=$body err=${t.message}")
-            val msg = when (code) {
-                401 -> "Неверный OpenAI API ключ (401).\nПроверь ключ в настройках ⚙️"
-                429 -> "Превышен лимит запросов OpenAI (429).\nПодожди минуту и попробуй снова."
-                else -> body ?: "HTTP $code: ${t.message ?: "Ошибка соединения"}"
+            try {
+                ready = false
+                setupTimeoutJob?.cancel()
+                val code = response?.code
+                val body = try { response?.body?.string()?.take(200) } catch (e: Exception) { null }
+                Log.e(TAG, "WS failure code=$code body=$body err=${t.message}")
+                val msg = when (code) {
+                    401 -> "Неверный OpenAI API ключ (401).\nПроверь ключ в настройках ⚙️"
+                    429 -> "Превышен лимит запросов OpenAI (429).\nПодожди минуту и попробуй снова."
+                    else -> body ?: "HTTP $code: ${t.message ?: "Ошибка соединения"}"
+                }
+                scope.launch { _events.emit(Event.Error(msg)) }
+            } catch (e: Exception) {
+                Log.e(TAG, "onFailure handler error: ${e.message}")
             }
-            scope.launch { _events.emit(Event.Error(msg)) }
         }
 
         override fun onClosed(ws: WebSocket, code: Int, reason: String) {
-            ready = false
-            setupTimeoutJob?.cancel()
-            Log.d(TAG, "WS closed code=$code reason=$reason")
-            if (code == 1000) {
-                scope.launch { _events.emit(Event.Disconnected) }
-            } else {
-                scope.launch { _events.emit(Event.Error("Соединение закрыто (код $code): $reason")) }
+            try {
+                ready = false
+                setupTimeoutJob?.cancel()
+                Log.d(TAG, "WS closed code=$code reason=$reason")
+                if (code == 1000) {
+                    scope.launch { _events.emit(Event.Disconnected) }
+                } else {
+                    scope.launch { _events.emit(Event.Error("Соединение закрыто (код $code): $reason")) }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "onClosed handler error: ${e.message}")
             }
         }
     }
 
     private fun buildSessionConfig(): String {
         val openAiVoice = if (lastVoiceName in listOf("alloy","echo","shimmer","ash","ballad","coral","sage","verse","marin","cedar"))
-            lastVoiceName else "marin"
+            lastVoiceName else "alloy"
         return JSONObject()
             .put("type", "session.update")
             .put("session", JSONObject()
-                .put("type", "realtime")
+                .put("modalities", JSONArray().put("text").put("audio"))
                 .put("instructions", lastSystemPrompt)
-                .put("output_modalities", JSONArray().put("audio").put("text"))
-                .put("audio", JSONObject()
-                    .put("output", JSONObject()
-                        .put("voice", openAiVoice)
-                        .put("format", JSONObject().put("type", "audio/pcm")))
-                    .put("input", JSONObject()
-                        .put("format", JSONObject()
-                            .put("type", "audio/pcm")
-                            .put("rate", 24000))
-                        .put("turn_detection", JSONObject()
-                            .put("type", "semantic_vad")))))
+                .put("voice", openAiVoice)
+                .put("input_audio_format", "pcm16")
+                .put("output_audio_format", "pcm16")
+                .put("turn_detection", JSONObject()
+                    .put("type", "server_vad")
+                    .put("threshold", 0.5)
+                    .put("prefix_padding_ms", 300)
+                    .put("silence_duration_ms", 500)))
             .toString()
     }
 
@@ -155,13 +169,13 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     Log.d(TAG, "Session ready")
                     scope.launch { _events.emit(Event.SetupComplete) }
                 }
-                "response.output_audio.delta" -> {
+                "response.audio.delta" -> {
                     val delta = json.optString("delta", "")
                     if (delta.isNotEmpty()) {
                         scope.launch { _events.emit(Event.AudioChunk(delta)) }
                     }
                 }
-                "response.output_audio_transcript.delta" -> {
+                "response.audio_transcript.delta" -> {
                     val delta = json.optString("delta", "")
                     if (delta.isNotEmpty()) {
                         scope.launch { _events.emit(Event.TextChunk(delta)) }
@@ -171,14 +185,13 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     scope.launch { _events.emit(Event.TurnComplete) }
                 }
                 "input_audio_buffer.speech_started" ->
-                    Log.d(TAG, "Speech started (semantic VAD)")
+                    Log.d(TAG, "Speech started (server VAD)")
                 "input_audio_buffer.speech_stopped" ->
-                    Log.d(TAG, "Speech stopped (semantic VAD)")
+                    Log.d(TAG, "Speech stopped (server VAD)")
                 else -> {
-                    if (type.contains("error") || type == "invalid_request_error") {
-                        val msg = json.optString("message",
-                            json.optJSONObject("error")?.optString("message") ?: "Ошибка OpenAI")
-                        Log.e(TAG, "API error type=$type: $msg")
+                    if (type == "error") {
+                        val msg = json.optJSONObject("error")?.optString("message") ?: "Ошибка OpenAI"
+                        Log.e(TAG, "API error: $msg raw=${text.take(200)}")
                         scope.launch { _events.emit(Event.Error(msg)) }
                     }
                 }

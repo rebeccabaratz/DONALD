@@ -125,50 +125,64 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
     private fun collectRealtimeEvents() {
         viewModelScope.launch {
-            realtimeClient.events.collect { event ->
-                when (event) {
-                    is OpenAiRealtimeClient.Event.SetupComplete -> {
-                        Log.d(TAG, "OpenAI Realtime ready")
-                        if (_transcripts.value.isEmpty()) {
-                            speakFirstIntro()
-                        } else {
-                            startListening()
-                        }
-                    }
-                    is OpenAiRealtimeClient.Event.AudioChunk -> {
-                        if (_state.value == AgentState.PROCESSING || _state.value == AgentState.SPEAKING) {
-                            if (_state.value == AgentState.PROCESSING) {
-                                _state.value = AgentState.SPEAKING
-                                voiceRecorder.stopRecording()
-                                audioPlayer.startStreamingPlayback(sampleRate = 24000)
+            try {
+                realtimeClient.events.collect { event ->
+                    try {
+                        when (event) {
+                            is OpenAiRealtimeClient.Event.SetupComplete -> {
+                                Log.d(TAG, "OpenAI Realtime ready")
+                                if (_transcripts.value.isEmpty()) {
+                                    speakFirstIntro()
+                                } else {
+                                    startListening()
+                                }
                             }
-                            audioPlayer.writePcmChunk(event.pcmBase64)
+                            is OpenAiRealtimeClient.Event.AudioChunk -> {
+                                if (_state.value == AgentState.PROCESSING || _state.value == AgentState.SPEAKING) {
+                                    if (_state.value == AgentState.PROCESSING) {
+                                        _state.value = AgentState.SPEAKING
+                                        voiceRecorder.stopRecording()
+                                        audioPlayer.startStreamingPlayback(sampleRate = 24000)
+                                    }
+                                    try {
+                                        audioPlayer.writePcmChunk(event.pcmBase64)
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error writing PCM chunk: ${e.message}")
+                                    }
+                                }
+                            }
+                            is OpenAiRealtimeClient.Event.TextChunk -> {
+                                accumulatedText.append(event.text)
+                            }
+                            is OpenAiRealtimeClient.Event.TurnComplete -> {
+                                handleTurnComplete()
+                            }
+                            is OpenAiRealtimeClient.Event.Error -> {
+                                Log.e(TAG, "Realtime error: ${event.message}")
+                                _errorMessage.value = "Ошибка OpenAI: ${event.message}"
+                                voiceRecorder.stopRecording()
+                                audioPlayer.stopAll()
+                                _state.value = AgentState.PAUSED
+                            }
+                            is OpenAiRealtimeClient.Event.Info -> {
+                                _errorMessage.value = event.message
+                            }
+                            is OpenAiRealtimeClient.Event.Disconnected -> {
+                                if (_state.value != AgentState.PAUSED && _state.value != AgentState.IDLE) {
+                                    Log.w(TAG, "Unexpected disconnect, reconnecting...")
+                                    delay(1000)
+                                    reconnectSession()
+                                }
+                            }
                         }
-                    }
-                    is OpenAiRealtimeClient.Event.TextChunk -> {
-                        accumulatedText.append(event.text)
-                    }
-                    is OpenAiRealtimeClient.Event.TurnComplete -> {
-                        handleTurnComplete()
-                    }
-                    is OpenAiRealtimeClient.Event.Error -> {
-                        Log.e(TAG, "Realtime error: ${event.message}")
-                        _errorMessage.value = "Ошибка OpenAI: ${event.message}"
-                        voiceRecorder.stopRecording()
-                        audioPlayer.stopAll()
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Event handling error: ${e.message}", e)
+                        _errorMessage.value = "Внутренняя ошибка: ${e.message}"
                         _state.value = AgentState.PAUSED
                     }
-                    is OpenAiRealtimeClient.Event.Info -> {
-                        _errorMessage.value = event.message
-                    }
-                    is OpenAiRealtimeClient.Event.Disconnected -> {
-                        if (_state.value != AgentState.PAUSED && _state.value != AgentState.IDLE) {
-                            Log.w(TAG, "Unexpected disconnect, reconnecting...")
-                            delay(1000)
-                            reconnectSession()
-                        }
-                    }
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "Event collection crashed: ${e.message}", e)
             }
         }
     }

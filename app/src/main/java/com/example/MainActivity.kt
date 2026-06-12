@@ -243,7 +243,7 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel) {
         ) {
             Column {
                 Text(
-                    text = "ДЖЕК • АГЕНТ",
+                    text = "ДОНАЛЬД • АГЕНТ",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Black,
                     color = Color(0xFF818CF8),
@@ -352,7 +352,7 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "ПОВТОРИТЕ ЗА ДЖЕКОМ",
+                            text = "ПОВТОРИТЕ ЗА ДОНАЛЬДОМ",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFFF59E0B),
@@ -788,7 +788,7 @@ fun SettingsDialog(
                 OutlinedTextField(
                     value = keyInput,
                     onValueChange = { keyInput = it },
-                    placeholder = { Text("Вставьте ваш API-ключ (начиная с AIzaSy или AQ...)", fontSize = 12.sp, color = Color.Gray) },
+                    placeholder = { Text("Вставьте ваш OpenAI API-ключ (начиная с sk-...)", fontSize = 12.sp, color = Color.Gray) },
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier
