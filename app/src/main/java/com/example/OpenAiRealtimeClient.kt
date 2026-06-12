@@ -79,7 +79,6 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
         val request = Request.Builder()
             .url(WS_URL)
             .addHeader("Authorization", "Bearer $lastApiKey")
-            .addHeader("OpenAI-Beta", "realtime=v1")
             .build()
 
         webSocket = httpClient.newWebSocket(request, ConnectionListener())
