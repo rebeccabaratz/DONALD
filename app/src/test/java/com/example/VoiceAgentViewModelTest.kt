@@ -371,4 +371,145 @@ class VoiceAgentViewModelTest {
                 count
             )
         }
+
+    // =========================================================================
+    // FakeAudioSink + audio pipeline tests
+    // =========================================================================
+
+    /**
+     * A fake AudioSink that records every call made to it.
+     * Injected into VoiceAgentViewModel via reflection to observe audio behaviour
+     * without needing a real AudioTrack (which fails in unit tests).
+     */
+    class FakeAudioSink : AudioSink {
+        var startStreamingCalls = 0
+        val chunksWritten = mutableListOf<String>()
+        var drainCalls = 0
+        var stopAllCalls = 0
+
+        override fun startStreamingPlayback(sampleRate: Int) { startStreamingCalls++ }
+        override fun writePcmChunk(base64Pcm: String) { chunksWritten.add(base64Pcm) }
+        override suspend fun drainAndStopStreaming() { drainCalls++ }
+        override fun stopStreaming() {}
+        override fun stopAll() { stopAllCalls++ }
+    }
+
+    /** Builds a VM+flow and injects a FakeAudioSink, returning all three. */
+    private fun buildVmFlowAndAudio(): Triple<VoiceAgentViewModel, MutableSharedFlow<OpenAiRealtimeClient.Event>, FakeAudioSink> {
+        val (vm, flow) = buildVmAndFlow()
+        val fake = FakeAudioSink()
+        field(VoiceAgentViewModel::class.java, "audioPlayer").set(vm, fake)
+        return Triple(vm, flow, fake)
+    }
+
+    // -------------------------------------------------------------------------
+    // Test 6 — advance_book + AudioChunk → audio starts and data is written
+    // -------------------------------------------------------------------------
+
+    /**
+     * THE CORE REGRESSION TEST for the silent-second-phrase bug.
+     *
+     * After advance_book the ViewModel must:
+     *  1. Leave state = PROCESSING (so chunks are accepted)
+     *  2. On first AudioChunk → call startStreamingPlayback() to open a new track
+     *  3. On every AudioChunk → call writePcmChunk() with the data
+     *
+     * If any of these fail the phrase is silent (user sees text, hears nothing).
+     * Previously this was untestable because AudioPlayer was not injectable.
+     */
+    @Test
+    fun `advance_book then AudioChunk triggers startStreamingPlayback and writePcmChunk`() =
+        runTest(testDispatcher) {
+            val (vm, flow, audio) = buildVmFlowAndAudio()
+            seedTranscripts(vm)
+
+            flow.emit(OpenAiRealtimeClient.Event.SetupComplete)
+            advanceTimeBy(100)
+
+            // Simulate AI praising + calling advance_book
+            flow.emit(OpenAiRealtimeClient.Event.FunctionCall("advance_book", "call_1"))
+            advanceTimeBy(100)
+
+            assertEquals(
+                "State must be PROCESSING before chunks arrive so they are not ignored",
+                AgentState.PROCESSING, vm.state.value
+            )
+
+            // First audio chunk for the second phrase
+            flow.emit(OpenAiRealtimeClient.Event.AudioChunk("AAEC"))
+            advanceTimeBy(100)
+
+            assertEquals(
+                "startStreamingPlayback must be called exactly once on the first chunk",
+                1, audio.startStreamingCalls
+            )
+            assertEquals(
+                "writePcmChunk must be called with the chunk data",
+                1, audio.chunksWritten.size
+            )
+            assertEquals("AAEC", audio.chunksWritten[0])
+        }
+
+    // -------------------------------------------------------------------------
+    // Test 7 — AudioChunk while LISTENING is silently ignored
+    // -------------------------------------------------------------------------
+
+    /**
+     * Stale audio chunks that arrive while the ViewModel is listening (e.g. from
+     * a previous response that crossed the boundary) must be dropped silently.
+     * startStreamingPlayback must NOT be called.
+     */
+    @Test
+    fun `AudioChunk while LISTENING is ignored and does not start playback`() =
+        runTest(testDispatcher) {
+            val (vm, flow, audio) = buildVmFlowAndAudio()
+            seedTranscripts(vm)
+
+            flow.emit(OpenAiRealtimeClient.Event.SetupComplete)
+            advanceTimeBy(100)
+            assertEquals(AgentState.LISTENING, vm.state.value)
+
+            // Chunk arrives while we are listening (should be ignored)
+            flow.emit(OpenAiRealtimeClient.Event.AudioChunk("AAEC"))
+            advanceTimeBy(100)
+
+            assertEquals(
+                "startStreamingPlayback must NOT be called when state is LISTENING",
+                0, audio.startStreamingCalls
+            )
+        }
+
+    // -------------------------------------------------------------------------
+    // Test 8 — drainAndStopStreaming is called before second phrase
+    // -------------------------------------------------------------------------
+
+    /**
+     * When advance_book fires, the ViewModel must drain the previous audio before
+     * starting the new phrase. Without draining, the tail of "Отлично!" would be
+     * cut off (issue 1) and the new phrase might start before the old one finishes.
+     */
+    @Test
+    fun `advance_book drains previous audio before starting new phrase`() =
+        runTest(testDispatcher) {
+            val (vm, flow, audio) = buildVmFlowAndAudio()
+            seedTranscripts(vm)
+
+            flow.emit(OpenAiRealtimeClient.Event.SetupComplete)
+            advanceTimeBy(100)
+
+            // advance_book fires — drain must happen regardless of whether
+            // audio was actively playing (FakeAudioSink always records the call)
+            flow.emit(OpenAiRealtimeClient.Event.FunctionCall("advance_book", "call_2"))
+            advanceTimeBy(100)
+
+            assertEquals(
+                "drainAndStopStreaming must be called once when advance_book fires " +
+                    "(ensures previous audio finishes before starting next phrase)",
+                1, audio.drainCalls
+            )
+            assertEquals(
+                "State must be PROCESSING after drain, ready to accept new audio chunks",
+                AgentState.PROCESSING, vm.state.value
+            )
+        }
 }

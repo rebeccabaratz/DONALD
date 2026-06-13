@@ -70,7 +70,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     val allowedVoices = listOf("marin", "cedar", "alloy", "echo", "shimmer", "ash", "ballad", "coral", "sage", "verse")
 
     private val voiceRecorder = VoiceRecorder(context)
-    private val audioPlayer = AudioPlayer(context)
+    internal var audioPlayer: AudioSink = AudioPlayer(context)
     private val realtimeClient = OpenAiRealtimeClient(viewModelScope)
 
     val liveAmplitude: StateFlow<Int> = voiceRecorder.currentAmplitude

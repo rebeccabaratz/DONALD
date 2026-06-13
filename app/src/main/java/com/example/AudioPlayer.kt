@@ -10,7 +10,7 @@ import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
 
-class AudioPlayer(private val context: Context) {
+class AudioPlayer(private val context: Context) : AudioSink {
 
     private var mediaPlayer: MediaPlayer? = null
     private var audioTrack: AudioTrack? = null
@@ -18,7 +18,7 @@ class AudioPlayer(private val context: Context) {
 
     // --- Streaming PCM playback via AudioTrack (Live API) ---
 
-    fun startStreamingPlayback(sampleRate: Int = 24000) {
+    override fun startStreamingPlayback(sampleRate: Int) {
         stopStreaming()
         framesWritten = 0
         val minBuf = AudioTrack.getMinBufferSize(
@@ -46,13 +46,13 @@ class AudioPlayer(private val context: Context) {
         audioTrack?.play()
     }
 
-    fun writePcmChunk(base64Pcm: String) {
+    override fun writePcmChunk(base64Pcm: String) {
         val bytes = Base64.decode(base64Pcm, Base64.DEFAULT)
         audioTrack?.write(bytes, 0, bytes.size)
         framesWritten += bytes.size / 2  // 16-bit PCM = 2 bytes per frame
     }
 
-    fun stopStreaming() {
+    override fun stopStreaming() {
         try {
             audioTrack?.apply { stop(); release() }
         } catch (e: Exception) {
@@ -67,7 +67,7 @@ class AudioPlayer(private val context: Context) {
     // Previously used playState == STOPPED which returns true immediately after
     // stop() even while audio is still draining — causing the tail to be cut off.
     // Now tracks framesWritten and waits for playbackHeadPosition to catch up.
-    suspend fun drainAndStopStreaming() {
+    override suspend fun drainAndStopStreaming() {
         val track = audioTrack ?: return
         try {
             val target = framesWritten
@@ -155,7 +155,7 @@ class AudioPlayer(private val context: Context) {
         }
     }
 
-    fun stopAll() {
+    override fun stopAll() {
         stopPlaying()
         stopStreaming()
     }
