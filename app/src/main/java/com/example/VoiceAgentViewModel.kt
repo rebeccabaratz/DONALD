@@ -120,6 +120,14 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         _selectedVoice.value = if (savedVoice in allowedVoices) savedVoice else "marin"
         _customApiKey.value = prefs.getString("custom_openai_api_key", "") ?: ""
 
+        AppState.toggleSession = {
+            if (_state.value != AgentState.IDLE && _state.value != AgentState.PAUSED) {
+                stopCycle()
+            } else {
+                startCycle()
+            }
+        }
+
         collectRealtimeEvents()
     }
 
@@ -429,6 +437,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
     override fun onCleared() {
         super.onCleared()
+        AppState.toggleSession = null
         voiceRecorder.stopRecording()
         audioPlayer.stopAll()
         realtimeClient.disconnect()
