@@ -346,13 +346,21 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
 
     fun requestGreeting() {
         if (!ready) return
-        Log.d(TAG, "requestGreeting: sending response.create (no user turn)")
-        webSocket?.send(JSONObject().put("type", "response.create").toString())
+        Log.d(TAG, "requestGreeting: sending response.create with audio modality")
+        webSocket?.send(
+            JSONObject()
+                .put("type", "response.create")
+                .put("response", JSONObject()
+                    .put("modalities", JSONArray().put("audio")))
+                .toString()
+        )
     }
 
     fun updateInstructions(newInstructions: String) {
         if (!ready) return
-        Log.d(TAG, "updateInstructions: ${newInstructions.length} chars")
+        val openAiVoice = if (lastVoiceName in listOf("alloy","echo","shimmer","ash","ballad","coral","sage","verse","marin","cedar"))
+            lastVoiceName else "marin"
+        Log.d(TAG, "updateInstructions: ${newInstructions.length} chars voice=$openAiVoice")
         webSocket?.send(
             JSONObject().put("type", "session.update")
                 .put("session", JSONObject()
@@ -360,7 +368,13 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     .put("output_modalities", JSONArray().put("audio"))
                     .put("tools", buildTools())
                     .put("tool_choice", "auto")
-                    .put("instructions", newInstructions))
+                    .put("instructions", newInstructions)
+                    .put("audio", JSONObject()
+                        .put("output", JSONObject()
+                            .put("voice", openAiVoice)
+                            .put("format", JSONObject()
+                                .put("type", "audio/pcm")
+                                .put("rate", 24000)))))
                 .toString()
         )
     }

@@ -242,7 +242,82 @@ class VoiceAgentViewModelTest {
         }
 
     // -------------------------------------------------------------------------
-    // Test 4 — White-box: setupCompletedEmitted flag in OpenAiRealtimeClient
+    // Test 4a — advance_book function call → book index increments and state = PROCESSING
+    // -------------------------------------------------------------------------
+
+    /**
+     * When the AI calls advance_book(), the ViewModel must:
+     *  1. Increment the book phrase index
+     *  2. Call speakBookPhrase() which sets state = PROCESSING
+     *
+     * Regression: if the second phrase is shown as text but NOT spoken, it means
+     * speakBookPhrase() wasn't called (state stayed LISTENING/SPEAKING), or
+     * the audio format was lost. This test verifies the state machine side.
+     *
+     * Audio format correctness (updateInstructions must include audio/pcm config)
+     * is tested separately; here we only verify the index+state contract.
+     */
+    @Test
+    fun `advance_book FunctionCall increments book index and sets PROCESSING`() =
+        runTest(testDispatcher) {
+            val (vm, flow) = buildVmAndFlow()
+            seedTranscripts(vm)
+
+            // Bring ViewModel to LISTENING state first
+            flow.emit(OpenAiRealtimeClient.Event.SetupComplete)
+            advanceTimeBy(100)
+            assertEquals("Should be LISTENING after SetupComplete", AgentState.LISTENING, vm.state.value)
+
+            val indexBefore = vm.bookIndex.value
+
+            // Simulate AI calling advance_book after user repeated the phrase correctly
+            flow.emit(OpenAiRealtimeClient.Event.FunctionCall("advance_book"))
+            advanceTimeBy(100)
+
+            assertEquals(
+                "Book index must advance by 1 after advance_book",
+                (indexBefore + 1) % vm.tomSawyerPhrases.size,
+                vm.bookIndex.value
+            )
+            assertEquals(
+                "State must be PROCESSING after advance_book (speakBookPhrase was called)",
+                AgentState.PROCESSING,
+                vm.state.value
+            )
+        }
+
+    // -------------------------------------------------------------------------
+    // Test 4b — repeat_phrase function call → book index unchanged and state = PROCESSING
+    // -------------------------------------------------------------------------
+
+    /**
+     * When the AI calls repeat_phrase(), the phrase index must NOT change, but
+     * speakBookPhrase() must be called (state = PROCESSING).
+     */
+    @Test
+    fun `repeat_phrase FunctionCall keeps book index and sets PROCESSING`() =
+        runTest(testDispatcher) {
+            val (vm, flow) = buildVmAndFlow()
+            seedTranscripts(vm)
+
+            flow.emit(OpenAiRealtimeClient.Event.SetupComplete)
+            advanceTimeBy(100)
+
+            val indexBefore = vm.bookIndex.value
+
+            flow.emit(OpenAiRealtimeClient.Event.FunctionCall("repeat_phrase"))
+            advanceTimeBy(100)
+
+            assertEquals("Book index must NOT change after repeat_phrase", indexBefore, vm.bookIndex.value)
+            assertEquals(
+                "State must be PROCESSING after repeat_phrase (speakBookPhrase was called)",
+                AgentState.PROCESSING,
+                vm.state.value
+            )
+        }
+
+    // -------------------------------------------------------------------------
+    // Test 5 — White-box: setupCompletedEmitted flag in OpenAiRealtimeClient
     // -------------------------------------------------------------------------
 
     /**

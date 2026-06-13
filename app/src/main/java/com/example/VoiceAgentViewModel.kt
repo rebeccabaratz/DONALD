@@ -116,7 +116,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         _threshold.value = prefs.getInt("voice_threshold", 18) * 100
         if (_threshold.value == 0) _threshold.value = 1800
         _silenceDurationMs.value = prefs.getLong("silence_duration", 1800L)
-        val savedVoice = prefs.getString("selected_voice", "ballad") ?: "ballad"
+        val savedVoice = prefs.getString("selected_voice", "ash") ?: "ash"
         _selectedVoice.value = if (savedVoice in allowedVoices) savedVoice else "marin"
         _customApiKey.value = prefs.getString("custom_openai_api_key", "") ?: ""
 
