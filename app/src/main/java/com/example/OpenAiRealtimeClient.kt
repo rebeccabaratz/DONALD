@@ -346,14 +346,8 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
 
     fun requestGreeting() {
         if (!ready) return
-        Log.d(TAG, "requestGreeting: sending response.create with audio modality")
-        webSocket?.send(
-            JSONObject()
-                .put("type", "response.create")
-                .put("response", JSONObject()
-                    .put("modalities", JSONArray().put("audio")))
-                .toString()
-        )
+        Log.d(TAG, "requestGreeting: sending response.create (session audio config applies)")
+        webSocket?.send(JSONObject().put("type", "response.create").toString())
     }
 
     fun updateInstructions(newInstructions: String) {
