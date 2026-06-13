@@ -30,7 +30,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
         data class AudioChunk(val pcmBase64: String) : Event()
         data class TextChunk(val text: String) : Event()
         object TurnComplete : Event()
-        data class FunctionCall(val name: String) : Event()
+        data class FunctionCall(val name: String, val callId: String) : Event()
         data class Error(val message: String) : Event()
         data class Info(val message: String) : Event()
         object Disconnected : Event()
@@ -264,15 +264,9 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     if (fnName != null && fnCallId != null) {
                         pendingFunctionCallId = null
                         pendingFunctionCallName = null
-                        webSocket?.send(JSONObject()
-                            .put("type", "conversation.item.create")
-                            .put("item", JSONObject()
-                                .put("type", "function_call_output")
-                                .put("call_id", fnCallId)
-                                .put("output", "ok"))
-                            .toString())
-                        Log.d(TAG, "function_call_output sent for $fnName, emitting FunctionCall")
-                        scope.launch { _events.emit(Event.FunctionCall(fnName)) }
+                        // ViewModel sends function_call_output with phrase context
+                        Log.d(TAG, "function call done: $fnName callId=$fnCallId — emitting FunctionCall")
+                        scope.launch { _events.emit(Event.FunctionCall(fnName, fnCallId)) }
                     } else {
                         scope.launch { _events.emit(Event.TurnComplete) }
                     }
@@ -371,6 +365,24 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                                 .put("rate", 24000)))))
                 .toString()
         )
+    }
+
+    // Sends function_call_output with the phrase instruction, then triggers response.create.
+    // No session.update is sent here — original session audio config (PCM 24000Hz) is preserved,
+    // ensuring the AI's response is audio not text.
+    fun respondToFunctionAndSpeak(callId: String, phraseInstruction: String) {
+        if (!ready) return
+        Log.d(TAG, "respondToFunctionAndSpeak callId=$callId '${phraseInstruction.take(60)}'")
+        webSocket?.send(
+            JSONObject()
+                .put("type", "conversation.item.create")
+                .put("item", JSONObject()
+                    .put("type", "function_call_output")
+                    .put("call_id", callId)
+                    .put("output", phraseInstruction))
+                .toString()
+        )
+        webSocket?.send(JSONObject().put("type", "response.create").toString())
     }
 
     fun disconnect() {

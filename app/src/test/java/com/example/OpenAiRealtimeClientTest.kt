@@ -147,6 +147,49 @@ class OpenAiRealtimeClientTest {
             )
         }
 
+    // ── respondToFunctionAndSpeak ─────────────────────────────────────────────
+
+    @Test
+    fun `respondToFunctionAndSpeak sends function_call_output then response_create`() =
+        runTest(testDispatcher) {
+            val (client, fake) = buildReadyClient()
+
+            client.respondToFunctionAndSpeak("call_abc", "Произнеси вслух: \"No answer.\"")
+
+            assertEquals("Expected exactly 2 messages", 2, fake.sent.size)
+
+            val fnOutput = JSONObject(fake.sent[0])
+            assertEquals("conversation.item.create", fnOutput.getString("type"))
+            val item = fnOutput.getJSONObject("item")
+            assertEquals("function_call_output", item.getString("type"))
+            assertEquals("call_abc", item.getString("call_id"))
+            assertTrue(
+                "output must contain the phrase text",
+                item.getString("output").contains("No answer.")
+            )
+
+            val responseCreate = JSONObject(fake.sent[1])
+            assertEquals(
+                "Second message must be response.create to trigger AI speech",
+                "response.create",
+                responseCreate.getString("type")
+            )
+        }
+
+    @Test
+    fun `respondToFunctionAndSpeak does NOT send session_update before response_create`() =
+        runTest(testDispatcher) {
+            val (client, fake) = buildReadyClient()
+
+            client.respondToFunctionAndSpeak("call_xyz", "Произнеси: \"Tom!\"")
+
+            val types = fake.sent.map { JSONObject(it).getString("type") }
+            assertTrue(
+                "session.update must NOT be sent before response.create — it resets audio config and causes silence. Types sent: $types",
+                "session.update" !in types
+            )
+        }
+
     // ── commitAndRespond ──────────────────────────────────────────────────────
 
     @Test

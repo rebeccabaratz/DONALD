@@ -14,11 +14,13 @@ class AudioPlayer(private val context: Context) {
 
     private var mediaPlayer: MediaPlayer? = null
     private var audioTrack: AudioTrack? = null
+    private var framesWritten = 0
 
     // --- Streaming PCM playback via AudioTrack (Live API) ---
 
     fun startStreamingPlayback(sampleRate: Int = 24000) {
         stopStreaming()
+        framesWritten = 0
         val minBuf = AudioTrack.getMinBufferSize(
             sampleRate,
             AudioFormat.CHANNEL_OUT_MONO,
@@ -47,35 +49,41 @@ class AudioPlayer(private val context: Context) {
     fun writePcmChunk(base64Pcm: String) {
         val bytes = Base64.decode(base64Pcm, Base64.DEFAULT)
         audioTrack?.write(bytes, 0, bytes.size)
+        framesWritten += bytes.size / 2  // 16-bit PCM = 2 bytes per frame
     }
 
     fun stopStreaming() {
         try {
-            audioTrack?.apply {
-                stop()
-                release()
-            }
+            audioTrack?.apply { stop(); release() }
         } catch (e: Exception) {
             Log.e("AudioPlayer", "Error stopping AudioTrack: ${e.message}")
         } finally {
             audioTrack = null
+            framesWritten = 0
         }
     }
 
+    // Waits for buffered audio to finish playing before releasing.
+    // Previously used playState == STOPPED which returns true immediately after
+    // stop() even while audio is still draining — causing the tail to be cut off.
+    // Now tracks framesWritten and waits for playbackHeadPosition to catch up.
     suspend fun drainAndStopStreaming() {
+        val track = audioTrack ?: return
         try {
-            val track = audioTrack ?: return
-            track.stop() // plays remaining buffered data then stops
+            val target = framesWritten
             var checks = 0
-            while (track.playState != AudioTrack.PLAYSTATE_STOPPED && checks < 100) {
+            while (checks < 100 && track.playbackHeadPosition < target) {
                 kotlinx.coroutines.delay(50)
                 checks++
             }
+            Log.d("AudioPlayer", "drain done: head=${track.playbackHeadPosition} target=$target checks=$checks")
         } catch (e: Exception) {
             Log.e("AudioPlayer", "Error draining AudioTrack: ${e.message}")
         } finally {
-            try { audioTrack?.release() } catch (e: Exception) { /* ignore */ }
+            try { audioTrack?.stop() } catch (_: Exception) {}
+            try { audioTrack?.release() } catch (_: Exception) {}
             audioTrack = null
+            framesWritten = 0
         }
     }
 

@@ -169,7 +169,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                                 handleTurnComplete()
                             }
                             is OpenAiRealtimeClient.Event.FunctionCall -> {
-                                handleFunctionCall(event.name)
+                                handleFunctionCall(event.name, event.callId)
                             }
                             is OpenAiRealtimeClient.Event.Error -> {
                                 Log.e(TAG, "Realtime error: ${event.message}")
@@ -229,10 +229,10 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    private suspend fun handleFunctionCall(name: String) {
+    private suspend fun handleFunctionCall(name: String, callId: String) {
         val fullText = accumulatedText.toString().trim()
         accumulatedText.clear()
-        Log.d(TAG, "handleFunctionCall: $name textLen=${fullText.length}")
+        Log.d(TAG, "handleFunctionCall: $name callId=$callId textLen=${fullText.length}")
 
         if (fullText.isNotEmpty()) {
             addTranscriptBubble("Дональд", fullText)
@@ -241,30 +241,37 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
         if (_state.value == AgentState.PAUSED) return
 
+        // Phrase is passed directly in function_call_output so the AI knows what to say.
+        // No session.update is sent before response.create — this preserves the original
+        // session audio config (PCM 24000Hz) and avoids the silent-second-phrase bug.
         when (name) {
             "start_book_reading" -> {
                 _mode.value = AgentMode.BOOK_READING
-                speakBookPhrase()
+                val phrase = tomSawyerPhrases[_bookIndex.value]
+                realtimeClient.respondToFunctionAndSpeak(callId,
+                    "Режим чтения активирован. Произнеси вслух ТОЛЬКО эту фразу: \"$phrase\"")
+                _state.value = AgentState.PROCESSING
             }
             "advance_book" -> {
                 setBookIndex((_bookIndex.value + 1) % tomSawyerPhrases.size)
-                speakBookPhrase()
+                val phrase = tomSawyerPhrases[_bookIndex.value]
+                realtimeClient.respondToFunctionAndSpeak(callId,
+                    "Произнеси вслух ТОЛЬКО эту фразу: \"$phrase\"")
+                _state.value = AgentState.PROCESSING
             }
             "repeat_phrase" -> {
-                speakBookPhrase()
+                val phrase = tomSawyerPhrases[_bookIndex.value]
+                realtimeClient.respondToFunctionAndSpeak(callId,
+                    "Повтори вслух ТОЛЬКО эту фразу: \"$phrase\"")
+                _state.value = AgentState.PROCESSING
             }
             "end_book_reading" -> {
                 _mode.value = AgentMode.CONVERSATION
-                startListening()
+                realtimeClient.respondToFunctionAndSpeak(callId, "ok")
+                _state.value = AgentState.PROCESSING
+                // TurnComplete will call startListening()
             }
         }
-    }
-
-    private fun speakBookPhrase() {
-        Log.d(TAG, "speakBookPhrase: phrase ${_bookIndex.value + 1}/${tomSawyerPhrases.size}")
-        updateSessionContext()
-        _state.value = AgentState.PROCESSING
-        realtimeClient.requestGreeting()
     }
 
     fun startCycle() {
@@ -420,15 +427,13 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         РЕЖИМ ЧТЕНИЯ "ТОМ СОЙЕР":
         У тебя есть 4 функции для управления чтением — вызывай их молча, не произноси их названия вслух:
         - start_book_reading() — когда пользователь просит читать книгу. Скажи "Хорошо, начинаем!" и вызови.
-        - advance_book() — когда пользователь правильно повторил фразу. Похвали коротко (каждый раз по-разному: "Отлично!", "Верно!", "Молодец!", "Хорошо!", "Правильно!", "Супер!" и т.п.) и вызови. Следующую фразу НЕ называй — система прочитает сама.
-        - repeat_phrase() — вызови в этих случаях: (1) пользователь ошибся в словах — объясни ошибку кратко; (2) пользователь не расслышал или просит повторить — просто вызови без комментариев; (3) после перевода фразы — чтобы пользователь попробовал снова. Фразу НЕ произноси — система прочитает сама.
+        - advance_book() — когда пользователь правильно повторил фразу. Похвали коротко (каждый раз по-разному: "Отлично!", "Верно!", "Молодец!", "Хорошо!", "Правильно!", "Супер!" и т.п.) и вызови.
+        - repeat_phrase() — вызови если: (1) пользователь ошибся в словах — объясни кратко; (2) не расслышал или просит повторить — просто вызови; (3) после перевода — чтобы попробовал снова.
         - end_book_reading() — когда пользователь хочет выйти из режима чтения.
 
-        Когда система запрашивает произнести фразу (ты получаешь пустой запрос в режиме ЧТЕНИЯ КНИГИ):
-        - Произнеси ТОЛЬКО текущую английскую фразу из контекста, без предисловий.
+        После вызова функции система вернёт тебе фразу для произношения — произнеси её вслух ТОЛЬКО её, без предисловий и пояснений.
 
-        Если пользователь просит перевод ("что это значит?", "переведи" и т.п.):
-        - Дай перевод на русском (он есть в контексте), затем вызови repeat_phrase() чтобы система повторила фразу.
+        Если пользователь просит перевод — дай перевод на русском, затем вызови repeat_phrase().
 
         ОЦЕНКА ПОВТОРА: только ПРАВИЛЬНОСТЬ СЛОВ, не произношение и не акцент.
         Акцент — это нормально. Пользователь НЕ обязан говорить как носитель языка.

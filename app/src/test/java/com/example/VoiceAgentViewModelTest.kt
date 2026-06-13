@@ -271,7 +271,7 @@ class VoiceAgentViewModelTest {
             val indexBefore = vm.bookIndex.value
 
             // Simulate AI calling advance_book after user repeated the phrase correctly
-            flow.emit(OpenAiRealtimeClient.Event.FunctionCall("advance_book"))
+            flow.emit(OpenAiRealtimeClient.Event.FunctionCall("advance_book", "call_test_id"))
             advanceTimeBy(100)
 
             assertEquals(
@@ -305,7 +305,7 @@ class VoiceAgentViewModelTest {
 
             val indexBefore = vm.bookIndex.value
 
-            flow.emit(OpenAiRealtimeClient.Event.FunctionCall("repeat_phrase"))
+            flow.emit(OpenAiRealtimeClient.Event.FunctionCall("repeat_phrase", "call_test_id"))
             advanceTimeBy(100)
 
             assertEquals("Book index must NOT change after repeat_phrase", indexBefore, vm.bookIndex.value)

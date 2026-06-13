@@ -228,6 +228,16 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
 
     val listState = rememberLazyListState()
 
+    // Keep screen on while session is active (car use: screen must not turn off mid-conversation)
+    val activity = LocalContext.current as? android.app.Activity
+    LaunchedEffect(state) {
+        if (state != AgentState.IDLE && state != AgentState.PAUSED) {
+            activity?.window?.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } else {
+            activity?.window?.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
     // Auto-start when launched from widget
     LaunchedEffect(autoStart) {
         if (autoStart) {
