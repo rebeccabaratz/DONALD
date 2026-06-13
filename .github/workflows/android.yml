@@ -31,6 +31,9 @@ jobs:
         validate-wrappers: false
         cache-disabled: true
 
+    - name: Run unit tests
+      run: gradle :app:testDebugUnitTest --no-build-cache
+
     - name: Build with Gradle
       run: gradle assembleDebug --no-build-cache --rerun-tasks
 
