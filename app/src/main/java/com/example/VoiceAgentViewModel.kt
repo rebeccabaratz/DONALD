@@ -202,9 +202,10 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
         val hasAdvance = fullText.contains("[ADVANCE_BOOK]")
         val hasRepeat = fullText.contains("[REPEAT_BOOK]")
-        val hasSwitch = fullText.contains("[SWITCH_TO_CONVERSATION]") || fullText.contains("[SWITCH_TO_READING]")
+        val hasSwitchToReading = fullText.contains("[SWITCH_TO_READING]")
+        val hasSwitchToConversation = fullText.contains("[SWITCH_TO_CONVERSATION]")
         Log.d(TAG, "handleTurnComplete: textLen=${fullText.length} state=${_state.value} " +
-              "ADVANCE=$hasAdvance REPEAT=$hasRepeat SWITCH=$hasSwitch")
+              "ADVANCE=$hasAdvance REPEAT=$hasRepeat SWITCH_READ=$hasSwitchToReading SWITCH_CONV=$hasSwitchToConversation")
 
         if (fullText.isNotEmpty()) {
             processTextTags(fullText)
@@ -220,11 +221,27 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         audioPlayer.drainAndStopStreaming()
 
         if (_state.value != AgentState.PAUSED) {
-            Log.d(TAG, "handleTurnComplete: resuming → startListening")
-            startListening()
+            when {
+                // After switching to book mode or advancing — AI immediately reads the (next) phrase
+                hasSwitchToReading || hasAdvance -> {
+                    Log.d(TAG, "handleTurnComplete: book trigger → speakBookPhrase")
+                    speakBookPhrase()
+                }
+                else -> {
+                    Log.d(TAG, "handleTurnComplete: resuming → startListening")
+                    startListening()
+                }
+            }
         } else {
             Log.d(TAG, "handleTurnComplete: state=PAUSED, not restarting")
         }
+    }
+
+    private fun speakBookPhrase() {
+        Log.d(TAG, "speakBookPhrase: phrase ${_bookIndex.value + 1}/${tomSawyerPhrases.size}")
+        updateSessionContext()
+        _state.value = AgentState.PROCESSING
+        realtimeClient.requestGreeting()
     }
 
     fun startCycle() {
@@ -394,16 +411,17 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         3. Если нет предыдущих сообщений в разговоре — поприветствуй коротко и скажи, что готов помочь с английским.
 
         РЕЖИМ ЧТЕНИЯ "ТОМ СОЙЕР":
-        Когда пользователь просит читать книгу — переходи в режим чтения, добавь [SWITCH_TO_READING] в конце.
+        Когда пользователь просит читать книгу — скажи коротко "Хорошо, начинаем!" и добавь [SWITCH_TO_READING] в конце. НЕ читай фразу сам — система сразу запросит тебя произнести её отдельно.
 
-        В РЕЖИМЕ ЧТЕНИЯ:
-        - Произнеси текущую английскую фразу вслух.
-        - Оценивай только ПРАВИЛЬНОСТЬ СЛОВ, не произношение и не акцент.
-        - Акцент — это нормально. Пользователь НЕ обязан говорить как носитель языка.
-        - Если пользователь произнёс все слова (даже с акцентом или не идеально) → похвали коротко, добавь [ADVANCE_BOOK] в конце.
-        - Если пользователь пропустил или явно перепутал слова → мягко поправь, повтори ту же фразу, добавь [REPEAT_BOOK] в конце.
-        - Если пользователь не понял → объясни, добавь [SWITCH_TO_CONVERSATION] в конце.
-        - Если пользователь устал → добавь [SWITCH_TO_CONVERSATION] в конце.
+        В РЕЖИМЕ ЧТЕНИЯ — ты получаешь отдельный запрос прочитать фразу:
+        - СРАЗУ произнеси текущую английскую фразу вслух, без предисловий.
+        - После того как пользователь повторил фразу:
+          * Оценивай только ПРАВИЛЬНОСТЬ СЛОВ, не произношение и не акцент.
+          * Акцент — это нормально. Пользователь НЕ обязан говорить как носитель языка.
+          * Если все слова правильные (даже с акцентом) → похвали одним словом ("Отлично!"), добавь [ADVANCE_BOOK] в конце. НЕ читай следующую фразу — система сделает это сама.
+          * Если пользователь пропустил или перепутал слова → мягко поправь, повтори ту же фразу, добавь [REPEAT_BOOK] в конце.
+          * Если пользователь не понял → объясни, добавь [SWITCH_TO_CONVERSATION] в конце.
+          * Если пользователь устал → добавь [SWITCH_TO_CONVERSATION] в конце.
 
         Теги [ADVANCE_BOOK], [REPEAT_BOOK], [SWITCH_TO_CONVERSATION], [SWITCH_TO_READING] ставь ТОЛЬКО в самом конце ответа.
         """.trimIndent()
