@@ -213,14 +213,19 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     Log.d(TAG, "audio buffer cleared")
                 "conversation.item.created" ->
                     Log.d(TAG, "conversation.item.created id=${json.optJSONObject("item")?.optString("id")}")
-                else -> {
-                    if (type == "error") {
-                        val err = json.optJSONObject("error")
-                        val msg = err?.optString("message") ?: "Ошибка OpenAI"
-                        val code = err?.optString("code") ?: ""
-                        Log.e(TAG, "API error code=$code message=$msg")
+                "error" -> {
+                    val err = json.optJSONObject("error")
+                    val code = err?.optString("code") ?: ""
+                    val msg = err?.optString("message") ?: "Ошибка OpenAI"
+                    Log.e(TAG, "API error code=$code message=$msg")
+                    if (code == "input_audio_buffer_commit_empty") {
+                        Log.w(TAG, "Empty buffer commit ignored (no audio recorded)")
+                    } else {
                         scope.launch { _events.emit(Event.Error(msg)) }
-                    } else if (type.isNotEmpty()) {
+                    }
+                }
+                else -> {
+                    if (type.isNotEmpty()) {
                         Log.d(TAG, "unhandled event: $type")
                     }
                 }

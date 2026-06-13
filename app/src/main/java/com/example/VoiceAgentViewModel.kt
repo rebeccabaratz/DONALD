@@ -279,9 +279,14 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                 realtimeClient.sendAudioChunk(pcm)
             },
             onSilenceDetected = {
-                Log.d(TAG, "silence detected after $chunksSent chunks — committing buffer")
-                _state.value = AgentState.PROCESSING
-                realtimeClient.commitAndRespond()
+                if (chunksSent > 0) {
+                    Log.d(TAG, "silence detected after $chunksSent chunks — committing buffer")
+                    _state.value = AgentState.PROCESSING
+                    realtimeClient.commitAndRespond()
+                } else {
+                    Log.w(TAG, "silence detected but 0 audio chunks sent — skipping empty commit, restarting")
+                    viewModelScope.launch { startListening() }
+                }
             },
             onError = { err ->
                 _errorMessage.value = err
