@@ -97,23 +97,29 @@ import kotlinx.coroutines.delay
 import kotlin.math.sin
 
 class MainActivity : ComponentActivity() {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    enableEdgeToEdge()
-    setContent {
-      MyApplicationTheme {
-        MainScreen()
-      }
+
+    companion object {
+        const val EXTRA_AUTO_START = "AUTO_START"
     }
-  }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val autoStart = intent.getBooleanExtra(EXTRA_AUTO_START, false)
+        enableEdgeToEdge()
+        setContent {
+            MyApplicationTheme {
+                MainScreen(autoStart = autoStart)
+            }
+        }
+    }
+
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(autoStart: Boolean = false) {
     val context = LocalContext.current
     val viewModel: VoiceAgentViewModel = viewModel()
-    
-    // Check and request microphone permission cleanly on startup
+
     var recordAudioPermissionGranted by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
@@ -139,14 +145,14 @@ fun MainScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            color = Color(0xFF12141C) // Ultimate Dark Space background
+            color = Color(0xFF12141C)
         ) {
             if (!recordAudioPermissionGranted) {
                 PermissionRequiredScreen {
                     launcher.launch(Manifest.permission.RECORD_AUDIO)
                 }
             } else {
-                DashboardScreen(viewModel = viewModel)
+                DashboardScreen(viewModel = viewModel, autoStart = autoStart)
             }
         }
     }
@@ -204,7 +210,7 @@ fun PermissionRequiredScreen(onRequestPermission: () -> Unit) {
 }
 
 @Composable
-fun DashboardScreen(viewModel: VoiceAgentViewModel) {
+fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) {
     val state by viewModel.state.collectAsState()
     val mode by viewModel.mode.collectAsState()
     val threshold by viewModel.threshold.collectAsState()
@@ -221,6 +227,14 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel) {
     var isSettingsExpanded by remember(isPlaceholderOrEmpty) { mutableStateOf(isPlaceholderOrEmpty) }
 
     val listState = rememberLazyListState()
+
+    // Auto-start when launched from widget
+    LaunchedEffect(autoStart) {
+        if (autoStart) {
+            delay(300)
+            viewModel.startCycle()
+        }
+    }
 
     // Scroll chat logs dynamically downwards
     LaunchedEffect(transcripts.size) {
