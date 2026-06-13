@@ -54,6 +54,9 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
     private var ready = false
     val isReady: Boolean get() = ready
 
+    @Volatile
+    private var setupCompletedEmitted = false
+
     fun connect(apiKey: String, voiceName: String, systemPrompt: String) {
         lastApiKey = apiKey
         lastVoiceName = voiceName
@@ -64,6 +67,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
     private fun connectInternal() {
         disconnectInternal()
         ready = false
+        setupCompletedEmitted = false
 
         Log.d(TAG, "Connecting to OpenAI Realtime API voice=$lastVoiceName")
 
@@ -187,8 +191,13 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     setupTimeoutJob?.cancel()
                     val voice = json.optJSONObject("session")
                         ?.optJSONObject("audio")?.optJSONObject("output")?.optString("voice")
-                    Log.d(TAG, "session.updated — ready! voice=$voice")
-                    scope.launch { _events.emit(Event.SetupComplete) }
+                    if (!setupCompletedEmitted) {
+                        setupCompletedEmitted = true
+                        Log.d(TAG, "session.updated (initial) — ready! voice=$voice")
+                        scope.launch { _events.emit(Event.SetupComplete) }
+                    } else {
+                        Log.d(TAG, "session.updated (context refresh) — no event emitted")
+                    }
                 }
                 "response.output_audio.delta" -> {
                     val delta = json.optString("delta", "")

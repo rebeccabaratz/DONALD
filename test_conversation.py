@@ -181,6 +181,13 @@ async def recv_response(ws, label: str, timeout: float = 45.0) -> dict | None:
         if t not in seen_event_types:
             seen_event_types.append(t)
 
+        # session.updated arriving mid-turn means we sent updateInstructions().
+        # In the app, this MUST NOT emit SetupComplete again — that would restart
+        # startListening() in a loop and the mic would never record properly.
+        # We just count how many session.updated we receive per turn.
+        if t == "session.updated":
+            pass  # counted in seen_event_types; checked below in response.done
+
         if t == "response.output_audio.delta":
             if t_first_audio is None:
                 t_first_audio = time.time()
@@ -221,6 +228,12 @@ async def recv_response(ws, label: str, timeout: float = 45.0) -> dict | None:
                 for e in error_events:
                     print(f"    ✗ API ERROR during turn: {e}")
 
+            # Verify session.updated count per turn.
+            # Turns with make_instructions_update() expect exactly 1.
+            # Turns without (greeting, empty commit) expect 0.
+            # More than 1 would mean a loop bug.
+            session_updated_count = seen_event_types.count("session.updated")
+
             return {
                 "text": text,
                 "tags": tags,
@@ -231,6 +244,7 @@ async def recv_response(ws, label: str, timeout: float = 45.0) -> dict | None:
                 "status_ok": status_ok,
                 "audio_ok": audio_ok,
                 "error_events": error_events,
+                "session_updated_count": session_updated_count,
                 "ok": status_ok and audio_ok and not error_events,
             }
 
@@ -302,7 +316,7 @@ async def run_conversation_test(api_key: str):
                 return
             print(f"{'─'*65}")
 
-            def add_check(label, result, expect_tag=None):
+            def add_check(label, result, expect_tag=None, expect_session_updates=None):
                 """Register a turn result as a named check."""
                 if result is None:
                     checks.append((label, False, "no response / timeout"))
@@ -312,11 +326,21 @@ async def run_conversation_test(api_key: str):
                     if not result["status_ok"]:
                         detail.append(f"status={result['status']}")
                     if not result["audio_ok"]:
-                        detail.append("no audio")
+                        detail.append("no audio — AI responded in text (output_modalities bug?)")
                     if result["error_events"]:
                         detail.append(f"errors={result['error_events']}")
                     checks.append((label, False, ", ".join(detail)))
                     return
+                # Check session.updated count — catches the SetupComplete loop bug:
+                # every session.update we send gets a session.updated back; if the app
+                # emits SetupComplete for each one, startListening() restarts in a loop.
+                if expect_session_updates is not None:
+                    got = result["session_updated_count"]
+                    if got > expect_session_updates:
+                        checks.append((label, False,
+                            f"session.updated count={got} > expected {expect_session_updates} "
+                            f"(SetupComplete loop bug — mic would restart on every update)"))
+                        return
                 if expect_tag is not None:
                     tags = result["tags"]
                     if isinstance(expect_tag, list):
@@ -336,7 +360,7 @@ async def run_conversation_test(api_key: str):
             print("\n[1/6] AI greeting  (response.create, no user message)")
             await ws.send(json.dumps({"type": "response.create"}))
             r1 = await recv_response(ws, "greeting")
-            add_check("Turn 1 — AI greets, no user turn", r1)
+            add_check("Turn 1 — AI greets, no user turn", r1, expect_session_updates=0)
 
             # ── Turn 2: User says שלום ─────────────────────────────────────
             print("\n[2/6] User: שלום, מה נשמע?")
@@ -344,7 +368,7 @@ async def run_conversation_test(api_key: str):
             await ws.send(make_user_text("שלום, מה נשמע?"))
             await ws.send(json.dumps({"type": "response.create"}))
             r2 = await recv_response(ws, "shalom")
-            add_check("Turn 2 — responds to Hebrew greeting", r2)
+            add_check("Turn 2 — responds to Hebrew greeting", r2, expect_session_updates=1)
 
             # ── Turn 3: User asks what AI did today ────────────────────────
             print("\n[3/6] User: מה עשיתה היום?")
@@ -352,7 +376,7 @@ async def run_conversation_test(api_key: str):
             await ws.send(make_user_text("מה עשיתה היום?"))
             await ws.send(json.dumps({"type": "response.create"}))
             r3 = await recv_response(ws, "what did you do today")
-            add_check("Turn 3 — responds to Hebrew question", r3)
+            add_check("Turn 3 — responds to Hebrew question", r3, expect_session_updates=1)
 
             # ── Turn 4: User asks to read Tom Sawyer ───────────────────────
             print("\n[4/6] User: בא נקרא ספר על טום סוייר")
@@ -360,7 +384,7 @@ async def run_conversation_test(api_key: str):
             await ws.send(make_user_text("בא נקרא ספר על טום סוייר"))
             await ws.send(json.dumps({"type": "response.create"}))
             r4 = await recv_response(ws, "read Tom Sawyer")
-            add_check("Turn 4 — switches to book reading", r4, "[SWITCH_TO_READING]")
+            add_check("Turn 4 — switches to book reading", r4, "[SWITCH_TO_READING]", expect_session_updates=1)
             if r4 and "[SWITCH_TO_READING]" in r4["tags"]:
                 mode = "READING"
                 print("    → mode = READING")
@@ -373,7 +397,7 @@ async def run_conversation_test(api_key: str):
             await ws.send(json.dumps({"type": "response.create"}))
             r5 = await recv_response(ws, f'repeat "{phrase}"')
             add_check("Turn 5 — AI evaluates repeat", r5,
-                      ["[ADVANCE_BOOK]", "[REPEAT_BOOK]"])
+                      ["[ADVANCE_BOOK]", "[REPEAT_BOOK]"], expect_session_updates=1)
 
             # ── Turn 6: Empty audio commit (= commitAndRespond with no audio) ──
             # In the app this happens when onSilenceDetected fires before any audio
