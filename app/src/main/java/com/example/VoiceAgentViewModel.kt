@@ -160,6 +160,9 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                             is OpenAiRealtimeClient.Event.TurnComplete -> {
                                 handleTurnComplete()
                             }
+                            is OpenAiRealtimeClient.Event.FunctionCall -> {
+                                handleFunctionCall(event.name)
+                            }
                             is OpenAiRealtimeClient.Event.Error -> {
                                 Log.e(TAG, "Realtime error: ${event.message}")
                                 _errorMessage.value = "Ошибка OpenAI: ${event.message}"
@@ -199,21 +202,11 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     private suspend fun handleTurnComplete() {
         val fullText = accumulatedText.toString().trim()
         accumulatedText.clear()
-
-        val hasAdvance = fullText.contains("[ADVANCE_BOOK]")
-        val hasRepeat = fullText.contains("[REPEAT_BOOK]")
-        val hasSwitchToReading = fullText.contains("[SWITCH_TO_READING]")
-        val hasSwitchToConversation = fullText.contains("[SWITCH_TO_CONVERSATION]")
-        Log.d(TAG, "handleTurnComplete: textLen=${fullText.length} state=${_state.value} " +
-              "ADVANCE=$hasAdvance REPEAT=$hasRepeat SWITCH_READ=$hasSwitchToReading SWITCH_CONV=$hasSwitchToConversation")
+        Log.d(TAG, "handleTurnComplete: textLen=${fullText.length} state=${_state.value}")
 
         if (fullText.isNotEmpty()) {
-            processTextTags(fullText)
-            val displayReply = removeCommandTags(fullText)
-            if (displayReply.isNotEmpty()) {
-                Log.d(TAG, "AI reply: \"${displayReply.take(80)}\"")
-                addTranscriptBubble("Дональд", displayReply)
-            }
+            Log.d(TAG, "AI reply: \"${fullText.take(80)}\"")
+            addTranscriptBubble("Дональд", fullText)
         } else {
             Log.w(TAG, "handleTurnComplete: no text accumulated")
         }
@@ -221,19 +214,41 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         audioPlayer.drainAndStopStreaming()
 
         if (_state.value != AgentState.PAUSED) {
-            when {
-                // After switching to book mode or advancing — AI immediately reads the (next) phrase
-                hasSwitchToReading || hasAdvance -> {
-                    Log.d(TAG, "handleTurnComplete: book trigger → speakBookPhrase")
-                    speakBookPhrase()
-                }
-                else -> {
-                    Log.d(TAG, "handleTurnComplete: resuming → startListening")
-                    startListening()
-                }
-            }
+            Log.d(TAG, "handleTurnComplete: resuming → startListening")
+            startListening()
         } else {
             Log.d(TAG, "handleTurnComplete: state=PAUSED, not restarting")
+        }
+    }
+
+    private suspend fun handleFunctionCall(name: String) {
+        val fullText = accumulatedText.toString().trim()
+        accumulatedText.clear()
+        Log.d(TAG, "handleFunctionCall: $name textLen=${fullText.length}")
+
+        if (fullText.isNotEmpty()) {
+            addTranscriptBubble("Дональд", fullText)
+        }
+        audioPlayer.drainAndStopStreaming()
+
+        if (_state.value == AgentState.PAUSED) return
+
+        when (name) {
+            "start_book_reading" -> {
+                _mode.value = AgentMode.BOOK_READING
+                speakBookPhrase()
+            }
+            "advance_book" -> {
+                setBookIndex((_bookIndex.value + 1) % tomSawyerPhrases.size)
+                speakBookPhrase()
+            }
+            "repeat_phrase" -> {
+                speakBookPhrase()
+            }
+            "end_book_reading" -> {
+                _mode.value = AgentMode.CONVERSATION
+                startListening()
+            }
         }
     }
 
@@ -379,22 +394,6 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         realtimeClient.updateInstructions(buildFullInstructions())
     }
 
-    private fun processTextTags(rawText: String) {
-        if (rawText.contains("[SWITCH_TO_CONVERSATION]")) _mode.value = AgentMode.CONVERSATION
-        if (rawText.contains("[SWITCH_TO_READING]")) _mode.value = AgentMode.BOOK_READING
-        if (rawText.contains("[ADVANCE_BOOK]")) {
-            setBookIndex((_bookIndex.value + 1) % tomSawyerPhrases.size)
-        }
-    }
-
-    private fun removeCommandTags(rawText: String): String {
-        return rawText
-            .replace("[SWITCH_TO_CONVERSATION]", "")
-            .replace("[SWITCH_TO_READING]", "")
-            .replace("[ADVANCE_BOOK]", "")
-            .replace("[REPEAT_BOOK]", "")
-            .trim()
-    }
 
     private fun addTranscriptBubble(sender: String, messageText: String) {
         val bubble = BubbleMessage(id = System.nanoTime(), sender = sender, text = messageText)
@@ -411,19 +410,17 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         3. Если нет предыдущих сообщений в разговоре — поприветствуй коротко и скажи, что готов помочь с английским.
 
         РЕЖИМ ЧТЕНИЯ "ТОМ СОЙЕР":
-        Когда пользователь просит читать книгу — скажи коротко "Хорошо, начинаем!" и добавь [SWITCH_TO_READING] в конце. НЕ читай фразу сам — система сразу запросит тебя произнести её отдельно.
+        У тебя есть 4 функции для управления чтением — вызывай их молча, не произноси их названия вслух:
+        - start_book_reading() — когда пользователь просит читать книгу. Скажи "Хорошо, начинаем!" и вызови.
+        - advance_book() — когда пользователь правильно повторил фразу. Похвали коротко и вызови. Следующую фразу НЕ называй — система прочитает сама.
+        - repeat_phrase() — когда пользователь ошибся в словах. Объясни ошибку кратко и вызови. Фразу НЕ повторяй — система повторит сама.
+        - end_book_reading() — когда пользователь хочет выйти из режима чтения.
 
-        В РЕЖИМЕ ЧТЕНИЯ — ты получаешь отдельный запрос прочитать фразу:
-        - СРАЗУ произнеси текущую английскую фразу вслух, без предисловий.
-        - После того как пользователь повторил фразу:
-          * Оценивай только ПРАВИЛЬНОСТЬ СЛОВ, не произношение и не акцент.
-          * Акцент — это нормально. Пользователь НЕ обязан говорить как носитель языка.
-          * Если все слова правильные (даже с акцентом) → похвали одним словом ("Отлично!"), добавь [ADVANCE_BOOK] в конце. НЕ читай следующую фразу — система сделает это сама.
-          * Если пользователь пропустил или перепутал слова → мягко поправь, повтори ту же фразу, добавь [REPEAT_BOOK] в конце.
-          * Если пользователь не понял → объясни, добавь [SWITCH_TO_CONVERSATION] в конце.
-          * Если пользователь устал → добавь [SWITCH_TO_CONVERSATION] в конце.
+        Когда система запрашивает произнести фразу (ты получаешь пустой запрос в режиме ЧТЕНИЯ КНИГИ):
+        - Произнеси ТОЛЬКО текущую английскую фразу из контекста, без предисловий.
 
-        Теги [ADVANCE_BOOK], [REPEAT_BOOK], [SWITCH_TO_CONVERSATION], [SWITCH_TO_READING] ставь ТОЛЬКО в самом конце ответа.
+        ОЦЕНКА ПОВТОРА: только ПРАВИЛЬНОСТЬ СЛОВ, не произношение и не акцент.
+        Акцент — это нормально. Пользователь НЕ обязан говорить как носитель языка.
         """.trimIndent()
     }
 

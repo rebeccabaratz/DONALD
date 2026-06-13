@@ -30,6 +30,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
         data class AudioChunk(val pcmBase64: String) : Event()
         data class TextChunk(val text: String) : Event()
         object TurnComplete : Event()
+        data class FunctionCall(val name: String) : Event()
         data class Error(val message: String) : Event()
         data class Info(val message: String) : Event()
         object Disconnected : Event()
@@ -50,12 +51,13 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
     private var lastVoiceName = ""
     private var lastSystemPrompt = ""
 
-    @Volatile
-    private var ready = false
+    @Volatile private var ready = false
     val isReady: Boolean get() = ready
 
-    @Volatile
-    private var setupCompletedEmitted = false
+    @Volatile private var setupCompletedEmitted = false
+
+    @Volatile private var pendingFunctionCallId: String? = null
+    @Volatile private var pendingFunctionCallName: String? = null
 
     fun connect(apiKey: String, voiceName: String, systemPrompt: String) {
         lastApiKey = apiKey
@@ -68,6 +70,8 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
         disconnectInternal()
         ready = false
         setupCompletedEmitted = false
+        pendingFunctionCallId = null
+        pendingFunctionCallName = null
 
         Log.d(TAG, "Connecting to OpenAI Realtime API voice=$lastVoiceName")
 
@@ -128,7 +132,6 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     429 -> scope.launch { _events.emit(Event.Error(
                         "Превышен лимит запросов OpenAI (429).\nПодожди минуту и попробуй снова.")) }
                     else -> {
-                        // Network drop (connection abort, timeout, etc.) — reconnect silently
                         Log.w(TAG, "Connection lost (${t.message}) — emitting Disconnected for reconnect")
                         scope.launch { _events.emit(Event.Disconnected) }
                     }
@@ -154,6 +157,28 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
         }
     }
 
+    private fun buildTools(): JSONArray = JSONArray()
+        .put(JSONObject()
+            .put("type", "function")
+            .put("name", "start_book_reading")
+            .put("description", "Пользователь хочет начать читать книгу. Вызови после короткого согласия.")
+            .put("parameters", JSONObject().put("type", "object").put("properties", JSONObject())))
+        .put(JSONObject()
+            .put("type", "function")
+            .put("name", "advance_book")
+            .put("description", "Пользователь правильно повторил фразу. Вызови после похвалы. Систем автоматически прочитает следующую фразу.")
+            .put("parameters", JSONObject().put("type", "object").put("properties", JSONObject())))
+        .put(JSONObject()
+            .put("type", "function")
+            .put("name", "repeat_phrase")
+            .put("description", "Пользователь ошибся в словах. Вызови после краткого объяснения. Система автоматически повторит ту же фразу.")
+            .put("parameters", JSONObject().put("type", "object").put("properties", JSONObject())))
+        .put(JSONObject()
+            .put("type", "function")
+            .put("name", "end_book_reading")
+            .put("description", "Завершить режим чтения и вернуться к обычной беседе.")
+            .put("parameters", JSONObject().put("type", "object").put("properties", JSONObject())))
+
     private fun buildSessionConfig(): String {
         val openAiVoice = if (lastVoiceName in listOf("alloy","echo","shimmer","ash","ballad","coral","sage","verse","marin","cedar"))
             lastVoiceName else "marin"
@@ -164,6 +189,8 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                 .put("model", "gpt-realtime-2")
                 .put("instructions", lastSystemPrompt)
                 .put("output_modalities", JSONArray().put("audio"))
+                .put("tools", buildTools())
+                .put("tool_choice", "auto")
                 .put("audio", JSONObject()
                     .put("output", JSONObject()
                         .put("voice", openAiVoice)
@@ -174,7 +201,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                         .put("format", JSONObject()
                             .put("type", "audio/pcm")
                             .put("rate", 24000))
-                        .put("turn_detection", JSONObject.NULL))))  // manual commit, no server VAD
+                        .put("turn_detection", JSONObject.NULL))))
             .toString()
     }
 
@@ -211,16 +238,49 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                         scope.launch { _events.emit(Event.TextChunk(delta)) }
                     }
                 }
+                "response.output_item.added" -> {
+                    val item = json.optJSONObject("item")
+                    val itemType = item?.optString("type")
+                    if (itemType == "function_call") {
+                        pendingFunctionCallId = item.optString("call_id")
+                        pendingFunctionCallName = item.optString("name")
+                        Log.d(TAG, "function_call started: name=${pendingFunctionCallName} id=${pendingFunctionCallId}")
+                    } else {
+                        Log.d(TAG, "output_item.added type=$itemType")
+                    }
+                }
+                "response.function_call_arguments.delta" -> {
+                    Log.d(TAG, "function_call_arguments.delta (ignored)")
+                }
+                "response.function_call_arguments.done" -> {
+                    Log.d(TAG, "function_call_arguments.done name=${pendingFunctionCallName}")
+                }
                 "response.done" -> {
                     val status = json.optJSONObject("response")?.optString("status")
                     val usage = json.optJSONObject("response")?.optJSONObject("usage")
-                    Log.d(TAG, "response.done status=$status usage=$usage")
-                    scope.launch { _events.emit(Event.TurnComplete) }
+                    Log.d(TAG, "response.done status=$status usage=$usage fnPending=${pendingFunctionCallName}")
+                    val fnName = pendingFunctionCallName
+                    val fnCallId = pendingFunctionCallId
+                    if (fnName != null && fnCallId != null) {
+                        pendingFunctionCallId = null
+                        pendingFunctionCallName = null
+                        webSocket?.send(JSONObject()
+                            .put("type", "conversation.item.create")
+                            .put("item", JSONObject()
+                                .put("type", "function_call_output")
+                                .put("call_id", fnCallId)
+                                .put("output", "ok"))
+                            .toString())
+                        Log.d(TAG, "function_call_output sent for $fnName, emitting FunctionCall")
+                        scope.launch { _events.emit(Event.FunctionCall(fnName)) }
+                    } else {
+                        scope.launch { _events.emit(Event.TurnComplete) }
+                    }
                 }
                 "response.created" ->
                     Log.d(TAG, "response.created id=${json.optJSONObject("response")?.optString("id")}")
-                "response.output_item.added" ->
-                    Log.d(TAG, "output_item.added type=${json.optJSONObject("item")?.optString("type")}")
+                "response.output_item.done" ->
+                    Log.d(TAG, "output_item.done type=${json.optJSONObject("item")?.optString("type")}")
                 "input_audio_buffer.committed" ->
                     Log.d(TAG, "audio buffer committed item=${json.optString("item_id")}")
                 "input_audio_buffer.cleared" ->
@@ -298,6 +358,8 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                 .put("session", JSONObject()
                     .put("type", "realtime")
                     .put("output_modalities", JSONArray().put("audio"))
+                    .put("tools", buildTools())
+                    .put("tool_choice", "auto")
                     .put("instructions", newInstructions))
                 .toString()
         )
