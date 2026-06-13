@@ -115,14 +115,16 @@ def make_initial_session_update(instructions: str) -> str:
 def make_instructions_update(instructions: str) -> str:
     """
     Partial session update sent between turns.
-    Matches OpenAiRealtimeClient.updateInstructions()
-    NOTE: session.type is REQUIRED even in partial updates — this is what
-    the previous bug was: missing 'type' caused 'Missing required parameter: session.type'
+    Matches OpenAiRealtimeClient.updateInstructions() exactly.
+    Both fields are required even in partial updates:
+      - session.type         → was missing before (bug: 'Missing required parameter')
+      - output_modalities    → was missing before (bug: API reset to default ["text"])
     """
     return json.dumps({
         "type": "session.update",
         "session": {
-            "type": "realtime",        # ← MUST be present (caught the bug)
+            "type": "realtime",
+            "output_modalities": ["audio"],   # ← MUST be present or API resets to text
             "instructions": instructions
         }
     })

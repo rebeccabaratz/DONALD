@@ -118,12 +118,17 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                 val code = response?.code
                 val body = try { response?.body?.string()?.take(400) } catch (e: Exception) { null }
                 Log.e(TAG, "WS failure code=$code body=$body err=${t.message}", t)
-                val msg = when (code) {
-                    401 -> "Неверный OpenAI API ключ (401).\nПроверь ключ в настройках ⚙️"
-                    429 -> "Превышен лимит запросов OpenAI (429).\nПодожди минуту и попробуй снова."
-                    else -> body ?: "HTTP $code: ${t.message ?: "Ошибка соединения"}"
+                when (code) {
+                    401 -> scope.launch { _events.emit(Event.Error(
+                        "Неверный OpenAI API ключ (401).\nПроверь ключ в настройках ⚙️")) }
+                    429 -> scope.launch { _events.emit(Event.Error(
+                        "Превышен лимит запросов OpenAI (429).\nПодожди минуту и попробуй снова.")) }
+                    else -> {
+                        // Network drop (connection abort, timeout, etc.) — reconnect silently
+                        Log.w(TAG, "Connection lost (${t.message}) — emitting Disconnected for reconnect")
+                        scope.launch { _events.emit(Event.Disconnected) }
+                    }
                 }
-                scope.launch { _events.emit(Event.Error(msg)) }
             } catch (e: Exception) {
                 Log.e(TAG, "onFailure handler error: ${e.message}", e)
             }
@@ -283,6 +288,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
             JSONObject().put("type", "session.update")
                 .put("session", JSONObject()
                     .put("type", "realtime")
+                    .put("output_modalities", JSONArray().put("audio"))
                     .put("instructions", newInstructions))
                 .toString()
         )
