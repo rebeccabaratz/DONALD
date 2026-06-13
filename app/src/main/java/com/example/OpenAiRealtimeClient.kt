@@ -276,7 +276,9 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
         Log.d(TAG, "updateInstructions: ${newInstructions.length} chars")
         webSocket?.send(
             JSONObject().put("type", "session.update")
-                .put("session", JSONObject().put("instructions", newInstructions))
+                .put("session", JSONObject()
+                    .put("type", "realtime")
+                    .put("instructions", newInstructions))
                 .toString()
         )
     }
