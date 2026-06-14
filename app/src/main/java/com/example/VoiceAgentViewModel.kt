@@ -256,13 +256,13 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                 setBookIndex((_bookIndex.value + 1) % tomSawyerPhrases.size)
                 val phrase = tomSawyerPhrases[_bookIndex.value]
                 realtimeClient.respondToFunctionAndSpeak(callId,
-                    "Произнеси вслух ТОЛЬКО эту фразу: \"$phrase\"")
+                    "Скажи одно слово похвалы (каждый раз разное: «Отлично!», «Верно!», «Молодец!», «Хорошо!», «Правильно!», «Супер!» и т.п.). Затем произнеси фразу: \"$phrase\"")
                 _state.value = AgentState.PROCESSING
             }
             "repeat_phrase" -> {
                 val phrase = tomSawyerPhrases[_bookIndex.value]
                 realtimeClient.respondToFunctionAndSpeak(callId,
-                    "Повтори вслух ТОЛЬКО эту фразу: \"$phrase\"")
+                    "Если ты вызвал эту функцию из-за ошибки пользователя — скажи одно короткое пояснение (какое слово неправильно). Иначе просто произнеси фразу без комментариев. Затем произнеси: \"$phrase\"")
                 _state.value = AgentState.PROCESSING
             }
             "end_book_reading" -> {
