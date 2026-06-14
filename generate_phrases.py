@@ -213,8 +213,10 @@ def main():
     print(to_kotlin_list("tomSawyerTranslations", translations))
     print(f"{'═'*60}")
 
-    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            f"phrases_chapter{chapter_num}.txt")
+    base = os.path.dirname(os.path.abspath(__file__))
+
+    # Plain text log
+    out_path = os.path.join(base, f"phrases_chapter{chapter_num}.txt")
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(f"Chapter {chapter_num} — {len(phrases)} phrases\n\n")
         f.write(to_kotlin_list("tomSawyerPhrases", phrases))
@@ -223,8 +225,16 @@ def main():
         f.write("\n\nPhrase list:\n")
         for idx, (en, ru) in enumerate(zip(phrases, translations)):
             f.write(f"{idx+1:>3}. {en!r:40} → {ru!r}\n")
+    print(f"Saved to: {out_path}")
 
-    print(f"\nSaved to: {out_path}")
+    # JSON for Android assets
+    json_data = [{"en": en, "ru": ru} for en, ru in zip(phrases, translations)]
+    assets_dir = os.path.join(base, "app", "src", "main", "assets")
+    os.makedirs(assets_dir, exist_ok=True)
+    json_path = os.path.join(assets_dir, f"phrases_chapter{chapter_num}.json")
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(json_data, f, ensure_ascii=False, indent=2)
+    print(f"Saved to: {json_path}")
 
 
 if __name__ == "__main__":

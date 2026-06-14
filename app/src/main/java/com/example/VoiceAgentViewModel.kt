@@ -77,41 +77,25 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
     private val accumulatedText = StringBuilder()
 
-    val tomSawyerPhrases = listOf(
-        "Tom!", "No answer.", "Tom!", "No answer.",
-        "What's gone with that boy,", "I wonder?", "You Tom!", "No answer.",
-        "The old lady pulled", "her spectacles down", "and looked over them",
-        "into the room;", "then she put them up", "and looked out under them.",
-        "She seldom or never", "looked through them", "for so small a thing",
-        "as a boy;", "they were her state spectacles,", "the pride of her heart,",
-        "and were built for style,", "not service—", "she could have seen through",
-        "a pair of stove-lids", "just as well.", "She looked perplexed",
-        "for a moment,", "and then said,", "not loudly,", "but still loud enough",
-        "for the furniture to hear:", "Well,", "I lay,", "if I get hold of you",
-        "I'll—", "She did not finish,", "for by this time", "she was bending down",
-        "and punching under the bed", "with the broom,", "and so she needed breath",
-        "to punctuate the punches with.", "She resurrected nothing", "but the cat.",
-        "I never did see", "the beat of that boy!"
-    )
+    var tomSawyerPhrases: List<String> = emptyList()
+        private set
+    var tomSawyerTranslations: List<String> = emptyList()
+        private set
 
-    val tomSawyerTranslations = listOf(
-        "Том!", "Никакого ответа.", "Том!", "Никакого ответа.",
-        "Что же стряслось с этим мальчишкой,", "я хотела бы знать?", "А ну-ка, Том!", "Никакого ответа.",
-        "Старая леди приспустила", "свои очки пониже", "и посмотрела поверх них",
-        "в комнату;", "затем она водрузила их наверх", "и выглянула из-под них.",
-        "Она редко или никогда", "не смотрела сквозь них", "в поисках такой малости,",
-        "как мальчишка;", "это были ее парадные очки,", "гордость ее сердца,",
-        "и были созданы для стиля,", "а не для практической пользы —", "она могла бы видеть сквозь",
-        "пару чугунных заслонок", "точно так же хорошо.", "Она выглядела озадаченной",
-        "в течение мгновения,", "а затем произнесла,", "не то чтобы громко,", "но все же достаточно громко",
-        "для того, чтобы мебель услышала:", "Ну уж,", "я клянусь,", "если я доберусь до тебя,",
-        "я тебе задам—", "Она не закончила,", "потому что к этому времени", "она уже нагибалась,",
-        "тыча под кроватью", "шваброй,", "и поэтому ей нужна была передышка,",
-        "чтобы пунктировать удары.", "Она откопала из-под кровати", "только кота.",
-        "В жизни своей не видывала", "такого проказника!"
-    )
+    private fun loadPhrases(chapter: Int = 1) {
+        try {
+            val json = context.assets.open("phrases_chapter$chapter.json").bufferedReader().readText()
+            val arr = org.json.JSONArray(json)
+            tomSawyerPhrases = List(arr.length()) { arr.getJSONObject(it).getString("en") }
+            tomSawyerTranslations = List(arr.length()) { arr.getJSONObject(it).getString("ru") }
+            Log.d(TAG, "Loaded ${tomSawyerPhrases.size} phrases from chapter $chapter")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to load phrases: ${e.message}")
+        }
+    }
 
     init {
+        loadPhrases(chapter = 1)
         _bookIndex.value = prefs.getInt("current_book_index", 0)
         _threshold.value = prefs.getInt("voice_threshold", 18) * 100
         if (_threshold.value == 0) _threshold.value = 1800

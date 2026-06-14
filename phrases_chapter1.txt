@@ -1,954 +1,657 @@
-Chapter 1 — 629 phrases
+Chapter 1 — 432 phrases
 
     val tomSawyerPhrases = listOf(
-        "Tom!", "No answer.", "TOM!", "No answer.",
-        "What's gone with that boy,", "I wonder?", "You TOM!", "No answer.",
-        "The old lady", "pulled her spectacles down", "and looked over them", "about the room;",
-        "then she put them up", "and looked out under them.", "She seldom or never", "looked through them",
-        "for so small a thing", "as a boy;", "they were her state pair,", "the pride of her heart,",
-        "and were built for style,", "not service—", "she could have seen", "through a pair of stove-lids",
-        "just as well.", "She looked perplexed", "for a moment,", "and then said,",
-        "not fiercely,", "but still loud enough", "for the furniture to hear:", "Well, I lay",
-        "if I get hold of you", "I'll—", "She did not finish,", "for by this time",
-        "she was bending down", "and punching under the bed", "with the broom,", "and so she needed breath",
-        "to punctuate the punches with.", "She resurrected nothing", "but the cat.", "I never did see",
-        "the beat of that boy!", "She went to the open door", "and stood in it", "and looked out",
-        "among the tomato vines", "and jimpson weeds", "that constituted the garden.", "No Tom.",
-        "So she lifted up her voice", "at an angle calculated", "for distance", "and shouted:",
-        "Y-o-u-u TOM!", "There was a slight noise", "behind her", "and she turned",
-        "just in time", "to seize a small boy", "by the slack of his roundabout", "and arrest his flight.",
-        "There!", "I might 'a' thought", "of that closet.", "What you been doing",
-        "in there?", "Nothing.", "Nothing!", "Look at your hands.",
-        "And look at your mouth.", "What is that truck?", "I don't know, aunt.", "Well, I know.",
-        "It's jam—", "that's what it is.", "Forty times I've said", "if you didn't let that jam alone",
-        "I'd skin you.", "Hand me that switch.", "The switch hovered in the air—", "the peril was desperate—",
-        "My!", "Look behind you, aunt!", "The old lady whirled round,", "and snatched her skirts",
-        "out of danger.", "The lad fled", "on the instant,", "scrambled up the high board-fence,",
-        "and disappeared over it.", "His aunt Polly", "stood surprised a moment,", "and then broke into",
-        "a gentle laugh.", "Hang the boy,", "can't I never learn anything?", "Ain't he played me tricks enough",
-        "like that", "for me to be looking out", "for him by this time?", "But old fools",
-        "is the biggest fools there is.", "Can't learn an old dog", "new tricks,", "as the saying is.",
-        "But my goodness,", "he never plays them alike,", "two days,", "and how is a body to know",
-        "what's coming?", "He 'pears to know", "just how long", "he can torment me",
-        "before I get my dander up,", "and he knows", "if he can make out", "to put me off",
-        "for a minute", "or make me laugh,", "it's all down again", "and I can't hit him a lick.",
-        "I ain't doing my duty", "by that boy,", "and that's the Lord's truth,", "goodness knows.",
-        "Spare the rod", "and spile the child,", "as the Good Book says.", "I'm a laying up sin",
-        "and suffering for us both,", "I know.", "He's full of the Old Scratch,", "but laws-a-me!",
-        "he's my own dead sister's boy,", "poor thing,", "and I ain't got the heart", "to lash him,",
-        "somehow.", "Every time I let him off,", "my conscience does hurt me so,", "and every time I hit him",
-        "my old heart most breaks.", "Well-a-well,", "man that is born of woman", "is of few days",
-        "and full of trouble,", "as the Scripture says,", "and I reckon it's so.", "He'll play hookey",
-        "this evening,", "and I'll just be obleeged", "to make him work,", "tomorrow,",
-        "to punish him.", "It's mighty hard", "to make him work Saturdays,", "when all the boys",
-        "is having holiday,", "but he hates work", "more than he hates anything else,", "and I've got to do",
-        "some of my duty by him,", "or I'll be the ruination", "of the child.", "Tom did play hookey,",
-        "and he had a very good time.", "He got back home", "barely in season", "to help Jim,",
-        "the small colored boy,", "saw next-day's wood", "and split the kindlings", "before supper—",
-        "at least he was there", "in time to tell his adventures", "to Jim", "while Jim did three-fourths",
-        "of the work.", "Tom's younger brother", "or rather half-brother", "Sid was already through",
-        "with his part of the work", "picking up chips,", "for he was a quiet boy,", "and had no adventurous,",
-        "trouble-some ways.", "While Tom was eating his supper,", "and stealing sugar", "as opportunity offered,",
-        "Aunt Polly asked him questions", "that were full of guile,", "and very deep—", "for she wanted to trap him",
-        "into damaging revealments.", "Like many other simple-hearted souls,", "it was her pet vanity", "to believe she was endowed",
-        "with a talent for dark", "and mysterious diplomacy,", "and she loved to contemplate", "her most transparent devices",
-        "as marvels of low cunning.", "Said she:", "Tom,", "it was middling warm in school,",
-        "warn't it?", "Yes'm.", "Powerful warm,", "warn't it?",
-        "Yes'm.", "Didn't you want to go", "in a-swimming,", "Tom?",
-        "A bit of a scare", "shot through Tom—", "a touch of uncomfortable suspicion.", "He searched Aunt Polly's face,",
-        "but it told him nothing.", "So he said:", "No'm—", "well,",
-        "not very much.", "The old lady reached out her hand", "and felt Tom's shirt,", "and said:",
-        "But you ain't too warm now,", "though.", "And it flattered her", "to reflect that she had discovered",
-        "that the shirt was dry", "without anybody knowing", "that that was what she had", "in her mind.",
-        "But in spite of her,", "Tom knew where the wind lay,", "now.", "So he forestalled",
-        "what might be the next move:", "Some of us pumped on our heads—", "mine's damp yet.", "See?",
-        "Aunt Polly was vexed", "to think she had overlooked", "that bit of circumstantial evidence,", "and missed a trick.",
-        "Then she had a new inspiration:", "Tom,", "you didn't have to undo", "your shirt collar",
-        "where I sewed it,", "to pump on your head,", "did you?", "Unbutton your jacket!",
-        "The trouble vanished", "out of Tom's face.", "He opened his jacket.", "His shirt collar",
-        "was securely sewed.", "Bother!", "Well,", "go 'long with you.",
-        "I'd made sure", "you'd played hookey", "and been a-swimming.", "But I forgive ye,",
-        "Tom.", "I reckon you're a kind of a", "singed cat,", "as the saying is—",
-        "better'n you look.", "This time.", "She was half sorry", "her sagacity had miscarried,",
-        "and half glad", "that Tom had stumbled", "into obedient conduct", "for once.",
-        "But Sidney said:", "Well,", "now,", "if I didn't think",
-        "you sewed his collar", "with white thread,", "but it's black.", "Why,",
-        "I did sew it with white!", "Tom!", "But Tom did not wait", "for the rest.",
-        "As he went out at the door", "he said:", "Siddy,", "I'll lick you for that.",
-        "In a safe place", "Tom examined two large needles", "which were thrust into the lapels", "of his jacket,",
-        "and had thread bound about them—", "one needle carried white thread", "and the other black.", "He said:",
-        "She'd never noticed", "if it hadn't been for Sid.", "Confound it!", "sometimes she sews it with white,",
-        "and sometimes she sews it with black.", "I wish to gee-miny", "she'd stick to one or t'other—", "I can't keep the run of 'em.",
-        "But I bet you", "I'll lam Sid for that.", "I'll learn him!", "He was not the Model Boy",
-        "of the village.", "He knew the model boy", "very well though—", "and loathed him.",
-        "Within two minutes,", "or even less,", "he had forgotten", "all his troubles.",
-        "Not because his troubles", "were one whit less heavy", "and bitter to him", "than a man's are to a man,",
-        "but because a new", "and powerful interest", "bore them down", "and drove them out of his mind",
-        "for the time—", "just as men's misfortunes", "are forgotten", "in the excitement",
-        "of new enterprises.", "This new interest", "was a valued novelty", "in whistling,",
-        "which he had just acquired", "from a negro,", "and he was suffering", "to practise it undisturbed.",
-        "It consisted in a peculiar", "bird-like turn,", "a sort of liquid warble,", "produced by touching the tongue",
-        "to the roof of the mouth", "at short intervals", "in the midst of the music—", "the reader probably remembers",
-        "how to do it,", "if he has ever been a boy.", "Diligence and attention", "soon gave him the knack of it,",
-        "and he strode down the street", "with his mouth full of harmony", "and his soul full of gratitude.", "He felt much as an astronomer feels",
-        "who has discovered a new planet—", "no doubt,", "as far as strong,", "deep,",
-        "unalloyed pleasure is concerned,", "the advantage was with the boy,", "not the astronomer.", "The summer evenings",
-        "were long.", "It was not dark,", "yet.", "Presently Tom checked his whistle.",
-        "A stranger was before him—", "a boy a shade larger", "than himself.", "A new-comer of any age",
-        "or either sex", "was an impressive curiosity", "in the poor little shabby village", "of St. Petersburg.",
-        "This boy was well dressed,", "too—", "well dressed on a week-day.", "This was simply astounding.",
-        "His cap was a dainty thing,", "his close-buttoned blue cloth", "roundabout was new and natty,", "and so were his pantaloons.",
-        "He had shoes on—", "and it was only Friday.", "He even wore a necktie,", "a bright bit of ribbon.",
-        "He had a citified air about him", "that ate into Tom's vitals.", "The more Tom stared", "at the splendid marvel,",
-        "the higher he turned up his nose", "at his finery", "and the shabbier and shabbier", "his own outfit seemed to him",
-        "to grow.", "Neither boy spoke.", "If one moved,", "the other moved—",
-        "but only sidewise,", "in a circle;", "they kept face to face", "and eye to eye",
-        "all the time.", "Finally Tom said:", "I can lick you!", "I'd like to see you try it.",
-        "Well,", "I can do it.", "No you can't,", "either.",
-        "Yes I can.", "No you can't.", "I can.", "You can't.",
-        "Can!", "Can't!", "An uncomfortable pause.", "Then Tom said:",
-        "What's your name?", "’Tisn't any of your business,", "maybe.", "Well I 'low",
-        "I'll make it my business.", "Well why don't you?", "If you say much,", "I will.",
-        "Much—much—much.", "There now.", "Oh,", "you think you're mighty smart,",
-        "don't you?", "I could lick you", "with one hand tied behind me,", "if I wanted to.",
-        "Well why don't you do it?", "You say you can do it.", "Well I will,", "if you fool with me.",
-        "Oh yes—", "I've seen whole families", "in the same fix.", "Smarty!",
-        "You think you're some,", "now,", "don't you?", "Oh,",
-        "what a hat!", "You can lump that hat", "if you don't like it.", "I dare you to knock it off—",
-        "and anybody that'll take a dare", "will suck eggs.", "You're a liar!", "You're another.",
-        "You're a fighting liar", "and dasn't take it up.", "Aw—take a walk!", "Say—",
-        "if you give me much more", "of your sass", "I'll take and bounce a rock", "off'n your head.",
-        "Oh,", "of course you will.", "Well I will.", "Well why don't you do it then?",
-        "What do you keep saying you will for?", "Why don't you do it?", "It's because you're afraid.", "I ain't afraid.",
-        "You are.", "I ain't.", "You are.", "Another pause,",
-        "and more eying", "and sidling around each other.", "Presently they were shoulder to shoulder.", "Tom said:",
-        "Get away from here!", "Go away yourself!", "I won't.", "I won't either.",
-        "So they stood,", "each with a foot placed", "at an angle as a brace,", "and both shoving with might and main,",
-        "and glowering at each other", "with hate.", "But neither could get an advantage.", "After struggling",
-        "till both were hot and flushed,", "each relaxed his strain", "with watchful caution,", "and Tom said:",
-        "You're a coward and a pup.", "I'll tell my big brother on you,", "and he can thrash you", "with his little finger,",
-        "and I'll make him do it,", "too.", "What do I care", "for your big brother?",
-        "I've got a brother", "that's bigger than he is—", "and what's more,", "he can throw him over that fence,",
-        "too.", "Both brothers were imaginary.", "That's a lie.", "Your saying so",
-        "don't make it so.", "Tom drew a line", "in the dust", "with his big toe,",
-        "and said:", "I dare you to step over that,", "and I'll lick you", "till you can't stand up.",
-        "Anybody that'll take a dare", "will steal sheep.", "The new boy stepped over promptly,", "and said:",
-        "Now you said you'd do it,", "now let's see you do it.", "Don't you crowd me now;", "you better look out.",
-        "Well,", "you said you'd do it—", "why don't you do it?", "By jingo!",
-        "for two cents", "I will do it.", "The new boy took two broad coppers", "out of his pocket",
-        "and held them out", "with derision.", "Tom struck them to the ground.", "In an instant",
-        "both boys were rolling", "and tumbling in the dirt,", "gripped together like cats;", "and for the space of a minute",
-        "they tugged and tore", "at each other's hair", "and clothes,", "punched and scratched",
-        "each other's nose,", "and covered themselves", "with dust and glory.", "Presently the confusion took form,",
-        "and through the fog of battle", "Tom appeared,", "seated astride the new boy,", "and pounding him",
-        "with his fists.", "Holler 'nuff!", "said he.", "The boy only struggled",
-        "to free himself.", "He was crying—", "mainly from rage.", "Holler 'nuff!—",
-        "and the pounding went on.", "At last the stranger got out", "a smothered 'Nuff!", "and Tom let him up",
-        "and said:", "Now that'll learn you.", "Better look out", "who you're fooling with",
-        "next time.", "The new boy went off", "brushing the dust", "from his clothes,",
-        "sobbing,", "snuffling,", "and occasionally looking back", "and shaking his head",
-        "and threatening", "what he would do to Tom", "the next time he caught him out.", "To which Tom responded",
-        "with jeers,", "and started off", "in high feather,", "and as soon as his back was turned",
-        "the new boy snatched up a stone,", "threw it", "and hit him between the shoulders", "and then turned tail",
-        "and ran like an antelope.", "Tom chased the traitor home,", "and thus found out", "where he lived.",
-        "He then held a position", "at the gate", "for some time,", "daring the enemy",
-        "to come outside,", "but the enemy only made faces", "at him through the window", "and declined.",
-        "At last the enemy's mother appeared,", "and called Tom a bad,", "vicious,", "vulgar child,",
-        "and ordered him away.", "So he went away;", "but he said he 'lowed", "to lay for that boy.",
-        "He got home pretty late", "that night,", "and when he climbed cautiously", "in at the window,",
-        "he uncovered an ambuscade,", "in the person of his aunt;", "and when she saw the state", "his clothes were in",
-        "her resolution to turn", "his Saturday holiday", "into captivity at hard labor", "became adamantine",
-        "in its firmness."
+        "“Tom!”", "No answer.", "“TOM!”", "No answer.",
+        "“What’s gone with that boy,", "I wonder?", "You TOM!”", "No answer.",
+        "The old lady pulled her spectacles down", "and looked over them about the room;", "then she put them up", "and looked out under them.",
+        "She seldom or never looked _through_ them", "for so small a thing as a boy;", "they were her state pair,", "the pride of her heart,",
+        "and were built for “style,”", "not service—", "she could have seen through a pair of stove-lids just as well.", "She looked perplexed for a moment,",
+        "and then said,", "not fiercely,", "but still loud enough for the furniture to hear:", "“Well, I lay if I get hold of you I’ll—”",
+        "She did not finish,", "for by this time she was bending down", "and punching under the bed with the broom,", "and so she needed breath to punctuate the punches with.",
+        "She resurrected nothing but the cat.", "“I never did see the beat of that boy!”", "She went to the open door", "and stood in it",
+        "and looked out among the tomato vines", "and “jimpson” weeds that constituted the garden.", "No Tom.", "So she lifted up her voice at an angle calculated for distance",
+        "and shouted:", "“Y-o-u-u TOM!”", "There was a slight noise behind her", "and she turned just in time to seize a small boy by the slack of his roundabout",
+        "and arrest his flight.", "“There!", "I might ’a’ thought of that closet.", "What you been doing in there?”",
+        "“Nothing.”", "“Nothing!", "Look at your hands.", "And look at your mouth.",
+        "What _is_ that truck?”", "“I don’t know, aunt.”", "“Well, I know.", "It’s jam—that’s what it is.",
+        "Forty times I’ve said if you didn’t let that jam alone I’d skin you.", "Hand me that switch.”", "The switch hovered in the air—", "the peril was desperate—",
+        "“My!", "Look behind you, aunt!”", "The old lady whirled round,", "and snatched her skirts out of danger.",
+        "The lad fled on the instant,", "scrambled up the high board-fence,", "and disappeared over it.", "His aunt Polly stood surprised a moment,",
+        "and then broke into a gentle laugh.", "“Hang the boy,", "can’t I never learn anything?", "Ain’t he played me tricks enough like that",
+        "for me to be looking out for him by this time?", "But old fools is the biggest fools there is.", "Can’t learn an old dog new tricks,", "as the saying is.",
+        "But my goodness,", "he never plays them alike,", "two days,", "and how is a body to know what’s coming?",
+        "He ’pears to know just how long he can torment me", "before I get my dander up,", "and he knows if he can make out to put me off for a minute", "or make me laugh,",
+        "it’s all down again", "and I can’t hit him a lick.", "I ain’t doing my duty by that boy,", "and that’s the Lord’s truth,",
+        "goodness knows.", "Spare the rod and spile the child,", "as the Good Book says.", "I’m a laying up sin and suffering for us both,",
+        "I know.", "He’s full of the Old Scratch,", "but laws-a-me!", "he’s my own dead sister’s boy,",
+        "poor thing,", "and I ain’t got the heart to lash him,", "somehow.", "Every time I let him off,",
+        "my conscience does hurt me so,", "and every time I hit him my old heart most breaks.", "Well-a-well,", "man that is born of woman is of few days",
+        "and full of trouble,", "as the Scripture says,", "and I reckon it’s so.", "He’ll play hookey this evening,",
+        "and I’ll just be obleeged to make him work,", "tomorrow,", "to punish him.", "It’s mighty hard to make him work Saturdays,",
+        "when all the boys is having holiday,", "but he hates work more than he hates anything else,", "and I’ve _got_ to do some of my duty by him,", "or I’ll be the ruination of the child.”",
+        "Tom did play hookey,", "and he had a very good time.", "He got back home barely in season to help Jim,", "the small colored boy,",
+        "saw next-day’s wood", "and split the kindlings before supper—", "at least he was there in time to tell his adventures to Jim", "while Jim did three-fourths of the work.",
+        "Tom’s younger brother", "(or rather half-brother) Sid was already through with his part of the work", "(picking up chips),", "for he was a quiet boy,",
+        "and had no adventurous,", "trouble-some ways.", "While Tom was eating his supper,", "and stealing sugar as opportunity offered,",
+        "Aunt Polly asked him questions that were full of guile,", "and very deep—", "for she wanted to trap him into damaging revealments.", "Like many other simple-hearted souls,",
+        "it was her pet vanity to believe she was endowed with a talent for dark and mysterious diplomacy,", "and she loved to contemplate her most transparent devices as marvels of low cunning.", "Said she:", "“Tom,",
+        "it was middling warm in school,", "warn’t it?”", "“Yes’m.”", "“Powerful warm,",
+        "warn’t it?”", "“Yes’m.”", "“Didn’t you want to go in a-swimming,", "Tom?”",
+        "A bit of a scare shot through Tom—", "a touch of uncomfortable suspicion.", "He searched Aunt Polly’s face,", "but it told him nothing.",
+        "So he said:", "“No’m—", "well,", "not very much.”",
+        "The old lady reached out her hand", "and felt Tom’s shirt,", "and said:", "“But you ain’t too warm now,",
+        "though.”", "And it flattered her to reflect that she had discovered that the shirt was dry", "without anybody knowing that that was what she had in her mind.", "But in spite of her,",
+        "Tom knew where the wind lay,", "now.", "So he forestalled what might be the next move:", "“Some of us pumped on our heads—",
+        "mine’s damp yet.", "See?”", "Aunt Polly was vexed to think she had overlooked that bit of circumstantial evidence,", "and missed a trick.",
+        "Then she had a new inspiration:", "“Tom,", "you didn’t have to undo your shirt collar where I sewed it,", "to pump on your head,",
+        "did you?", "Unbutton your jacket!”", "The trouble vanished out of Tom’s face.", "He opened his jacket.",
+        "His shirt collar was securely sewed.", "“Bother!", "Well,", "go ’long with you.",
+        "I’d made sure you’d played hookey", "and been a-swimming.", "But I forgive ye,", "Tom.",
+        "I reckon you’re a kind of a singed cat,", "as the saying is—", "better’n you look.", "_This_ time.”",
+        "She was half sorry her sagacity had miscarried,", "and half glad that Tom had stumbled into obedient conduct for once.", "But Sidney said:", "“Well,",
+        "now,", "if I didn’t think you sewed his collar with white thread,", "but it’s black.”", "“Why,",
+        "I did sew it with white!", "Tom!”", "But Tom did not wait for the rest.", "As he went out at the door he said:",
+        "“Siddy,", "I’ll lick you for that.”", "In a safe place Tom examined two large needles which were thrust into the lapels of his jacket,", "and had thread bound about them—",
+        "one needle carried white thread", "and the other black.", "He said:", "“She’d never noticed if it hadn’t been for Sid.",
+        "Confound it!", "sometimes she sews it with white,", "and sometimes she sews it with black.", "I wish to gee-miny she’d stick to one or t’other—",
+        "I can’t keep the run of ’em.", "But I bet you I’ll lam Sid for that.", "I’ll learn him!”", "He was not the Model Boy of the village.",
+        "He knew the model boy very well though—", "and loathed him.", "Within two minutes,", "or even less,",
+        "he had forgotten all his troubles.", "Not because his troubles were one whit less heavy and bitter to him than a man’s are to a man,", "but because a new and powerful interest bore them down", "and drove them out of his mind for the time—",
+        "just as men’s misfortunes are forgotten in the excitement of new enterprises.", "This new interest was a valued novelty in whistling,", "which he had just acquired from a negro,", "and he was suffering to practise it undisturbed.",
+        "It consisted in a peculiar bird-like turn,", "a sort of liquid warble,", "produced by touching the tongue to the roof of the mouth at short intervals in the midst of the music—", "the reader probably remembers how to do it,",
+        "if he has ever been a boy.", "Diligence and attention soon gave him the knack of it,", "and he strode down the street with his mouth full of harmony", "and his soul full of gratitude.",
+        "He felt much as an astronomer feels who has discovered a new planet—", "no doubt,", "as far as strong,", "deep,",
+        "unalloyed pleasure is concerned,", "the advantage was with the boy,", "not the astronomer.", "The summer evenings were long.",
+        "It was not dark,", "yet.", "Presently Tom checked his whistle.", "A stranger was before him—",
+        "a boy a shade larger than himself.", "A new-comer of any age or either sex was an impressive curiosity in the poor little shabby village of St. Petersburg.", "This boy was well dressed,", "too—",
+        "well dressed on a week-day.", "This was simply astounding.", "His cap was a dainty thing,", "his close-buttoned blue cloth roundabout was new and natty,",
+        "and so were his pantaloons.", "He had shoes on—", "and it was only Friday.", "He even wore a necktie,",
+        "a bright bit of ribbon.", "He had a citified air about him that ate into Tom’s vitals.", "The more Tom stared at the splendid marvel,", "the higher he turned up his nose at his finery",
+        "and the shabbier and shabbier his own outfit seemed to him to grow.", "Neither boy spoke.", "If one moved,", "the other moved—",
+        "but only sidewise,", "in a circle;", "they kept face to face", "and eye to eye all the time.",
+        "Finally Tom said:", "“I can lick you!”", "“I’d like to see you try it.”", "“Well,",
+        "I can do it.”", "“No you can’t,", "either.”", "“Yes I can.”",
+        "“No you can’t.”", "“I can.”", "“You can’t.”", "“Can!”",
+        "“Can’t!”", "An uncomfortable pause.", "Then Tom said:", "“What’s your name?”",
+        "“’Tisn’t any of your business,", "maybe.”", "“Well I ’low I’ll _make_ it my business.”", "“Well why don’t you?”",
+        "“If you say much,", "I will.”", "“Much—much—_much_.", "There now.”",
+        "“Oh,", "you think you’re mighty smart,", "_don’t_ you?", "I could lick you with one hand tied behind me,",
+        "if I wanted to.”", "“Well why don’t you _do_ it?", "You _say_ you can do it.”", "“Well I _will_,",
+        "if you fool with me.”", "“Oh yes—", "I’ve seen whole families in the same fix.”", "“Smarty!",
+        "You think you’re _some_,", "now,", "_don’t_ you?", "Oh,",
+        "what a hat!”", "“You can lump that hat if you don’t like it.", "I dare you to knock it off—", "and anybody that’ll take a dare will suck eggs.”",
+        "“You’re a liar!”", "“You’re another.”", "“You’re a fighting liar and dasn’t take it up.”", "“Aw—take a walk!”",
+        "“Say—", "if you give me much more of your sass I’ll take and bounce a rock off’n your head.”", "“Oh,", "of _course_ you will.”",
+        "“Well I _will_.”", "“Well why don’t you _do_ it then?", "What do you keep _saying_ you will for?", "Why don’t you _do_ it?",
+        "It’s because you’re afraid.”", "“I _ain’t_ afraid.”", "“You are.”", "“I ain’t.”",
+        "“You are.”", "Another pause,", "and more eying and sidling around each other.", "Presently they were shoulder to shoulder.",
+        "Tom said:", "“Get away from here!”", "“Go away yourself!”", "“I won’t.”",
+        "“I won’t either.”", "So they stood,", "each with a foot placed at an angle as a brace,", "and both shoving with might and main,",
+        "and glowering at each other with hate.", "But neither could get an advantage.", "After struggling till both were hot and flushed,", "each relaxed his strain with watchful caution,",
+        "and Tom said:", "“You’re a coward and a pup.", "I’ll tell my big brother on you,", "and he can thrash you with his little finger,",
+        "and I’ll make him do it,", "too.”", "“What do I care for your big brother?", "I’ve got a brother that’s bigger than he is—",
+        "and what’s more,", "he can throw him over that fence,", "too.”", "[Both brothers were imaginary.]",
+        "“That’s a lie.”", "“_Your_ saying so don’t make it so.”", "Tom drew a line in the dust with his big toe,", "and said:",
+        "“I dare you to step over that,", "and I’ll lick you till you can’t stand up.", "Anybody that’ll take a dare will steal sheep.”", "The new boy stepped over promptly,",
+        "and said:", "“Now you said you’d do it,", "now let’s see you do it.”", "“Don’t you crowd me now;",
+        "you better look out.”", "“Well,", "you _said_ you’d do it—", "why don’t you do it?”",
+        "“By jingo!", "for two cents I _will_ do it.”", "The new boy took two broad coppers out of his pocket", "and held them out with derision.",
+        "Tom struck them to the ground.", "In an instant both boys were rolling and tumbling in the dirt,", "gripped together like cats;", "and for the space of a minute they tugged and tore at each other’s hair and clothes,",
+        "punched and scratched each other’s nose,", "and covered themselves with dust and glory.", "Presently the confusion took form,", "and through the fog of battle Tom appeared,",
+        "seated astride the new boy,", "and pounding him with his fists.", "“Holler ’nuff!”", "said he.",
+        "The boy only struggled to free himself.", "He was crying—", "mainly from rage.", "“Holler ’nuff!”—",
+        "and the pounding went on.", "At last the stranger got out a smothered “’Nuff!”", "and Tom let him up and said:", "“Now that’ll learn you.",
+        "Better look out who you’re fooling with next time.”", "The new boy went off brushing the dust from his clothes,", "sobbing,", "snuffling,",
+        "and occasionally looking back", "and shaking his head", "and threatening what he would do to Tom the “next time he caught him out.”", "To which Tom responded with jeers,",
+        "and started off in high feather,", "and as soon as his back was turned the new boy snatched up a stone,", "threw it", "and hit him between the shoulders",
+        "and then turned tail", "and ran like an antelope.", "Tom chased the traitor home,", "and thus found out where he lived.",
+        "He then held a position at the gate for some time,", "daring the enemy to come outside,", "but the enemy only made faces at him through the window", "and declined.",
+        "At last the enemy’s mother appeared,", "and called Tom a bad,", "vicious,", "vulgar child,",
+        "and ordered him away.", "So he went away;", "but he said he “’lowed” to “lay” for that boy.", "He got home pretty late that night,",
+        "and when he climbed cautiously in at the window,", "he uncovered an ambuscade,", "in the person of his aunt;", "and when she saw the state his clothes were in her resolution to turn his Saturday holiday into captivity at hard labor became adamantine in its firmness.",
     )
 
     val tomSawyerTranslations = listOf(
-        "Том!", "Нет ответа.", "ТОМ!", "Нет ответа.",
-        "Что случилось с этим мальчиком,", "интересно?", "Эй, ТОМ!", "Нет ответа.",
-        "Старушка", "спустила очки", "и посмотрела поверх них", "по комнате;",
-        "потом она подняла их", "и посмотрела из-под них.", "Она редко или никогда", "смотрела сквозь них",
-        "на такую мелочь", "как мальчик;", "это была её пара для выхода в свет,", "гордость её сердца,",
-        "и они были сделаны для стиля,", "а не для службы —", "она могла бы видеть", "через пару крышек от печки",
-        "так же хорошо.", "Она выглядела озадаченной", "на мгновение,", "а потом сказала,",
-        "не сердито,", "но всё же достаточно громко,", "чтобы мебель услышала:", "Ну, я полагаю",
-        "если я тебя поймаю", "я—", "Она не закончила,", "потому что к этому времени",
-        "она наклонилась", "и тыкала под кровать", "метлой,", "и ей нужен был воздух",
-        "чтобы сопровождать удары.", "Она ничего не нашла", "кроме кота.", "Я никогда не видела",
-        "такого мальчишку!", "Она подошла к открытому двери", "и встала в ней", "и посмотрела",
-        "среди томатных лоз", "и дурман-травы", "который составлял сад.", "Нет, Том.",
-        "И она подняла голос", "под углом, рассчитанным", "на расстояние", "и закричала:",
-        "Т-о-м!", "Раздался легкий шум", "позади нее", "и она обернулась",
-        "как раз вовремя", "чтобы схватить маленького мальчика", "за свободный край его куртки", "и остановить его побег.",
-        "Вот!", "Я могла бы подумать", "о том шкафу.", "Что ты там делал",
-        "внутри?", "Ничего.", "Ничего!", "Посмотри на свои руки.",
-        "И посмотри на свой рот.", "Что это за грязь?", "Я не знаю, тетя.", "Ну, я знаю.",
-        "Это варенье—", "вот что это такое.", "Сорок раз я говорила", "если ты не оставишь это варенье в покое",
-        "я тебя выпорю.", "Дай мне эту розгу.", "Розга зависла в воздухе—", "опасность была серьезной—",
-        "Боже!", "Посмотри за себя, тетя!", "Старушка резко обернулась,", "и выдернула свои юбки",
-        "из опасности.", "Мальчик убежал", "в тот же миг,", "взобрался на высокий забор,",
-        "и исчез за ним.", "Его тетя Полли", "стояла удивленная на мгновение,", "а затем разразилась",
-        "тихим смехом.", "Черт бы побрал мальчишку,", "разве я никогда ничему не научусь?", "Разве он не наигрался со мной достаточно",
-        "вот так", "чтобы я присматривал", "для него к этому времени?", "Но старые дураки",
-        "это самые большие дураки.", "Старую собаку не научишь", "новым трюкам,", "как говорится.",
-        "Но, боже мой,", "он никогда не играет одинаково,", "два дня,", "и как же понять",
-        "что будет?", "Он, кажется, знает", "как долго", "он может меня мучить",
-        "пока я не разозлюсь,", "и он знает", "если он сможет", "отвлечь меня",
-        "на минуту", "или рассмешить меня,", "всё снова пропало", "и я не могу его ударить.",
-        "Я не выполняю свой долг", "перед этим мальчиком,", "и это истинная правда,", "бог знает.",
-        "Пощади розгу", "и испорти ребёнка,", "как говорит Священное Писание.", "Я коплю грех",
-        "и страдания для нас обоих,", "я знаю.", "Он полон дьявола,", "но господи!",
-        "он сын моей покойной сестры,", "бедняжка,", "и у меня нет сердца", "бить его,",
-        "как-то так.", "Каждый раз, когда я его прощаю,", "моя совесть так мучает меня,", "и каждый раз, когда я его бью",
-        "мое старое сердце почти разрывается.", "Ну что ж,", "человек, рожденный женщиной", "живет недолго",
-        "и полон бед,", "как говорит Писание,", "и я думаю, это так.", "Он прогуляет",
-        "этим вечером,", "и мне просто придется", "заставить его работать,", "завтра,",
-        "чтобы наказать его.", "Это очень трудно", "заставить его работать по субботам,", "когда все мальчишки",
-        "отдыхают,", "но он ненавидит работу", "больше всего на свете,", "и я должен сделать",
-        "что-то из своего долга перед ним,", "иначе я погублю", "ребенка.", "Том действительно прогулял,",
-        "и он очень хорошо провел время.", "Он вернулся домой", "едва вовремя", "чтобы помочь Джиму,",
-        "маленькому цветному мальчику,", "пилить дрова на завтра", "и колоть щепки", "перед ужином—",
-        "по крайней мере, он был там", "вовремя, чтобы рассказать о своих приключениях", "Джиму", "пока Джим делал три четверти",
-        "работы.", "Младший брат Тома", "или, скорее, сводный брат", "Сид уже закончил",
-        "свою часть работы", "собирая щепки,", "потому что он был тихим мальчиком,", "и не имел авантюрных,",
-        "проблемных привычек.", "Пока Том ел свой ужин,", "и воровал сахар", "когда была возможность,",
-        "Тетя Полли задавала ему вопросы", "которые были полны хитрости,", "и очень глубокие—", "потому что она хотела поймать его",
-        "на компрометирующих признаниях.", "Как и многие другие простодушные души,", "это было ее любимое тщеславие", "верить, что она была наделена",
-        "с талантом к мрачному", "и загадочной дипломатии,", "и она любила размышлять", "о своих самых прозрачных уловках",
-        "как о чудесах низкой хитрости.", "Сказала она:", "Том,", "в школе было довольно тепло,",
-        "не так ли?", "Да, мэм.", "Очень тепло,", "не так ли?",
-        "Да, мэм.", "Ты не хотел бы пойти", "поплавать,", "Том?",
-        "Немного испуг", "пронзил Тома—", "нотка неприятного подозрения.", "Он вгляделся в лицо тети Полли,",
-        "но оно ничего ему не сказало.", "Поэтому он сказал:", "Нет, мэм—", "ну,",
-        "не очень.", "Старая леди протянула руку", "и потрогала рубашку Тома,", "и сказала:",
-        "Но сейчас тебе не слишком жарко,", "впрочем.", "И ей было приятно", "думать, что она обнаружила",
-        "что рубашка сухая", "никому не зная", "что это было у нее", "на уме.",
-        "Но несмотря на нее,", "Том знал, откуда ветер дует,", "теперь.", "Поэтому он предупредил",
-        "что может быть следующим шагом:", "Некоторые из нас поливали головы—", "моя еще влажная.", "Видите?",
-        "Тетя Полли была раздосадована", "что упустила", "этот кусочек косвенных доказательств,", "и упустила трюк.",
-        "Тогда у нее появилась новая идея:", "Том,", "тебе не нужно было отменять", "воротник твоей рубашки",
-        "где я его зашил,", "чтобы накачать на твою голову,", "не так ли?", "Расстегни свой пиджак!",
-        "Проблема исчезла", "с лица Тома.", "Он расстегнул пиджак.", "Его воротник рубашки",
-        "был надежно зашит.", "Черт!", "Ну,", "иди своей дорогой.",
-        "Я убедился,", "что ты прогулял", "и плавал.", "Но я прощаю тебя,",
-        "Том.", "Я думаю, ты вроде как", "обожженный кот,", "как говорится —",
-        "лучше, чем выглядишь.", "На этот раз.", "Она была наполовину расстроена,", "что ее проницательность подвела,",
-        "и наполовину рада,", "что Том наткнулся", "на послушное поведение", "на этот раз.",
-        "Но Сидни сказал:", "Ну,", "теперь,", "если бы я не думал,",
-        "что ты зашила его воротник", "белыми нитками,", "но он черный.", "Почему,",
-        "я действительно зашила его белыми!", "Том!", "Но Том не стал ждать", "остального.",
-        "Когда он выходил за дверь,", "он сказал:", "Сидди,", "я тебя за это побью.",
-        "В безопасном месте", "Том осмотрел две большие иглы,", "которые были воткнуты в лацканы", "его пиджака,",
-        "и обмотаны нитками —", "одна игла несла белую нить", "а другая черную.", "Он сказал:",
-        "Она никогда не замечала", "если бы не Сид.", "Черт возьми!", "иногда она шьет белым,",
-        "а иногда черным.", "Я бы хотел", "чтобы она придерживалась одного —", "я не могу уследить за ними.",
-        "Но держу пари", "я отлуплю Сида за это.", "Я его научу!", "Он не был Образцовым Мальчиком",
-        "деревни.", "Он знал образцового мальчика", "очень хорошо —", "и ненавидел его.",
-        "Через две минуты,", "или даже меньше,", "он забыл", "все свои беды.",
-        "Не потому что его беды", "были хоть на йоту легче", "и горьче для него", "чем беды мужчины для мужчины,",
-        "а потому что новый", "и мощный интерес", "подавил их", "и вытеснил из его разума",
-        "на время —", "точно так же, как несчастья мужчин", "забываются", "в волнении",
-        "новых начинаний.", "Этот новый интерес", "был ценным новшеством", "в свисте,",
-        "который он только что освоил", "от негра,", "и он страстно желал", "практиковаться в нем без помех.",
-        "Он заключался в особом", "птичьем повороте,", "своеобразном жидком треле,", "создаваемом касанием языка",
-        "к небу", "через короткие промежутки", "в разгар музыки—", "читатель, вероятно, помнит",
-        "как это сделать,", "если он когда-либо был мальчиком.", "Усердие и внимание", "скоро дали ему сноровку,",
-        "и он зашагал по улице", "с полным гармонии ртом", "и душой, полной благодарности.", "Он чувствовал себя так же, как астроном",
-        "который открыл новую планету—", "без сомнения,", "что касается сильного,", "глубокого,",
-        "незамутненного удовольствия,", "преимущество было у мальчика,", "а не у астронома.", "Летние вечера",
-        "были длинными.", "Еще не стемнело,", "пока.", "Вскоре Том прекратил свистеть.",
-        "Перед ним был незнакомец—", "мальчик немного крупнее", "чем он сам.", "Новичок любого возраста",
-        "или пола", "был впечатляющим любопытством", "в бедной маленькой убогой деревне", "Санкт-Петербурга.",
-        "Этот мальчик был хорошо одет,", "тоже—", "хорошо одет в будний день.", "Это было просто поразительно.",
-        "Его кепка была изящной вещью,", "его плотно застегнутая синяя ткань", "куртка была новой и аккуратной,", "и такими же были его брюки.",
-        "На нем были туфли—", "и был только пятница.", "Он даже носил галстук,", "яркий кусочек ленты.",
-        "У него был городской вид", "который ел Тома заживо.", "Чем больше Том смотрел", "на великолепное чудо,",
-        "тем выше он задирал нос", "на его наряд", "и тем более убогим", "его собственный наряд казался ему",
-        "расти.", "Ни один из мальчиков не говорил.", "Если один двигался,", "другой двигался —",
-        "но только в сторону,", "по кругу;", "они оставались лицом к лицу", "и глазом к глазу",
-        "все время.", "Наконец Том сказал:", "Я могу тебя побить!", "Я бы хотел увидеть, как ты это сделаешь.",
-        "Ну,", "я могу это сделать.", "Нет, не можешь,", "тоже.",
-        "Да, могу.", "Нет, не можешь.", "Могу.", "Не можешь.",
-        "Могу!", "Не могу!", "Неловкая пауза.", "Тогда Том сказал:",
-        "Как тебя зовут?", "Это не твое дело,", "может быть.", "Ну, я думаю",
-        "я сделаю это своим делом.", "Ну почему бы тебе не сделать это?", "Если ты много говоришь,", "я сделаю.",
-        "Много — много — много.", "Вот так.", "О,", "ты думаешь, что ты очень умный,",
-        "не так ли?", "Я мог бы побить тебя", "с одной рукой за спиной,", "если бы захотел.",
-        "Ну почему бы тебе не сделать это?", "Ты говоришь, что можешь это сделать.", "Ну, я сделаю,", "если ты будешь со мной дурачиться.",
-        "О да —", "я видел целые семьи", "в такой же ситуации.", "Умник!",
-        "Ты думаешь, что ты что-то,", "теперь,", "не так ли?", "О,",
-        "какая шляпа!", "Ты можешь выбросить эту шляпу", "если она тебе не нравится.", "Я смею тебя сбить её —",
-        "и любой, кто примет вызов", "будет сосать яйца.", "Ты лжец!", "Сам такой.",
-        "Ты лжец, который дерётся", "и не осмелишься это принять.", "А ну — иди гуляй!", "Слушай —",
-        "если ты ещё раз", "будешь дерзить", "я возьму и кину камень", "в твою голову.",
-        "О,", "конечно, ты сделаешь это.", "Ну, я сделаю.", "Ну, почему ты тогда не делаешь?",
-        "Зачем ты продолжаешь говорить, что сделаешь?", "Почему ты не делаешь?", "Потому что ты боишься.", "Я не боюсь.",
-        "Боишься.", "Нет.", "Боишься.", "Ещё пауза,",
-        "и больше взглядывания", "и обхода друг друга.", "Вскоре они стояли плечом к плечу.", "Том сказал:",
-        "Убирайся отсюда!", "Сам убирайся!", "Не уйду.", "Я тоже не уйду.",
-        "Так они стояли,", "каждый с ногой, поставленной", "под углом как опора,", "и оба толкались изо всех сил,",
-        "и злобно смотрели друг на друга", "с ненавистью.", "Но никто не мог получить преимущество.", "После борьбы",
-        "пока оба не раскраснелись и вспотели,", "каждый ослабил напряжение", "с осторожным вниманием,", "и Том сказал:",
-        "Ты трус и щенок.", "Я пожалуюсь на тебя своему старшему брату,", "и он может побить тебя", "одним мизинцем,",
-        "и я заставлю его это сделать,", "тоже.", "Что мне до", "твоего старшего брата?",
-        "У меня есть брат,", "который больше его —", "и более того,", "он может перебросить его через этот забор,",
-        "тоже.", "Оба брата были вымышленными.", "Это ложь.", "Твои слова",
-        "не делают это правдой.", "Том провел линию", "в пыли", "большим пальцем ноги,",
-        "и сказал:", "Я вызываю тебя переступить это,", "и я побью тебя", "до тех пор, пока ты не сможешь встать.",
-        "Кто принимает вызов,", "тот ворует овец.", "Новый мальчик сразу переступил,", "и сказал:",
-        "Теперь ты сказал, что сделаешь это,", "давай посмотрим, как ты это сделаешь.", "Не толкай меня сейчас;", "тебе лучше быть осторожным.",
-        "Ну,", "ты сказал, что сделаешь это —", "почему не делаешь?", "Клянусь!",
-        "за два цента", "я это сделаю.", "Новый мальчик достал два медных гроша", "из кармана",
-        "и протянул их", "с насмешкой.", "Том сбил их на землю.", "В мгновение ока",
-        "оба мальчика катались", "и валялись в грязи,", "сцепившись, как кошки;", "и в течение минуты",
-        "они тянули и рвали", "друг другу волосы", "и одежда,", "ударил и поцарапал",
-        "друг другу нос,", "и покрыли себя", "пылью и славой.", "Вскоре путаница обрела форму,",
-        "и сквозь туман битвы", "появился Том,", "сидя верхом на новом мальчике,", "и колотил его",
-        "кулаками.", "Кричи 'достаточно!'", "сказал он.", "Мальчик только боролся",
-        "чтобы освободиться.", "Он плакал —", "в основном от ярости.", "Кричи 'достаточно!' —",
-        "и побои продолжались.", "Наконец незнакомец выдавил", "приглушенное 'Достаточно!'", "и Том отпустил его",
-        "и сказал:", "Теперь ты научишься.", "Лучше смотри", "с кем шутишь",
-        "в следующий раз.", "Новый мальчик ушел,", "стряхивая пыль", "с одежды,",
-        "рыдая,", "шмыгая,", "и иногда оглядываясь", "и качая головой",
-        "и угрожая", "что он сделает с Томом", "в следующий раз, когда поймает его.", "На что Том ответил",
-        "насмешками,", "и отправился", "в приподнятом настроении,", "и как только он повернулся спиной,",
-        "новый мальчик схватил камень,", "бросил его", "и попал ему между лопаток", "и затем повернулся",
-        "и побежал как антилопа.", "Том погнался за предателем до дома,", "и так узнал", "где он живет.",
-        "Затем он занял позицию", "у ворот", "на некоторое время,", "вызывая врага",
-        "выйти наружу,", "но враг только корчил рожи", "ему через окно", "и отказался.",
+        "\"Том!\"", "Нет ответа.", "\"ТОМ!\"", "Нет ответа.",
+        "\"Что случилось с этим мальчишкой,", "интересно?", "Ты, ТОМ!\"", "Нет ответа.",
+        "Старушка сняла очки", "и посмотрела поверх них по комнате;", "потом надела их обратно", "и посмотрела из-под них.",
+        "Она редко или никогда не смотрела _через_ них", "на такую мелочь, как мальчишка;", "это была её пара для особых случаев,", "гордость её сердца,",
+        "и они были сделаны для \"стиля,\"", "а не для службы —", "она могла бы видеть через пару крышек от печи так же хорошо.", "Она выглядела озадаченной на мгновение,",
+        "а потом сказала,", "не яростно,", "но всё же достаточно громко, чтобы мебель услышала:", "\"Ну, если я тебя поймаю, я—\"",
+        "Она не закончила,", "потому что к этому времени она уже наклонилась", "и тыкала под кровать метлой,", "и ей нужен был воздух, чтобы сопровождать удары.",
+        "Она извлекла только кота.", "\"Я никогда не видела такого мальчишку!\"", "Она подошла к открытому двери", "и встала в ней",
+        "и посмотрела на томатные лозы", "и сорняки \"джимсон\", которые составляли сад.", "Тома не было.", "Поэтому она подняла голос на угол, рассчитанный на расстояние",
+        "и закричала:", "\"Т-ы-ы ТОМ!\"", "Позади неё раздался лёгкий шум", "и она обернулась как раз вовремя, чтобы схватить маленького мальчика за свободный край его куртки",
+        "и остановить его побег.", "\"Вот!", "Я могла бы подумать об этом шкафу.", "Что ты там делал?\"",
+        "\"Ничего.\"", "\"Ничего!", "Посмотри на свои руки.", "И посмотри на свой рот.",
+        "Что _это_ за штука?\"", "\"Не знаю, тётя.\"", "\"Ну, я знаю.", "Это варенье — вот что это такое.",
+        "Сорок раз я говорила, если ты не оставишь это варенье в покое, я тебя выпорю.", "Дай мне эту розгу.\"", "Розга замерла в воздухе —", "опасность была отчаянной —",
+        "\"Ой!", "Посмотри за собой, тётя!\"", "Старушка резко обернулась,", "и выдернула свои юбки из опасности.",
+        "Мальчик мгновенно убежал,", "взобрался на высокий забор,", "и исчез за ним.", "Его тётя Полли стояла удивлённая на мгновение,",
+        "а затем разразилась мягким смехом.", "\"Чёрт бы побрал этого мальчишку,", "разве я никогда ничему не научусь?", "Разве он не разыгрывал меня достаточно раз так,",
+        "чтобы я уже начала его остерегаться?", "Но старые дураки — самые большие дураки.", "Старую собаку новым трюкам не научишь,", "как говорится.",
+        "Но, боже мой,", "он никогда не разыгрывает их одинаково,", "два дня,", "и как же можно знать, что будет дальше?",
+        "Кажется, он знает, как долго он может меня мучить,", "прежде чем я выйду из себя,", "и он знает, если ему удастся отвлечь меня на минуту", "или рассмешить меня,",
+        "всё снова сходит на нет,", "и я не могу его ударить.", "Я не выполняю свой долг перед этим мальчиком,", "и это чистая правда,",
+        "бог знает.", "Пощади розгу и испорти ребёнка,", "как говорит Священное Писание.", "Я коплю грех и страдания для нас обоих,",
+        "я знаю.", "Он полон дьявольщины,", "но, господи!", "он сын моей покойной сестры,",
+        "бедняжка,", "и у меня нет сердца его наказывать,", "как-то так.", "Каждый раз, когда я его отпускаю,",
+        "моя совесть так мучает меня,", "и каждый раз, когда я его бью, моё старое сердце почти разрывается.", "Ну что ж,", "человек, рождённый женщиной, живёт недолго",
+        "и полна бед,", "как говорится в Писании,", "и я думаю, что это так.", "Он прогуляет сегодня вечером,",
+        "и мне придется заставить его работать,", "завтра,", "чтобы наказать его.", "Очень трудно заставить его работать по субботам,",
+        "когда все мальчишки отдыхают,", "но он ненавидит работу больше всего на свете,", "и я должна выполнить свой долг перед ним,", "иначе я погублю ребенка.”",
+        "Том действительно прогулял,", "и он отлично провел время.", "Он вернулся домой едва успев помочь Джиму,", "маленькому цветному мальчику,",
+        "распилить дрова на завтра", "и расколоть щепки до ужина —", "по крайней мере, он успел рассказать свои приключения Джиму", "пока Джим выполнял три четверти работы.",
+        "Младший брат Тома", "(или скорее сводный брат) Сид уже закончил свою часть работы", "(собирал щепки),", "потому что он был тихим мальчиком,",
+        "и не имел авантюрных,", "беспокойных привычек.", "Пока Том ел свой ужин,", "и воровал сахар, когда была возможность,",
+        "тётя Полли задавала ему вопросы, полные хитрости,", "и очень глубокие —", "потому что она хотела поймать его на компрометирующих признаниях.", "Как и многие другие простодушные души,",
+        "её любимой слабостью было верить, что она наделена талантом к тёмной и загадочной дипломатии,", "и она любила рассматривать свои самые прозрачные уловки как чудеса низкой хитрости.", "Сказала она:", "“Том,",
+        "в школе было довольно тепло,", "не так ли?”", "“Да, мэм.”", "“Очень тепло,",
+        "не так ли?”", "“Да, мэм.”", "“Не хотелось тебе пойти поплавать,", "Том?”",
+        "Тома охватил страх —", "чутьё неприятного подозрения.", "Он изучал лицо тёти Полли,", "но оно ничего ему не сказало.",
+        "Поэтому он сказал:", "“Нет, мэм —", "ну,", "не очень-то.",
+        "Старушка протянула руку", "и потрогала рубашку Тома,", "и сказала:", "«Но теперь ты не слишком теплый,",
+        "все же.»", "И ей было приятно думать, что она обнаружила, что рубашка сухая,", "никто не знал, что это было у нее на уме.", "Но несмотря на нее,",
+        "Том знал, откуда ветер дует,", "теперь.", "Поэтому он предвосхитил следующий шаг:", "«Некоторые из нас поливали головы —",
+        "моя еще влажная.", "Видите?»", "Тетя Полли была раздосадована, что упустила эту улику,", "и пропустила ход.",
+        "Тогда у нее появилась новая идея:", "«Том,", "тебе не пришлось расстегивать воротник рубашки, где я его зашила,", "чтобы поливать голову,",
+        "правда?", "Расстегни пиджак!»", "Проблема исчезла с лица Тома.", "Он расстегнул пиджак.",
+        "Воротник рубашки был надежно зашит.", "«Черт возьми!", "Ну,", "иди своей дорогой.",
+        "Я была уверена, что ты прогулял школу", "и купался.", "Но я прощаю тебя,", "Том.",
+        "Думаю, ты как обожженный кот,", "как говорится —", "лучше, чем выглядишь.", "На этот раз.»",
+        "Она была наполовину огорчена, что ее проницательность не сработала,", "и наполовину рада, что Том случайно вел себя послушно хоть раз.", "Но Сид сказал:", "«Ну,",
+        "теперь,", "если я не ошибаюсь, ты зашила его воротник белыми нитками,", "а он черный.»", "«Почему,",
+        "я действительно зашила его белыми!", "Том!»", "Но Том не стал ждать остального.", "Выходя за дверь, он сказал:",
+        "\"Сидди,", "я тебя за это отлуплю.\"", "В безопасном месте Том осмотрел две большие иглы, которые были воткнуты в лацканы его куртки,", "и на них была намотана нить —",
+        "на одной игле была белая нить,", "а на другой черная.", "Он сказал:", "\"Она бы никогда не заметила, если бы не Сид.",
+        "Черт возьми!", "иногда она шьет белой нитью,", "а иногда черной.", "Я бы хотел, чтобы она придерживалась одной или другой —",
+        "я не могу за ними уследить.", "Но я тебе обещаю, я отлуплю Сида за это.", "Я его научу!\"", "Он не был образцовым мальчиком деревни.",
+        "Но он хорошо знал образцового мальчика —", "и ненавидел его.", "Через две минуты,", "или даже меньше,",
+        "он забыл все свои проблемы.", "Не потому, что его проблемы были хоть на йоту легче и менее горькими для него, чем у взрослого человека,", "а потому, что новый и мощный интерес вытеснил их", "и выгнал из его головы на время —",
+        "точно так же, как несчастья мужчин забываются в волнении новых начинаний.", "Этот новый интерес был ценным новшеством в свисте,", "которое он только что перенял у негра,", "и ему не терпелось практиковаться в этом без помех.",
+        "Он заключался в особом птичьем повороте,", "вроде жидкого трели,", "создаваемой прикосновением языка к небу через короткие интервалы в середине музыки —", "читатель, вероятно, помнит, как это делать,",
+        "если он когда-либо был мальчиком.", "Усердие и внимание вскоре дали ему сноровку в этом,", "и он зашагал по улице с полным гармонии ртом", "и душой, полной благодарности.",
+        "Он чувствовал себя так же, как астроном, который открыл новую планету —", "без сомнения,", "что касается сильного,", "глубокого,",
+        "чистого удовольствия,", "преимущество было на стороне мальчика,", "а не астронома.", "Летние вечера были долгими.",
+        "Еще не стемнело,", "пока.", "Вскоре Том прекратил свистеть.", "Перед ним был незнакомец —",
+        "мальчик чуть больше его самого.", "Новый житель любого возраста или пола был впечатляющим любопытством в бедной маленькой обшарпанной деревне Сент-Питерсберг.", "Этот мальчик был хорошо одет,", "тоже—",
+        "хорошо одет в будний день.", "Это было просто поразительно.", "Его кепка была изящной вещью,", "его плотно застегнутая синяя куртка была новой и аккуратной,",
+        "и такими же были его брюки.", "На нем были туфли—", "и был только пятница.", "Он даже носил галстук,",
+        "яркий кусочек ленты.", "У него был городской вид, который ел Тома изнутри.", "Чем больше Том смотрел на великолепное чудо,", "тем выше он задирал нос на его наряд",
+        "и тем более потрепанным казался ему его собственный наряд.", "Ни один из мальчиков не говорил.", "Если один двигался,", "другой двигался—",
+        "но только в сторону,", "по кругу;", "они все время смотрели друг другу в лицо", "и в глаза.",
+        "Наконец Том сказал:", "«Я могу тебя побить!»", "«Хотел бы я посмотреть, как ты попробуешь это сделать.»", "«Ну,",
+        "я могу это сделать.»", "«Нет, не можешь,", "все равно.»", "«Да, могу.»",
+        "«Нет, не можешь.»", "«Могу.»", "«Не можешь.»", "«Могу!»",
+        "«Не можешь!»", "Неловкая пауза.", "Тогда Том сказал:", "«Как тебя зовут?»",
+        "«Это не твое дело,", "может быть.»", "«Ну, я думаю, я _сделаю_ это своим делом.»", "«Ну, почему бы тебе не сделать?»",
+        "«Если ты скажешь много,", "я сделаю.»", "«Много—много—_много_.", "Вот так.»",
+        "«О,", "ты думаешь, что ты очень умный,", "_не так ли_?", "Я мог бы побить тебя одной рукой, привязанной за спиной,",
+        "если бы я хотел.", "Ну почему ты не делаешь это?", "Ты говоришь, что можешь это сделать.", "Ну я сделаю,",
+        "если ты будешь со мной шутить.", "О да—", "Я видел целые семьи в такой же ситуации.", "Умник!",
+        "Ты думаешь, что ты кто-то,", "сейчас,", "не так ли?", "О,",
+        "какая шляпа!", "Ты можешь выбросить эту шляпу, если она тебе не нравится.", "Я смею тебя сбить её—", "и любой, кто примет вызов, будет сосать яйца.",
+        "Ты лжец!", "Ты сам такой.", "Ты лжец и боишься принять вызов.", "А—иди погуляй!",
+        "Слушай—", "если ты ещё раз огрызнешься, я брошу камень тебе в голову.", "О,", "конечно, ты сделаешь это.",
+        "Ну я сделаю.", "Ну почему ты не делаешь это тогда?", "Зачем ты продолжаешь говорить, что сделаешь?", "Почему ты не делаешь это?",
+        "Это потому что ты боишься.", "Я не боюсь.", "Ты боишься.", "Я не боюсь.",
+        "Ты боишься.", "Ещё одна пауза,", "и они снова смотрят друг на друга и обходят друг друга.", "Вскоре они оказались плечом к плечу.",
+        "Том сказал:", "Убирайся отсюда!", "Уходи сам!", "Я не уйду.",
+        "Я тоже не уйду.", "Так они стояли,", "каждый с ногой, поставленной под углом как опора,", "и оба толкали изо всех сил,",
+        "и смотрели друг на друга с ненавистью.", "Но никто не мог получить преимущество.", "После борьбы, пока оба не раскраснелись и не вспотели,", "каждый ослабил натиск с осторожностью,",
+        "и Том сказал:", "Ты трус и щенок.", "Я пожалуюсь на тебя своему старшему брату,", "и он может побить тебя одним мизинцем,",
+        "и я заставлю его это сделать,", "тоже.", "«Что мне твой старший брат?", "У меня есть брат, который больше его —",
+        "и более того,", "он может перебросить его через этот забор,", "тоже.", "[Оба брата были вымышленными.]",
+        "«Это ложь.»", "«Твои слова это не делают правдой.»", "Том провел линию в пыли большим пальцем ноги,", "и сказал:",
+        "«Я вызываю тебя переступить через это,", "и я побью тебя, пока ты не сможешь встать.", "Кто принимает вызов, тот и овец украдет.»", "Новый мальчик сразу переступил,",
+        "и сказал:", "«Теперь ты сказал, что сделаешь это,", "давай посмотрим, как ты это сделаешь.»", "«Не дави на меня сейчас;",
+        "тебе лучше быть осторожным.»", "«Ну,", "ты сказал, что сделаешь это —", "почему не делаешь?»",
+        "«Честное слово!", "за два цента я это сделаю.»", "Новый мальчик достал из кармана две медные монеты", "и протянул их с насмешкой.",
+        "Том сбил их на землю.", "В мгновение оба мальчика катались и боролись в пыли,", "сцепившись, как кошки;", "и в течение минуты они тянули и рвали друг другу волосы и одежду,",
+        "били и царапали носы друг друга,", "и покрывались пылью и славой.", "Вскоре путаница приняла форму,", "и сквозь туман битвы появился Том,",
+        "сидя верхом на новом мальчике,", "и колотя его кулаками.", "«Кричи 'достаточно!'»", "сказал он.",
+        "Мальчик только пытался освободиться.", "Он плакал —", "в основном от ярости.", "«Кричи 'достаточно!'» —",
+        "и побои продолжались.", "Наконец незнакомец выдавил приглушенное «Достаточно!»", "и Том отпустил его и сказал:", "«Теперь это тебя научит.»",
+        "Лучше смотри, с кем ты связываешься в следующий раз.", "Новый мальчик ушел, отряхивая пыль с одежды,", "рыдая,", "шмыгая,",
+        "и иногда оглядываясь назад", "и качая головой", "и угрожая, что сделает с Томом, когда «в следующий раз поймает его».", "На что Том ответил насмешками,",
+        "и отправился в приподнятом настроении,", "и как только он повернулся спиной, новый мальчик схватил камень,", "бросил его", "и попал ему между лопаток",
+        "и затем повернулся", "и побежал как антилопа.", "Том погнался за предателем до дома,", "и так узнал, где он живет.",
+        "Затем он занял позицию у ворот на некоторое время,", "вызывая врага выйти наружу,", "но враг только корчил ему рожи из окна", "и отказался.",
         "Наконец появилась мать врага,", "и назвала Тома плохим,", "злобным,", "вульгарным ребенком,",
-        "и приказала ему уйти.", "Так что он ушел;", "но он сказал, что собирается", "подкараулить этого мальчика.",
-        "Он вернулся домой довольно поздно", "в ту ночь,", "и когда он осторожно залез", "в окно,",
-        "он обнаружил засаду,", "в лице своей тети;", "и когда она увидела состояние", "его одежды",
-        "ее решение превратить", "его субботний выходной", "в каторжные работы", "стало несокрушимым",
-        "в своей твердости."
+        "и приказала ему уйти.", "Так что он ушел;", "но он сказал, что «собирается» «подкараулить» этого мальчика.", "Он вернулся домой довольно поздно в тот вечер,",
+        "и когда он осторожно залез в окно,", "он обнаружил засаду,", "в лице своей тети;", "и когда она увидела состояние его одежды, ее решение превратить его субботний выходной в плен с тяжелым трудом стало несокрушимым в своей твердости.",
     )
 
 Phrase list:
-  1. 'Tom!'                                   → 'Том!'
+  1. '“Tom!”'                                 → '"Том!"'
   2. 'No answer.'                             → 'Нет ответа.'
-  3. 'TOM!'                                   → 'ТОМ!'
+  3. '“TOM!”'                                 → '"ТОМ!"'
   4. 'No answer.'                             → 'Нет ответа.'
-  5. "What's gone with that boy,"             → 'Что случилось с этим мальчиком,'
+  5. '“What’s gone with that boy,'            → '"Что случилось с этим мальчишкой,'
   6. 'I wonder?'                              → 'интересно?'
-  7. 'You TOM!'                               → 'Эй, ТОМ!'
+  7. 'You TOM!”'                              → 'Ты, ТОМ!"'
   8. 'No answer.'                             → 'Нет ответа.'
-  9. 'The old lady'                           → 'Старушка'
- 10. 'pulled her spectacles down'             → 'спустила очки'
- 11. 'and looked over them'                   → 'и посмотрела поверх них'
- 12. 'about the room;'                        → 'по комнате;'
- 13. 'then she put them up'                   → 'потом она подняла их'
- 14. 'and looked out under them.'             → 'и посмотрела из-под них.'
- 15. 'She seldom or never'                    → 'Она редко или никогда'
- 16. 'looked through them'                    → 'смотрела сквозь них'
- 17. 'for so small a thing'                   → 'на такую мелочь'
- 18. 'as a boy;'                              → 'как мальчик;'
- 19. 'they were her state pair,'              → 'это была её пара для выхода в свет,'
- 20. 'the pride of her heart,'                → 'гордость её сердца,'
- 21. 'and were built for style,'              → 'и они были сделаны для стиля,'
- 22. 'not service—'                           → 'а не для службы —'
- 23. 'she could have seen'                    → 'она могла бы видеть'
- 24. 'through a pair of stove-lids'           → 'через пару крышек от печки'
- 25. 'just as well.'                          → 'так же хорошо.'
- 26. 'She looked perplexed'                   → 'Она выглядела озадаченной'
- 27. 'for a moment,'                          → 'на мгновение,'
- 28. 'and then said,'                         → 'а потом сказала,'
- 29. 'not fiercely,'                          → 'не сердито,'
- 30. 'but still loud enough'                  → 'но всё же достаточно громко,'
- 31. 'for the furniture to hear:'             → 'чтобы мебель услышала:'
- 32. 'Well, I lay'                            → 'Ну, я полагаю'
- 33. 'if I get hold of you'                   → 'если я тебя поймаю'
- 34. "I'll—"                                  → 'я—'
- 35. 'She did not finish,'                    → 'Она не закончила,'
- 36. 'for by this time'                       → 'потому что к этому времени'
- 37. 'she was bending down'                   → 'она наклонилась'
- 38. 'and punching under the bed'             → 'и тыкала под кровать'
- 39. 'with the broom,'                        → 'метлой,'
- 40. 'and so she needed breath'               → 'и ей нужен был воздух'
- 41. 'to punctuate the punches with.'         → 'чтобы сопровождать удары.'
- 42. 'She resurrected nothing'                → 'Она ничего не нашла'
- 43. 'but the cat.'                           → 'кроме кота.'
- 44. 'I never did see'                        → 'Я никогда не видела'
- 45. 'the beat of that boy!'                  → 'такого мальчишку!'
- 46. 'She went to the open door'              → 'Она подошла к открытому двери'
- 47. 'and stood in it'                        → 'и встала в ней'
- 48. 'and looked out'                         → 'и посмотрела'
- 49. 'among the tomato vines'                 → 'среди томатных лоз'
- 50. 'and jimpson weeds'                      → 'и дурман-травы'
- 51. 'that constituted the garden.'           → 'который составлял сад.'
- 52. 'No Tom.'                                → 'Нет, Том.'
- 53. 'So she lifted up her voice'             → 'И она подняла голос'
- 54. 'at an angle calculated'                 → 'под углом, рассчитанным'
- 55. 'for distance'                           → 'на расстояние'
- 56. 'and shouted:'                           → 'и закричала:'
- 57. 'Y-o-u-u TOM!'                           → 'Т-о-м!'
- 58. 'There was a slight noise'               → 'Раздался легкий шум'
- 59. 'behind her'                             → 'позади нее'
- 60. 'and she turned'                         → 'и она обернулась'
- 61. 'just in time'                           → 'как раз вовремя'
- 62. 'to seize a small boy'                   → 'чтобы схватить маленького мальчика'
- 63. 'by the slack of his roundabout'         → 'за свободный край его куртки'
- 64. 'and arrest his flight.'                 → 'и остановить его побег.'
- 65. 'There!'                                 → 'Вот!'
- 66. "I might 'a' thought"                    → 'Я могла бы подумать'
- 67. 'of that closet.'                        → 'о том шкафу.'
- 68. 'What you been doing'                    → 'Что ты там делал'
- 69. 'in there?'                              → 'внутри?'
- 70. 'Nothing.'                               → 'Ничего.'
- 71. 'Nothing!'                               → 'Ничего!'
- 72. 'Look at your hands.'                    → 'Посмотри на свои руки.'
- 73. 'And look at your mouth.'                → 'И посмотри на свой рот.'
- 74. 'What is that truck?'                    → 'Что это за грязь?'
- 75. "I don't know, aunt."                    → 'Я не знаю, тетя.'
- 76. 'Well, I know.'                          → 'Ну, я знаю.'
- 77. "It's jam—"                              → 'Это варенье—'
- 78. "that's what it is."                     → 'вот что это такое.'
- 79. "Forty times I've said"                  → 'Сорок раз я говорила'
- 80. "if you didn't let that jam alone"       → 'если ты не оставишь это варенье в покое'
- 81. "I'd skin you."                          → 'я тебя выпорю.'
- 82. 'Hand me that switch.'                   → 'Дай мне эту розгу.'
- 83. 'The switch hovered in the air—'         → 'Розга зависла в воздухе—'
- 84. 'the peril was desperate—'               → 'опасность была серьезной—'
- 85. 'My!'                                    → 'Боже!'
- 86. 'Look behind you, aunt!'                 → 'Посмотри за себя, тетя!'
- 87. 'The old lady whirled round,'            → 'Старушка резко обернулась,'
- 88. 'and snatched her skirts'                → 'и выдернула свои юбки'
- 89. 'out of danger.'                         → 'из опасности.'
- 90. 'The lad fled'                           → 'Мальчик убежал'
- 91. 'on the instant,'                        → 'в тот же миг,'
- 92. 'scrambled up the high board-fence,'     → 'взобрался на высокий забор,'
- 93. 'and disappeared over it.'               → 'и исчез за ним.'
- 94. 'His aunt Polly'                         → 'Его тетя Полли'
- 95. 'stood surprised a moment,'              → 'стояла удивленная на мгновение,'
- 96. 'and then broke into'                    → 'а затем разразилась'
- 97. 'a gentle laugh.'                        → 'тихим смехом.'
- 98. 'Hang the boy,'                          → 'Черт бы побрал мальчишку,'
- 99. "can't I never learn anything?"          → 'разве я никогда ничему не научусь?'
-100. "Ain't he played me tricks enough"       → 'Разве он не наигрался со мной достаточно'
-101. 'like that'                              → 'вот так'
-102. 'for me to be looking out'               → 'чтобы я присматривал'
-103. 'for him by this time?'                  → 'для него к этому времени?'
-104. 'But old fools'                          → 'Но старые дураки'
-105. 'is the biggest fools there is.'         → 'это самые большие дураки.'
-106. "Can't learn an old dog"                 → 'Старую собаку не научишь'
-107. 'new tricks,'                            → 'новым трюкам,'
-108. 'as the saying is.'                      → 'как говорится.'
-109. 'But my goodness,'                       → 'Но, боже мой,'
-110. 'he never plays them alike,'             → 'он никогда не играет одинаково,'
-111. 'two days,'                              → 'два дня,'
-112. 'and how is a body to know'              → 'и как же понять'
-113. "what's coming?"                         → 'что будет?'
-114. "He 'pears to know"                      → 'Он, кажется, знает'
-115. 'just how long'                          → 'как долго'
-116. 'he can torment me'                      → 'он может меня мучить'
-117. 'before I get my dander up,'             → 'пока я не разозлюсь,'
-118. 'and he knows'                           → 'и он знает'
-119. 'if he can make out'                     → 'если он сможет'
-120. 'to put me off'                          → 'отвлечь меня'
-121. 'for a minute'                           → 'на минуту'
-122. 'or make me laugh,'                      → 'или рассмешить меня,'
-123. "it's all down again"                    → 'всё снова пропало'
-124. "and I can't hit him a lick."            → 'и я не могу его ударить.'
-125. "I ain't doing my duty"                  → 'Я не выполняю свой долг'
-126. 'by that boy,'                           → 'перед этим мальчиком,'
-127. "and that's the Lord's truth,"           → 'и это истинная правда,'
-128. 'goodness knows.'                        → 'бог знает.'
-129. 'Spare the rod'                          → 'Пощади розгу'
-130. 'and spile the child,'                   → 'и испорти ребёнка,'
-131. 'as the Good Book says.'                 → 'как говорит Священное Писание.'
-132. "I'm a laying up sin"                    → 'Я коплю грех'
-133. 'and suffering for us both,'             → 'и страдания для нас обоих,'
-134. 'I know.'                                → 'я знаю.'
-135. "He's full of the Old Scratch,"          → 'Он полон дьявола,'
-136. 'but laws-a-me!'                         → 'но господи!'
-137. "he's my own dead sister's boy,"         → 'он сын моей покойной сестры,'
-138. 'poor thing,'                            → 'бедняжка,'
-139. "and I ain't got the heart"              → 'и у меня нет сердца'
-140. 'to lash him,'                           → 'бить его,'
-141. 'somehow.'                               → 'как-то так.'
-142. 'Every time I let him off,'              → 'Каждый раз, когда я его прощаю,'
-143. 'my conscience does hurt me so,'         → 'моя совесть так мучает меня,'
-144. 'and every time I hit him'               → 'и каждый раз, когда я его бью'
-145. 'my old heart most breaks.'              → 'мое старое сердце почти разрывается.'
-146. 'Well-a-well,'                           → 'Ну что ж,'
-147. 'man that is born of woman'              → 'человек, рожденный женщиной'
-148. 'is of few days'                         → 'живет недолго'
-149. 'and full of trouble,'                   → 'и полон бед,'
-150. 'as the Scripture says,'                 → 'как говорит Писание,'
-151. "and I reckon it's so."                  → 'и я думаю, это так.'
-152. "He'll play hookey"                      → 'Он прогуляет'
-153. 'this evening,'                          → 'этим вечером,'
-154. "and I'll just be obleeged"              → 'и мне просто придется'
-155. 'to make him work,'                      → 'заставить его работать,'
-156. 'tomorrow,'                              → 'завтра,'
-157. 'to punish him.'                         → 'чтобы наказать его.'
-158. "It's mighty hard"                       → 'Это очень трудно'
-159. 'to make him work Saturdays,'            → 'заставить его работать по субботам,'
-160. 'when all the boys'                      → 'когда все мальчишки'
-161. 'is having holiday,'                     → 'отдыхают,'
-162. 'but he hates work'                      → 'но он ненавидит работу'
-163. 'more than he hates anything else,'      → 'больше всего на свете,'
-164. "and I've got to do"                     → 'и я должен сделать'
-165. 'some of my duty by him,'                → 'что-то из своего долга перед ним,'
-166. "or I'll be the ruination"               → 'иначе я погублю'
-167. 'of the child.'                          → 'ребенка.'
-168. 'Tom did play hookey,'                   → 'Том действительно прогулял,'
-169. 'and he had a very good time.'           → 'и он очень хорошо провел время.'
-170. 'He got back home'                       → 'Он вернулся домой'
-171. 'barely in season'                       → 'едва вовремя'
-172. 'to help Jim,'                           → 'чтобы помочь Джиму,'
-173. 'the small colored boy,'                 → 'маленькому цветному мальчику,'
-174. "saw next-day's wood"                    → 'пилить дрова на завтра'
-175. 'and split the kindlings'                → 'и колоть щепки'
-176. 'before supper—'                         → 'перед ужином—'
-177. 'at least he was there'                  → 'по крайней мере, он был там'
-178. 'in time to tell his adventures'         → 'вовремя, чтобы рассказать о своих приключениях'
-179. 'to Jim'                                 → 'Джиму'
-180. 'while Jim did three-fourths'            → 'пока Джим делал три четверти'
-181. 'of the work.'                           → 'работы.'
-182. "Tom's younger brother"                  → 'Младший брат Тома'
-183. 'or rather half-brother'                 → 'или, скорее, сводный брат'
-184. 'Sid was already through'                → 'Сид уже закончил'
-185. 'with his part of the work'              → 'свою часть работы'
-186. 'picking up chips,'                      → 'собирая щепки,'
-187. 'for he was a quiet boy,'                → 'потому что он был тихим мальчиком,'
-188. 'and had no adventurous,'                → 'и не имел авантюрных,'
-189. 'trouble-some ways.'                     → 'проблемных привычек.'
-190. 'While Tom was eating his supper,'       → 'Пока Том ел свой ужин,'
-191. 'and stealing sugar'                     → 'и воровал сахар'
-192. 'as opportunity offered,'                → 'когда была возможность,'
-193. 'Aunt Polly asked him questions'         → 'Тетя Полли задавала ему вопросы'
-194. 'that were full of guile,'               → 'которые были полны хитрости,'
-195. 'and very deep—'                         → 'и очень глубокие—'
-196. 'for she wanted to trap him'             → 'потому что она хотела поймать его'
-197. 'into damaging revealments.'             → 'на компрометирующих признаниях.'
-198. 'Like many other simple-hearted souls,'  → 'Как и многие другие простодушные души,'
-199. 'it was her pet vanity'                  → 'это было ее любимое тщеславие'
-200. 'to believe she was endowed'             → 'верить, что она была наделена'
-201. 'with a talent for dark'                 → 'с талантом к мрачному'
-202. 'and mysterious diplomacy,'              → 'и загадочной дипломатии,'
-203. 'and she loved to contemplate'           → 'и она любила размышлять'
-204. 'her most transparent devices'           → 'о своих самых прозрачных уловках'
-205. 'as marvels of low cunning.'             → 'как о чудесах низкой хитрости.'
-206. 'Said she:'                              → 'Сказала она:'
-207. 'Tom,'                                   → 'Том,'
-208. 'it was middling warm in school,'        → 'в школе было довольно тепло,'
-209. "warn't it?"                             → 'не так ли?'
-210. "Yes'm."                                 → 'Да, мэм.'
-211. 'Powerful warm,'                         → 'Очень тепло,'
-212. "warn't it?"                             → 'не так ли?'
-213. "Yes'm."                                 → 'Да, мэм.'
-214. "Didn't you want to go"                  → 'Ты не хотел бы пойти'
-215. 'in a-swimming,'                         → 'поплавать,'
-216. 'Tom?'                                   → 'Том?'
-217. 'A bit of a scare'                       → 'Немного испуг'
-218. 'shot through Tom—'                      → 'пронзил Тома—'
-219. 'a touch of uncomfortable suspicion.'    → 'нотка неприятного подозрения.'
-220. "He searched Aunt Polly's face,"         → 'Он вгляделся в лицо тети Полли,'
-221. 'but it told him nothing.'               → 'но оно ничего ему не сказало.'
-222. 'So he said:'                            → 'Поэтому он сказал:'
-223. "No'm—"                                  → 'Нет, мэм—'
-224. 'well,'                                  → 'ну,'
-225. 'not very much.'                         → 'не очень.'
-226. 'The old lady reached out her hand'      → 'Старая леди протянула руку'
-227. "and felt Tom's shirt,"                  → 'и потрогала рубашку Тома,'
-228. 'and said:'                              → 'и сказала:'
-229. "But you ain't too warm now,"            → 'Но сейчас тебе не слишком жарко,'
-230. 'though.'                                → 'впрочем.'
-231. 'And it flattered her'                   → 'И ей было приятно'
-232. 'to reflect that she had discovered'     → 'думать, что она обнаружила'
-233. 'that the shirt was dry'                 → 'что рубашка сухая'
-234. 'without anybody knowing'                → 'никому не зная'
-235. 'that that was what she had'             → 'что это было у нее'
-236. 'in her mind.'                           → 'на уме.'
-237. 'But in spite of her,'                   → 'Но несмотря на нее,'
-238. 'Tom knew where the wind lay,'           → 'Том знал, откуда ветер дует,'
-239. 'now.'                                   → 'теперь.'
-240. 'So he forestalled'                      → 'Поэтому он предупредил'
-241. 'what might be the next move:'           → 'что может быть следующим шагом:'
-242. 'Some of us pumped on our heads—'        → 'Некоторые из нас поливали головы—'
-243. "mine's damp yet."                       → 'моя еще влажная.'
-244. 'See?'                                   → 'Видите?'
-245. 'Aunt Polly was vexed'                   → 'Тетя Полли была раздосадована'
-246. 'to think she had overlooked'            → 'что упустила'
-247. 'that bit of circumstantial evidence,'   → 'этот кусочек косвенных доказательств,'
-248. 'and missed a trick.'                    → 'и упустила трюк.'
-249. 'Then she had a new inspiration:'        → 'Тогда у нее появилась новая идея:'
-250. 'Tom,'                                   → 'Том,'
-251. "you didn't have to undo"                → 'тебе не нужно было отменять'
-252. 'your shirt collar'                      → 'воротник твоей рубашки'
-253. 'where I sewed it,'                      → 'где я его зашил,'
-254. 'to pump on your head,'                  → 'чтобы накачать на твою голову,'
-255. 'did you?'                               → 'не так ли?'
-256. 'Unbutton your jacket!'                  → 'Расстегни свой пиджак!'
-257. 'The trouble vanished'                   → 'Проблема исчезла'
-258. "out of Tom's face."                     → 'с лица Тома.'
-259. 'He opened his jacket.'                  → 'Он расстегнул пиджак.'
-260. 'His shirt collar'                       → 'Его воротник рубашки'
-261. 'was securely sewed.'                    → 'был надежно зашит.'
-262. 'Bother!'                                → 'Черт!'
-263. 'Well,'                                  → 'Ну,'
-264. "go 'long with you."                     → 'иди своей дорогой.'
-265. "I'd made sure"                          → 'Я убедился,'
-266. "you'd played hookey"                    → 'что ты прогулял'
-267. 'and been a-swimming.'                   → 'и плавал.'
-268. 'But I forgive ye,'                      → 'Но я прощаю тебя,'
-269. 'Tom.'                                   → 'Том.'
-270. "I reckon you're a kind of a"            → 'Я думаю, ты вроде как'
-271. 'singed cat,'                            → 'обожженный кот,'
-272. 'as the saying is—'                      → 'как говорится —'
-273. "better'n you look."                     → 'лучше, чем выглядишь.'
-274. 'This time.'                             → 'На этот раз.'
-275. 'She was half sorry'                     → 'Она была наполовину расстроена,'
-276. 'her sagacity had miscarried,'           → 'что ее проницательность подвела,'
-277. 'and half glad'                          → 'и наполовину рада,'
-278. 'that Tom had stumbled'                  → 'что Том наткнулся'
-279. 'into obedient conduct'                  → 'на послушное поведение'
-280. 'for once.'                              → 'на этот раз.'
-281. 'But Sidney said:'                       → 'Но Сидни сказал:'
-282. 'Well,'                                  → 'Ну,'
-283. 'now,'                                   → 'теперь,'
-284. "if I didn't think"                      → 'если бы я не думал,'
-285. 'you sewed his collar'                   → 'что ты зашила его воротник'
-286. 'with white thread,'                     → 'белыми нитками,'
-287. "but it's black."                        → 'но он черный.'
-288. 'Why,'                                   → 'Почему,'
-289. 'I did sew it with white!'               → 'я действительно зашила его белыми!'
-290. 'Tom!'                                   → 'Том!'
-291. 'But Tom did not wait'                   → 'Но Том не стал ждать'
-292. 'for the rest.'                          → 'остального.'
-293. 'As he went out at the door'             → 'Когда он выходил за дверь,'
-294. 'he said:'                               → 'он сказал:'
-295. 'Siddy,'                                 → 'Сидди,'
-296. "I'll lick you for that."                → 'я тебя за это побью.'
-297. 'In a safe place'                        → 'В безопасном месте'
-298. 'Tom examined two large needles'         → 'Том осмотрел две большие иглы,'
-299. 'which were thrust into the lapels'      → 'которые были воткнуты в лацканы'
-300. 'of his jacket,'                         → 'его пиджака,'
-301. 'and had thread bound about them—'       → 'и обмотаны нитками —'
-302. 'one needle carried white thread'        → 'одна игла несла белую нить'
-303. 'and the other black.'                   → 'а другая черную.'
-304. 'He said:'                               → 'Он сказал:'
-305. "She'd never noticed"                    → 'Она никогда не замечала'
-306. "if it hadn't been for Sid."             → 'если бы не Сид.'
-307. 'Confound it!'                           → 'Черт возьми!'
-308. 'sometimes she sews it with white,'      → 'иногда она шьет белым,'
-309. 'and sometimes she sews it with black.'  → 'а иногда черным.'
-310. 'I wish to gee-miny'                     → 'Я бы хотел'
-311. "she'd stick to one or t'other—"         → 'чтобы она придерживалась одного —'
-312. "I can't keep the run of 'em."           → 'я не могу уследить за ними.'
-313. 'But I bet you'                          → 'Но держу пари'
-314. "I'll lam Sid for that."                 → 'я отлуплю Сида за это.'
-315. "I'll learn him!"                        → 'Я его научу!'
-316. 'He was not the Model Boy'               → 'Он не был Образцовым Мальчиком'
-317. 'of the village.'                        → 'деревни.'
-318. 'He knew the model boy'                  → 'Он знал образцового мальчика'
-319. 'very well though—'                      → 'очень хорошо —'
-320. 'and loathed him.'                       → 'и ненавидел его.'
-321. 'Within two minutes,'                    → 'Через две минуты,'
-322. 'or even less,'                          → 'или даже меньше,'
-323. 'he had forgotten'                       → 'он забыл'
-324. 'all his troubles.'                      → 'все свои беды.'
-325. 'Not because his troubles'               → 'Не потому что его беды'
-326. 'were one whit less heavy'               → 'были хоть на йоту легче'
-327. 'and bitter to him'                      → 'и горьче для него'
-328. "than a man's are to a man,"             → 'чем беды мужчины для мужчины,'
-329. 'but because a new'                      → 'а потому что новый'
-330. 'and powerful interest'                  → 'и мощный интерес'
-331. 'bore them down'                         → 'подавил их'
-332. 'and drove them out of his mind'         → 'и вытеснил из его разума'
-333. 'for the time—'                          → 'на время —'
-334. "just as men's misfortunes"              → 'точно так же, как несчастья мужчин'
-335. 'are forgotten'                          → 'забываются'
-336. 'in the excitement'                      → 'в волнении'
-337. 'of new enterprises.'                    → 'новых начинаний.'
-338. 'This new interest'                      → 'Этот новый интерес'
-339. 'was a valued novelty'                   → 'был ценным новшеством'
-340. 'in whistling,'                          → 'в свисте,'
-341. 'which he had just acquired'             → 'который он только что освоил'
-342. 'from a negro,'                          → 'от негра,'
-343. 'and he was suffering'                   → 'и он страстно желал'
-344. 'to practise it undisturbed.'            → 'практиковаться в нем без помех.'
-345. 'It consisted in a peculiar'             → 'Он заключался в особом'
-346. 'bird-like turn,'                        → 'птичьем повороте,'
-347. 'a sort of liquid warble,'               → 'своеобразном жидком треле,'
-348. 'produced by touching the tongue'        → 'создаваемом касанием языка'
-349. 'to the roof of the mouth'               → 'к небу'
-350. 'at short intervals'                     → 'через короткие промежутки'
-351. 'in the midst of the music—'             → 'в разгар музыки—'
-352. 'the reader probably remembers'          → 'читатель, вероятно, помнит'
-353. 'how to do it,'                          → 'как это сделать,'
-354. 'if he has ever been a boy.'             → 'если он когда-либо был мальчиком.'
-355. 'Diligence and attention'                → 'Усердие и внимание'
-356. 'soon gave him the knack of it,'         → 'скоро дали ему сноровку,'
-357. 'and he strode down the street'          → 'и он зашагал по улице'
-358. 'with his mouth full of harmony'         → 'с полным гармонии ртом'
-359. 'and his soul full of gratitude.'        → 'и душой, полной благодарности.'
-360. 'He felt much as an astronomer feels'    → 'Он чувствовал себя так же, как астроном'
-361. 'who has discovered a new planet—'       → 'который открыл новую планету—'
-362. 'no doubt,'                              → 'без сомнения,'
-363. 'as far as strong,'                      → 'что касается сильного,'
-364. 'deep,'                                  → 'глубокого,'
-365. 'unalloyed pleasure is concerned,'       → 'незамутненного удовольствия,'
-366. 'the advantage was with the boy,'        → 'преимущество было у мальчика,'
-367. 'not the astronomer.'                    → 'а не у астронома.'
-368. 'The summer evenings'                    → 'Летние вечера'
-369. 'were long.'                             → 'были длинными.'
-370. 'It was not dark,'                       → 'Еще не стемнело,'
-371. 'yet.'                                   → 'пока.'
-372. 'Presently Tom checked his whistle.'     → 'Вскоре Том прекратил свистеть.'
-373. 'A stranger was before him—'             → 'Перед ним был незнакомец—'
-374. 'a boy a shade larger'                   → 'мальчик немного крупнее'
-375. 'than himself.'                          → 'чем он сам.'
-376. 'A new-comer of any age'                 → 'Новичок любого возраста'
-377. 'or either sex'                          → 'или пола'
-378. 'was an impressive curiosity'            → 'был впечатляющим любопытством'
-379. 'in the poor little shabby village'      → 'в бедной маленькой убогой деревне'
-380. 'of St. Petersburg.'                     → 'Санкт-Петербурга.'
-381. 'This boy was well dressed,'             → 'Этот мальчик был хорошо одет,'
-382. 'too—'                                   → 'тоже—'
-383. 'well dressed on a week-day.'            → 'хорошо одет в будний день.'
-384. 'This was simply astounding.'            → 'Это было просто поразительно.'
-385. 'His cap was a dainty thing,'            → 'Его кепка была изящной вещью,'
-386. 'his close-buttoned blue cloth'          → 'его плотно застегнутая синяя ткань'
-387. 'roundabout was new and natty,'          → 'куртка была новой и аккуратной,'
-388. 'and so were his pantaloons.'            → 'и такими же были его брюки.'
-389. 'He had shoes on—'                       → 'На нем были туфли—'
-390. 'and it was only Friday.'                → 'и был только пятница.'
-391. 'He even wore a necktie,'                → 'Он даже носил галстук,'
-392. 'a bright bit of ribbon.'                → 'яркий кусочек ленты.'
-393. 'He had a citified air about him'        → 'У него был городской вид'
-394. "that ate into Tom's vitals."            → 'который ел Тома заживо.'
-395. 'The more Tom stared'                    → 'Чем больше Том смотрел'
-396. 'at the splendid marvel,'                → 'на великолепное чудо,'
-397. 'the higher he turned up his nose'       → 'тем выше он задирал нос'
-398. 'at his finery'                          → 'на его наряд'
-399. 'and the shabbier and shabbier'          → 'и тем более убогим'
-400. 'his own outfit seemed to him'           → 'его собственный наряд казался ему'
-401. 'to grow.'                               → 'расти.'
-402. 'Neither boy spoke.'                     → 'Ни один из мальчиков не говорил.'
-403. 'If one moved,'                          → 'Если один двигался,'
-404. 'the other moved—'                       → 'другой двигался —'
-405. 'but only sidewise,'                     → 'но только в сторону,'
-406. 'in a circle;'                           → 'по кругу;'
-407. 'they kept face to face'                 → 'они оставались лицом к лицу'
-408. 'and eye to eye'                         → 'и глазом к глазу'
-409. 'all the time.'                          → 'все время.'
-410. 'Finally Tom said:'                      → 'Наконец Том сказал:'
-411. 'I can lick you!'                        → 'Я могу тебя побить!'
-412. "I'd like to see you try it."            → 'Я бы хотел увидеть, как ты это сделаешь.'
-413. 'Well,'                                  → 'Ну,'
-414. 'I can do it.'                           → 'я могу это сделать.'
-415. "No you can't,"                          → 'Нет, не можешь,'
-416. 'either.'                                → 'тоже.'
-417. 'Yes I can.'                             → 'Да, могу.'
-418. "No you can't."                          → 'Нет, не можешь.'
-419. 'I can.'                                 → 'Могу.'
-420. "You can't."                             → 'Не можешь.'
-421. 'Can!'                                   → 'Могу!'
-422. "Can't!"                                 → 'Не могу!'
-423. 'An uncomfortable pause.'                → 'Неловкая пауза.'
-424. 'Then Tom said:'                         → 'Тогда Том сказал:'
-425. "What's your name?"                      → 'Как тебя зовут?'
-426. "’Tisn't any of your business,"          → 'Это не твое дело,'
-427. 'maybe.'                                 → 'может быть.'
-428. "Well I 'low"                            → 'Ну, я думаю'
-429. "I'll make it my business."              → 'я сделаю это своим делом.'
-430. "Well why don't you?"                    → 'Ну почему бы тебе не сделать это?'
-431. 'If you say much,'                       → 'Если ты много говоришь,'
-432. 'I will.'                                → 'я сделаю.'
-433. 'Much—much—much.'                        → 'Много — много — много.'
-434. 'There now.'                             → 'Вот так.'
-435. 'Oh,'                                    → 'О,'
-436. "you think you're mighty smart,"         → 'ты думаешь, что ты очень умный,'
-437. "don't you?"                             → 'не так ли?'
-438. 'I could lick you'                       → 'Я мог бы побить тебя'
-439. 'with one hand tied behind me,'          → 'с одной рукой за спиной,'
-440. 'if I wanted to.'                        → 'если бы захотел.'
-441. "Well why don't you do it?"              → 'Ну почему бы тебе не сделать это?'
-442. 'You say you can do it.'                 → 'Ты говоришь, что можешь это сделать.'
-443. 'Well I will,'                           → 'Ну, я сделаю,'
-444. 'if you fool with me.'                   → 'если ты будешь со мной дурачиться.'
-445. 'Oh yes—'                                → 'О да —'
-446. "I've seen whole families"               → 'я видел целые семьи'
-447. 'in the same fix.'                       → 'в такой же ситуации.'
-448. 'Smarty!'                                → 'Умник!'
-449. "You think you're some,"                 → 'Ты думаешь, что ты что-то,'
-450. 'now,'                                   → 'теперь,'
-451. "don't you?"                             → 'не так ли?'
-452. 'Oh,'                                    → 'О,'
-453. 'what a hat!'                            → 'какая шляпа!'
-454. 'You can lump that hat'                  → 'Ты можешь выбросить эту шляпу'
-455. "if you don't like it."                  → 'если она тебе не нравится.'
-456. 'I dare you to knock it off—'            → 'Я смею тебя сбить её —'
-457. "and anybody that'll take a dare"        → 'и любой, кто примет вызов'
-458. 'will suck eggs.'                        → 'будет сосать яйца.'
-459. "You're a liar!"                         → 'Ты лжец!'
-460. "You're another."                        → 'Сам такой.'
-461. "You're a fighting liar"                 → 'Ты лжец, который дерётся'
-462. "and dasn't take it up."                 → 'и не осмелишься это принять.'
-463. 'Aw—take a walk!'                        → 'А ну — иди гуляй!'
-464. 'Say—'                                   → 'Слушай —'
-465. 'if you give me much more'               → 'если ты ещё раз'
-466. 'of your sass'                           → 'будешь дерзить'
-467. "I'll take and bounce a rock"            → 'я возьму и кину камень'
-468. "off'n your head."                       → 'в твою голову.'
-469. 'Oh,'                                    → 'О,'
-470. 'of course you will.'                    → 'конечно, ты сделаешь это.'
-471. 'Well I will.'                           → 'Ну, я сделаю.'
-472. "Well why don't you do it then?"         → 'Ну, почему ты тогда не делаешь?'
-473. 'What do you keep saying you will for?'  → 'Зачем ты продолжаешь говорить, что сделаешь?'
-474. "Why don't you do it?"                   → 'Почему ты не делаешь?'
-475. "It's because you're afraid."            → 'Потому что ты боишься.'
-476. "I ain't afraid."                        → 'Я не боюсь.'
-477. 'You are.'                               → 'Боишься.'
-478. "I ain't."                               → 'Нет.'
-479. 'You are.'                               → 'Боишься.'
-480. 'Another pause,'                         → 'Ещё пауза,'
-481. 'and more eying'                         → 'и больше взглядывания'
-482. 'and sidling around each other.'         → 'и обхода друг друга.'
-483. 'Presently they were shoulder to shoulder.' → 'Вскоре они стояли плечом к плечу.'
-484. 'Tom said:'                              → 'Том сказал:'
-485. 'Get away from here!'                    → 'Убирайся отсюда!'
-486. 'Go away yourself!'                      → 'Сам убирайся!'
-487. "I won't."                               → 'Не уйду.'
-488. "I won't either."                        → 'Я тоже не уйду.'
-489. 'So they stood,'                         → 'Так они стояли,'
-490. 'each with a foot placed'                → 'каждый с ногой, поставленной'
-491. 'at an angle as a brace,'                → 'под углом как опора,'
-492. 'and both shoving with might and main,'  → 'и оба толкались изо всех сил,'
-493. 'and glowering at each other'            → 'и злобно смотрели друг на друга'
-494. 'with hate.'                             → 'с ненавистью.'
-495. 'But neither could get an advantage.'    → 'Но никто не мог получить преимущество.'
-496. 'After struggling'                       → 'После борьбы'
-497. 'till both were hot and flushed,'        → 'пока оба не раскраснелись и вспотели,'
-498. 'each relaxed his strain'                → 'каждый ослабил напряжение'
-499. 'with watchful caution,'                 → 'с осторожным вниманием,'
-500. 'and Tom said:'                          → 'и Том сказал:'
-501. "You're a coward and a pup."             → 'Ты трус и щенок.'
-502. "I'll tell my big brother on you,"       → 'Я пожалуюсь на тебя своему старшему брату,'
-503. 'and he can thrash you'                  → 'и он может побить тебя'
-504. 'with his little finger,'                → 'одним мизинцем,'
-505. "and I'll make him do it,"               → 'и я заставлю его это сделать,'
-506. 'too.'                                   → 'тоже.'
-507. 'What do I care'                         → 'Что мне до'
-508. 'for your big brother?'                  → 'твоего старшего брата?'
-509. "I've got a brother"                     → 'У меня есть брат,'
-510. "that's bigger than he is—"              → 'который больше его —'
-511. "and what's more,"                       → 'и более того,'
-512. 'he can throw him over that fence,'      → 'он может перебросить его через этот забор,'
-513. 'too.'                                   → 'тоже.'
-514. 'Both brothers were imaginary.'          → 'Оба брата были вымышленными.'
-515. "That's a lie."                          → 'Это ложь.'
-516. 'Your saying so'                         → 'Твои слова'
-517. "don't make it so."                      → 'не делают это правдой.'
-518. 'Tom drew a line'                        → 'Том провел линию'
-519. 'in the dust'                            → 'в пыли'
-520. 'with his big toe,'                      → 'большим пальцем ноги,'
-521. 'and said:'                              → 'и сказал:'
-522. 'I dare you to step over that,'          → 'Я вызываю тебя переступить это,'
-523. "and I'll lick you"                      → 'и я побью тебя'
-524. "till you can't stand up."               → 'до тех пор, пока ты не сможешь встать.'
-525. "Anybody that'll take a dare"            → 'Кто принимает вызов,'
-526. 'will steal sheep.'                      → 'тот ворует овец.'
-527. 'The new boy stepped over promptly,'     → 'Новый мальчик сразу переступил,'
-528. 'and said:'                              → 'и сказал:'
-529. "Now you said you'd do it,"              → 'Теперь ты сказал, что сделаешь это,'
-530. "now let's see you do it."               → 'давай посмотрим, как ты это сделаешь.'
-531. "Don't you crowd me now;"                → 'Не толкай меня сейчас;'
-532. 'you better look out.'                   → 'тебе лучше быть осторожным.'
-533. 'Well,'                                  → 'Ну,'
-534. "you said you'd do it—"                  → 'ты сказал, что сделаешь это —'
-535. "why don't you do it?"                   → 'почему не делаешь?'
-536. 'By jingo!'                              → 'Клянусь!'
-537. 'for two cents'                          → 'за два цента'
-538. 'I will do it.'                          → 'я это сделаю.'
-539. 'The new boy took two broad coppers'     → 'Новый мальчик достал два медных гроша'
-540. 'out of his pocket'                      → 'из кармана'
-541. 'and held them out'                      → 'и протянул их'
-542. 'with derision.'                         → 'с насмешкой.'
-543. 'Tom struck them to the ground.'         → 'Том сбил их на землю.'
-544. 'In an instant'                          → 'В мгновение ока'
-545. 'both boys were rolling'                 → 'оба мальчика катались'
-546. 'and tumbling in the dirt,'              → 'и валялись в грязи,'
-547. 'gripped together like cats;'            → 'сцепившись, как кошки;'
-548. 'and for the space of a minute'          → 'и в течение минуты'
-549. 'they tugged and tore'                   → 'они тянули и рвали'
-550. "at each other's hair"                   → 'друг другу волосы'
-551. 'and clothes,'                           → 'и одежда,'
-552. 'punched and scratched'                  → 'ударил и поцарапал'
-553. "each other's nose,"                     → 'друг другу нос,'
-554. 'and covered themselves'                 → 'и покрыли себя'
-555. 'with dust and glory.'                   → 'пылью и славой.'
-556. 'Presently the confusion took form,'     → 'Вскоре путаница обрела форму,'
-557. 'and through the fog of battle'          → 'и сквозь туман битвы'
-558. 'Tom appeared,'                          → 'появился Том,'
-559. 'seated astride the new boy,'            → 'сидя верхом на новом мальчике,'
-560. 'and pounding him'                       → 'и колотил его'
-561. 'with his fists.'                        → 'кулаками.'
-562. "Holler 'nuff!"                          → "Кричи 'достаточно!'"
-563. 'said he.'                               → 'сказал он.'
-564. 'The boy only struggled'                 → 'Мальчик только боролся'
-565. 'to free himself.'                       → 'чтобы освободиться.'
-566. 'He was crying—'                         → 'Он плакал —'
-567. 'mainly from rage.'                      → 'в основном от ярости.'
-568. "Holler 'nuff!—"                         → "Кричи 'достаточно!' —"
-569. 'and the pounding went on.'              → 'и побои продолжались.'
-570. 'At last the stranger got out'           → 'Наконец незнакомец выдавил'
-571. "a smothered 'Nuff!"                     → "приглушенное 'Достаточно!'"
-572. 'and Tom let him up'                     → 'и Том отпустил его'
-573. 'and said:'                              → 'и сказал:'
-574. "Now that'll learn you."                 → 'Теперь ты научишься.'
-575. 'Better look out'                        → 'Лучше смотри'
-576. "who you're fooling with"                → 'с кем шутишь'
-577. 'next time.'                             → 'в следующий раз.'
-578. 'The new boy went off'                   → 'Новый мальчик ушел,'
-579. 'brushing the dust'                      → 'стряхивая пыль'
-580. 'from his clothes,'                      → 'с одежды,'
-581. 'sobbing,'                               → 'рыдая,'
-582. 'snuffling,'                             → 'шмыгая,'
-583. 'and occasionally looking back'          → 'и иногда оглядываясь'
-584. 'and shaking his head'                   → 'и качая головой'
-585. 'and threatening'                        → 'и угрожая'
-586. 'what he would do to Tom'                → 'что он сделает с Томом'
-587. 'the next time he caught him out.'       → 'в следующий раз, когда поймает его.'
-588. 'To which Tom responded'                 → 'На что Том ответил'
-589. 'with jeers,'                            → 'насмешками,'
-590. 'and started off'                        → 'и отправился'
-591. 'in high feather,'                       → 'в приподнятом настроении,'
-592. 'and as soon as his back was turned'     → 'и как только он повернулся спиной,'
-593. 'the new boy snatched up a stone,'       → 'новый мальчик схватил камень,'
-594. 'threw it'                               → 'бросил его'
-595. 'and hit him between the shoulders'      → 'и попал ему между лопаток'
-596. 'and then turned tail'                   → 'и затем повернулся'
-597. 'and ran like an antelope.'              → 'и побежал как антилопа.'
-598. 'Tom chased the traitor home,'           → 'Том погнался за предателем до дома,'
-599. 'and thus found out'                     → 'и так узнал'
-600. 'where he lived.'                        → 'где он живет.'
-601. 'He then held a position'                → 'Затем он занял позицию'
-602. 'at the gate'                            → 'у ворот'
-603. 'for some time,'                         → 'на некоторое время,'
-604. 'daring the enemy'                       → 'вызывая врага'
-605. 'to come outside,'                       → 'выйти наружу,'
-606. 'but the enemy only made faces'          → 'но враг только корчил рожи'
-607. 'at him through the window'              → 'ему через окно'
-608. 'and declined.'                          → 'и отказался.'
-609. "At last the enemy's mother appeared,"   → 'Наконец появилась мать врага,'
-610. 'and called Tom a bad,'                  → 'и назвала Тома плохим,'
-611. 'vicious,'                               → 'злобным,'
-612. 'vulgar child,'                          → 'вульгарным ребенком,'
-613. 'and ordered him away.'                  → 'и приказала ему уйти.'
-614. 'So he went away;'                       → 'Так что он ушел;'
-615. "but he said he 'lowed"                  → 'но он сказал, что собирается'
-616. 'to lay for that boy.'                   → 'подкараулить этого мальчика.'
-617. 'He got home pretty late'                → 'Он вернулся домой довольно поздно'
-618. 'that night,'                            → 'в ту ночь,'
-619. 'and when he climbed cautiously'         → 'и когда он осторожно залез'
-620. 'in at the window,'                      → 'в окно,'
-621. 'he uncovered an ambuscade,'             → 'он обнаружил засаду,'
-622. 'in the person of his aunt;'             → 'в лице своей тети;'
-623. 'and when she saw the state'             → 'и когда она увидела состояние'
-624. 'his clothes were in'                    → 'его одежды'
-625. 'her resolution to turn'                 → 'ее решение превратить'
-626. 'his Saturday holiday'                   → 'его субботний выходной'
-627. 'into captivity at hard labor'           → 'в каторжные работы'
-628. 'became adamantine'                      → 'стало несокрушимым'
-629. 'in its firmness.'                       → 'в своей твердости.'
+  9. 'The old lady pulled her spectacles down' → 'Старушка сняла очки'
+ 10. 'and looked over them about the room;'   → 'и посмотрела поверх них по комнате;'
+ 11. 'then she put them up'                   → 'потом надела их обратно'
+ 12. 'and looked out under them.'             → 'и посмотрела из-под них.'
+ 13. 'She seldom or never looked _through_ them' → 'Она редко или никогда не смотрела _через_ них'
+ 14. 'for so small a thing as a boy;'         → 'на такую мелочь, как мальчишка;'
+ 15. 'they were her state pair,'              → 'это была её пара для особых случаев,'
+ 16. 'the pride of her heart,'                → 'гордость её сердца,'
+ 17. 'and were built for “style,”'            → 'и они были сделаны для "стиля,"'
+ 18. 'not service—'                           → 'а не для службы —'
+ 19. 'she could have seen through a pair of stove-lids just as well.' → 'она могла бы видеть через пару крышек от печи так же хорошо.'
+ 20. 'She looked perplexed for a moment,'     → 'Она выглядела озадаченной на мгновение,'
+ 21. 'and then said,'                         → 'а потом сказала,'
+ 22. 'not fiercely,'                          → 'не яростно,'
+ 23. 'but still loud enough for the furniture to hear:' → 'но всё же достаточно громко, чтобы мебель услышала:'
+ 24. '“Well, I lay if I get hold of you I’ll—”' → '"Ну, если я тебя поймаю, я—"'
+ 25. 'She did not finish,'                    → 'Она не закончила,'
+ 26. 'for by this time she was bending down'  → 'потому что к этому времени она уже наклонилась'
+ 27. 'and punching under the bed with the broom,' → 'и тыкала под кровать метлой,'
+ 28. 'and so she needed breath to punctuate the punches with.' → 'и ей нужен был воздух, чтобы сопровождать удары.'
+ 29. 'She resurrected nothing but the cat.'   → 'Она извлекла только кота.'
+ 30. '“I never did see the beat of that boy!”' → '"Я никогда не видела такого мальчишку!"'
+ 31. 'She went to the open door'              → 'Она подошла к открытому двери'
+ 32. 'and stood in it'                        → 'и встала в ней'
+ 33. 'and looked out among the tomato vines'  → 'и посмотрела на томатные лозы'
+ 34. 'and “jimpson” weeds that constituted the garden.' → 'и сорняки "джимсон", которые составляли сад.'
+ 35. 'No Tom.'                                → 'Тома не было.'
+ 36. 'So she lifted up her voice at an angle calculated for distance' → 'Поэтому она подняла голос на угол, рассчитанный на расстояние'
+ 37. 'and shouted:'                           → 'и закричала:'
+ 38. '“Y-o-u-u TOM!”'                         → '"Т-ы-ы ТОМ!"'
+ 39. 'There was a slight noise behind her'    → 'Позади неё раздался лёгкий шум'
+ 40. 'and she turned just in time to seize a small boy by the slack of his roundabout' → 'и она обернулась как раз вовремя, чтобы схватить маленького мальчика за свободный край его куртки'
+ 41. 'and arrest his flight.'                 → 'и остановить его побег.'
+ 42. '“There!'                                → '"Вот!'
+ 43. 'I might ’a’ thought of that closet.'    → 'Я могла бы подумать об этом шкафу.'
+ 44. 'What you been doing in there?”'         → 'Что ты там делал?"'
+ 45. '“Nothing.”'                             → '"Ничего."'
+ 46. '“Nothing!'                              → '"Ничего!'
+ 47. 'Look at your hands.'                    → 'Посмотри на свои руки.'
+ 48. 'And look at your mouth.'                → 'И посмотри на свой рот.'
+ 49. 'What _is_ that truck?”'                 → 'Что _это_ за штука?"'
+ 50. '“I don’t know, aunt.”'                  → '"Не знаю, тётя."'
+ 51. '“Well, I know.'                         → '"Ну, я знаю.'
+ 52. 'It’s jam—that’s what it is.'            → 'Это варенье — вот что это такое.'
+ 53. 'Forty times I’ve said if you didn’t let that jam alone I’d skin you.' → 'Сорок раз я говорила, если ты не оставишь это варенье в покое, я тебя выпорю.'
+ 54. 'Hand me that switch.”'                  → 'Дай мне эту розгу."'
+ 55. 'The switch hovered in the air—'         → 'Розга замерла в воздухе —'
+ 56. 'the peril was desperate—'               → 'опасность была отчаянной —'
+ 57. '“My!'                                   → '"Ой!'
+ 58. 'Look behind you, aunt!”'                → 'Посмотри за собой, тётя!"'
+ 59. 'The old lady whirled round,'            → 'Старушка резко обернулась,'
+ 60. 'and snatched her skirts out of danger.' → 'и выдернула свои юбки из опасности.'
+ 61. 'The lad fled on the instant,'           → 'Мальчик мгновенно убежал,'
+ 62. 'scrambled up the high board-fence,'     → 'взобрался на высокий забор,'
+ 63. 'and disappeared over it.'               → 'и исчез за ним.'
+ 64. 'His aunt Polly stood surprised a moment,' → 'Его тётя Полли стояла удивлённая на мгновение,'
+ 65. 'and then broke into a gentle laugh.'    → 'а затем разразилась мягким смехом.'
+ 66. '“Hang the boy,'                         → '"Чёрт бы побрал этого мальчишку,'
+ 67. 'can’t I never learn anything?'          → 'разве я никогда ничему не научусь?'
+ 68. 'Ain’t he played me tricks enough like that' → 'Разве он не разыгрывал меня достаточно раз так,'
+ 69. 'for me to be looking out for him by this time?' → 'чтобы я уже начала его остерегаться?'
+ 70. 'But old fools is the biggest fools there is.' → 'Но старые дураки — самые большие дураки.'
+ 71. 'Can’t learn an old dog new tricks,'     → 'Старую собаку новым трюкам не научишь,'
+ 72. 'as the saying is.'                      → 'как говорится.'
+ 73. 'But my goodness,'                       → 'Но, боже мой,'
+ 74. 'he never plays them alike,'             → 'он никогда не разыгрывает их одинаково,'
+ 75. 'two days,'                              → 'два дня,'
+ 76. 'and how is a body to know what’s coming?' → 'и как же можно знать, что будет дальше?'
+ 77. 'He ’pears to know just how long he can torment me' → 'Кажется, он знает, как долго он может меня мучить,'
+ 78. 'before I get my dander up,'             → 'прежде чем я выйду из себя,'
+ 79. 'and he knows if he can make out to put me off for a minute' → 'и он знает, если ему удастся отвлечь меня на минуту'
+ 80. 'or make me laugh,'                      → 'или рассмешить меня,'
+ 81. 'it’s all down again'                    → 'всё снова сходит на нет,'
+ 82. 'and I can’t hit him a lick.'            → 'и я не могу его ударить.'
+ 83. 'I ain’t doing my duty by that boy,'     → 'Я не выполняю свой долг перед этим мальчиком,'
+ 84. 'and that’s the Lord’s truth,'           → 'и это чистая правда,'
+ 85. 'goodness knows.'                        → 'бог знает.'
+ 86. 'Spare the rod and spile the child,'     → 'Пощади розгу и испорти ребёнка,'
+ 87. 'as the Good Book says.'                 → 'как говорит Священное Писание.'
+ 88. 'I’m a laying up sin and suffering for us both,' → 'Я коплю грех и страдания для нас обоих,'
+ 89. 'I know.'                                → 'я знаю.'
+ 90. 'He’s full of the Old Scratch,'          → 'Он полон дьявольщины,'
+ 91. 'but laws-a-me!'                         → 'но, господи!'
+ 92. 'he’s my own dead sister’s boy,'         → 'он сын моей покойной сестры,'
+ 93. 'poor thing,'                            → 'бедняжка,'
+ 94. 'and I ain’t got the heart to lash him,' → 'и у меня нет сердца его наказывать,'
+ 95. 'somehow.'                               → 'как-то так.'
+ 96. 'Every time I let him off,'              → 'Каждый раз, когда я его отпускаю,'
+ 97. 'my conscience does hurt me so,'         → 'моя совесть так мучает меня,'
+ 98. 'and every time I hit him my old heart most breaks.' → 'и каждый раз, когда я его бью, моё старое сердце почти разрывается.'
+ 99. 'Well-a-well,'                           → 'Ну что ж,'
+100. 'man that is born of woman is of few days' → 'человек, рождённый женщиной, живёт недолго'
+101. 'and full of trouble,'                   → 'и полна бед,'
+102. 'as the Scripture says,'                 → 'как говорится в Писании,'
+103. 'and I reckon it’s so.'                  → 'и я думаю, что это так.'
+104. 'He’ll play hookey this evening,'        → 'Он прогуляет сегодня вечером,'
+105. 'and I’ll just be obleeged to make him work,' → 'и мне придется заставить его работать,'
+106. 'tomorrow,'                              → 'завтра,'
+107. 'to punish him.'                         → 'чтобы наказать его.'
+108. 'It’s mighty hard to make him work Saturdays,' → 'Очень трудно заставить его работать по субботам,'
+109. 'when all the boys is having holiday,'   → 'когда все мальчишки отдыхают,'
+110. 'but he hates work more than he hates anything else,' → 'но он ненавидит работу больше всего на свете,'
+111. 'and I’ve _got_ to do some of my duty by him,' → 'и я должна выполнить свой долг перед ним,'
+112. 'or I’ll be the ruination of the child.”' → 'иначе я погублю ребенка.”'
+113. 'Tom did play hookey,'                   → 'Том действительно прогулял,'
+114. 'and he had a very good time.'           → 'и он отлично провел время.'
+115. 'He got back home barely in season to help Jim,' → 'Он вернулся домой едва успев помочь Джиму,'
+116. 'the small colored boy,'                 → 'маленькому цветному мальчику,'
+117. 'saw next-day’s wood'                    → 'распилить дрова на завтра'
+118. 'and split the kindlings before supper—' → 'и расколоть щепки до ужина —'
+119. 'at least he was there in time to tell his adventures to Jim' → 'по крайней мере, он успел рассказать свои приключения Джиму'
+120. 'while Jim did three-fourths of the work.' → 'пока Джим выполнял три четверти работы.'
+121. 'Tom’s younger brother'                  → 'Младший брат Тома'
+122. '(or rather half-brother) Sid was already through with his part of the work' → '(или скорее сводный брат) Сид уже закончил свою часть работы'
+123. '(picking up chips),'                    → '(собирал щепки),'
+124. 'for he was a quiet boy,'                → 'потому что он был тихим мальчиком,'
+125. 'and had no adventurous,'                → 'и не имел авантюрных,'
+126. 'trouble-some ways.'                     → 'беспокойных привычек.'
+127. 'While Tom was eating his supper,'       → 'Пока Том ел свой ужин,'
+128. 'and stealing sugar as opportunity offered,' → 'и воровал сахар, когда была возможность,'
+129. 'Aunt Polly asked him questions that were full of guile,' → 'тётя Полли задавала ему вопросы, полные хитрости,'
+130. 'and very deep—'                         → 'и очень глубокие —'
+131. 'for she wanted to trap him into damaging revealments.' → 'потому что она хотела поймать его на компрометирующих признаниях.'
+132. 'Like many other simple-hearted souls,'  → 'Как и многие другие простодушные души,'
+133. 'it was her pet vanity to believe she was endowed with a talent for dark and mysterious diplomacy,' → 'её любимой слабостью было верить, что она наделена талантом к тёмной и загадочной дипломатии,'
+134. 'and she loved to contemplate her most transparent devices as marvels of low cunning.' → 'и она любила рассматривать свои самые прозрачные уловки как чудеса низкой хитрости.'
+135. 'Said she:'                              → 'Сказала она:'
+136. '“Tom,'                                  → '“Том,'
+137. 'it was middling warm in school,'        → 'в школе было довольно тепло,'
+138. 'warn’t it?”'                            → 'не так ли?”'
+139. '“Yes’m.”'                               → '“Да, мэм.”'
+140. '“Powerful warm,'                        → '“Очень тепло,'
+141. 'warn’t it?”'                            → 'не так ли?”'
+142. '“Yes’m.”'                               → '“Да, мэм.”'
+143. '“Didn’t you want to go in a-swimming,'  → '“Не хотелось тебе пойти поплавать,'
+144. 'Tom?”'                                  → 'Том?”'
+145. 'A bit of a scare shot through Tom—'     → 'Тома охватил страх —'
+146. 'a touch of uncomfortable suspicion.'    → 'чутьё неприятного подозрения.'
+147. 'He searched Aunt Polly’s face,'         → 'Он изучал лицо тёти Полли,'
+148. 'but it told him nothing.'               → 'но оно ничего ему не сказало.'
+149. 'So he said:'                            → 'Поэтому он сказал:'
+150. '“No’m—'                                 → '“Нет, мэм —'
+151. 'well,'                                  → 'ну,'
+152. 'not very much.”'                        → 'не очень-то.'
+153. 'The old lady reached out her hand'      → 'Старушка протянула руку'
+154. 'and felt Tom’s shirt,'                  → 'и потрогала рубашку Тома,'
+155. 'and said:'                              → 'и сказала:'
+156. '“But you ain’t too warm now,'           → '«Но теперь ты не слишком теплый,'
+157. 'though.”'                               → 'все же.»'
+158. 'And it flattered her to reflect that she had discovered that the shirt was dry' → 'И ей было приятно думать, что она обнаружила, что рубашка сухая,'
+159. 'without anybody knowing that that was what she had in her mind.' → 'никто не знал, что это было у нее на уме.'
+160. 'But in spite of her,'                   → 'Но несмотря на нее,'
+161. 'Tom knew where the wind lay,'           → 'Том знал, откуда ветер дует,'
+162. 'now.'                                   → 'теперь.'
+163. 'So he forestalled what might be the next move:' → 'Поэтому он предвосхитил следующий шаг:'
+164. '“Some of us pumped on our heads—'       → '«Некоторые из нас поливали головы —'
+165. 'mine’s damp yet.'                       → 'моя еще влажная.'
+166. 'See?”'                                  → 'Видите?»'
+167. 'Aunt Polly was vexed to think she had overlooked that bit of circumstantial evidence,' → 'Тетя Полли была раздосадована, что упустила эту улику,'
+168. 'and missed a trick.'                    → 'и пропустила ход.'
+169. 'Then she had a new inspiration:'        → 'Тогда у нее появилась новая идея:'
+170. '“Tom,'                                  → '«Том,'
+171. 'you didn’t have to undo your shirt collar where I sewed it,' → 'тебе не пришлось расстегивать воротник рубашки, где я его зашила,'
+172. 'to pump on your head,'                  → 'чтобы поливать голову,'
+173. 'did you?'                               → 'правда?'
+174. 'Unbutton your jacket!”'                 → 'Расстегни пиджак!»'
+175. 'The trouble vanished out of Tom’s face.' → 'Проблема исчезла с лица Тома.'
+176. 'He opened his jacket.'                  → 'Он расстегнул пиджак.'
+177. 'His shirt collar was securely sewed.'   → 'Воротник рубашки был надежно зашит.'
+178. '“Bother!'                               → '«Черт возьми!'
+179. 'Well,'                                  → 'Ну,'
+180. 'go ’long with you.'                     → 'иди своей дорогой.'
+181. 'I’d made sure you’d played hookey'      → 'Я была уверена, что ты прогулял школу'
+182. 'and been a-swimming.'                   → 'и купался.'
+183. 'But I forgive ye,'                      → 'Но я прощаю тебя,'
+184. 'Tom.'                                   → 'Том.'
+185. 'I reckon you’re a kind of a singed cat,' → 'Думаю, ты как обожженный кот,'
+186. 'as the saying is—'                      → 'как говорится —'
+187. 'better’n you look.'                     → 'лучше, чем выглядишь.'
+188. '_This_ time.”'                          → 'На этот раз.»'
+189. 'She was half sorry her sagacity had miscarried,' → 'Она была наполовину огорчена, что ее проницательность не сработала,'
+190. 'and half glad that Tom had stumbled into obedient conduct for once.' → 'и наполовину рада, что Том случайно вел себя послушно хоть раз.'
+191. 'But Sidney said:'                       → 'Но Сид сказал:'
+192. '“Well,'                                 → '«Ну,'
+193. 'now,'                                   → 'теперь,'
+194. 'if I didn’t think you sewed his collar with white thread,' → 'если я не ошибаюсь, ты зашила его воротник белыми нитками,'
+195. 'but it’s black.”'                       → 'а он черный.»'
+196. '“Why,'                                  → '«Почему,'
+197. 'I did sew it with white!'               → 'я действительно зашила его белыми!'
+198. 'Tom!”'                                  → 'Том!»'
+199. 'But Tom did not wait for the rest.'     → 'Но Том не стал ждать остального.'
+200. 'As he went out at the door he said:'    → 'Выходя за дверь, он сказал:'
+201. '“Siddy,'                                → '"Сидди,'
+202. 'I’ll lick you for that.”'               → 'я тебя за это отлуплю."'
+203. 'In a safe place Tom examined two large needles which were thrust into the lapels of his jacket,' → 'В безопасном месте Том осмотрел две большие иглы, которые были воткнуты в лацканы его куртки,'
+204. 'and had thread bound about them—'       → 'и на них была намотана нить —'
+205. 'one needle carried white thread'        → 'на одной игле была белая нить,'
+206. 'and the other black.'                   → 'а на другой черная.'
+207. 'He said:'                               → 'Он сказал:'
+208. '“She’d never noticed if it hadn’t been for Sid.' → '"Она бы никогда не заметила, если бы не Сид.'
+209. 'Confound it!'                           → 'Черт возьми!'
+210. 'sometimes she sews it with white,'      → 'иногда она шьет белой нитью,'
+211. 'and sometimes she sews it with black.'  → 'а иногда черной.'
+212. 'I wish to gee-miny she’d stick to one or t’other—' → 'Я бы хотел, чтобы она придерживалась одной или другой —'
+213. 'I can’t keep the run of ’em.'           → 'я не могу за ними уследить.'
+214. 'But I bet you I’ll lam Sid for that.'   → 'Но я тебе обещаю, я отлуплю Сида за это.'
+215. 'I’ll learn him!”'                       → 'Я его научу!"'
+216. 'He was not the Model Boy of the village.' → 'Он не был образцовым мальчиком деревни.'
+217. 'He knew the model boy very well though—' → 'Но он хорошо знал образцового мальчика —'
+218. 'and loathed him.'                       → 'и ненавидел его.'
+219. 'Within two minutes,'                    → 'Через две минуты,'
+220. 'or even less,'                          → 'или даже меньше,'
+221. 'he had forgotten all his troubles.'     → 'он забыл все свои проблемы.'
+222. 'Not because his troubles were one whit less heavy and bitter to him than a man’s are to a man,' → 'Не потому, что его проблемы были хоть на йоту легче и менее горькими для него, чем у взрослого человека,'
+223. 'but because a new and powerful interest bore them down' → 'а потому, что новый и мощный интерес вытеснил их'
+224. 'and drove them out of his mind for the time—' → 'и выгнал из его головы на время —'
+225. 'just as men’s misfortunes are forgotten in the excitement of new enterprises.' → 'точно так же, как несчастья мужчин забываются в волнении новых начинаний.'
+226. 'This new interest was a valued novelty in whistling,' → 'Этот новый интерес был ценным новшеством в свисте,'
+227. 'which he had just acquired from a negro,' → 'которое он только что перенял у негра,'
+228. 'and he was suffering to practise it undisturbed.' → 'и ему не терпелось практиковаться в этом без помех.'
+229. 'It consisted in a peculiar bird-like turn,' → 'Он заключался в особом птичьем повороте,'
+230. 'a sort of liquid warble,'               → 'вроде жидкого трели,'
+231. 'produced by touching the tongue to the roof of the mouth at short intervals in the midst of the music—' → 'создаваемой прикосновением языка к небу через короткие интервалы в середине музыки —'
+232. 'the reader probably remembers how to do it,' → 'читатель, вероятно, помнит, как это делать,'
+233. 'if he has ever been a boy.'             → 'если он когда-либо был мальчиком.'
+234. 'Diligence and attention soon gave him the knack of it,' → 'Усердие и внимание вскоре дали ему сноровку в этом,'
+235. 'and he strode down the street with his mouth full of harmony' → 'и он зашагал по улице с полным гармонии ртом'
+236. 'and his soul full of gratitude.'        → 'и душой, полной благодарности.'
+237. 'He felt much as an astronomer feels who has discovered a new planet—' → 'Он чувствовал себя так же, как астроном, который открыл новую планету —'
+238. 'no doubt,'                              → 'без сомнения,'
+239. 'as far as strong,'                      → 'что касается сильного,'
+240. 'deep,'                                  → 'глубокого,'
+241. 'unalloyed pleasure is concerned,'       → 'чистого удовольствия,'
+242. 'the advantage was with the boy,'        → 'преимущество было на стороне мальчика,'
+243. 'not the astronomer.'                    → 'а не астронома.'
+244. 'The summer evenings were long.'         → 'Летние вечера были долгими.'
+245. 'It was not dark,'                       → 'Еще не стемнело,'
+246. 'yet.'                                   → 'пока.'
+247. 'Presently Tom checked his whistle.'     → 'Вскоре Том прекратил свистеть.'
+248. 'A stranger was before him—'             → 'Перед ним был незнакомец —'
+249. 'a boy a shade larger than himself.'     → 'мальчик чуть больше его самого.'
+250. 'A new-comer of any age or either sex was an impressive curiosity in the poor little shabby village of St. Petersburg.' → 'Новый житель любого возраста или пола был впечатляющим любопытством в бедной маленькой обшарпанной деревне Сент-Питерсберг.'
+251. 'This boy was well dressed,'             → 'Этот мальчик был хорошо одет,'
+252. 'too—'                                   → 'тоже—'
+253. 'well dressed on a week-day.'            → 'хорошо одет в будний день.'
+254. 'This was simply astounding.'            → 'Это было просто поразительно.'
+255. 'His cap was a dainty thing,'            → 'Его кепка была изящной вещью,'
+256. 'his close-buttoned blue cloth roundabout was new and natty,' → 'его плотно застегнутая синяя куртка была новой и аккуратной,'
+257. 'and so were his pantaloons.'            → 'и такими же были его брюки.'
+258. 'He had shoes on—'                       → 'На нем были туфли—'
+259. 'and it was only Friday.'                → 'и был только пятница.'
+260. 'He even wore a necktie,'                → 'Он даже носил галстук,'
+261. 'a bright bit of ribbon.'                → 'яркий кусочек ленты.'
+262. 'He had a citified air about him that ate into Tom’s vitals.' → 'У него был городской вид, который ел Тома изнутри.'
+263. 'The more Tom stared at the splendid marvel,' → 'Чем больше Том смотрел на великолепное чудо,'
+264. 'the higher he turned up his nose at his finery' → 'тем выше он задирал нос на его наряд'
+265. 'and the shabbier and shabbier his own outfit seemed to him to grow.' → 'и тем более потрепанным казался ему его собственный наряд.'
+266. 'Neither boy spoke.'                     → 'Ни один из мальчиков не говорил.'
+267. 'If one moved,'                          → 'Если один двигался,'
+268. 'the other moved—'                       → 'другой двигался—'
+269. 'but only sidewise,'                     → 'но только в сторону,'
+270. 'in a circle;'                           → 'по кругу;'
+271. 'they kept face to face'                 → 'они все время смотрели друг другу в лицо'
+272. 'and eye to eye all the time.'           → 'и в глаза.'
+273. 'Finally Tom said:'                      → 'Наконец Том сказал:'
+274. '“I can lick you!”'                      → '«Я могу тебя побить!»'
+275. '“I’d like to see you try it.”'          → '«Хотел бы я посмотреть, как ты попробуешь это сделать.»'
+276. '“Well,'                                 → '«Ну,'
+277. 'I can do it.”'                          → 'я могу это сделать.»'
+278. '“No you can’t,'                         → '«Нет, не можешь,'
+279. 'either.”'                               → 'все равно.»'
+280. '“Yes I can.”'                           → '«Да, могу.»'
+281. '“No you can’t.”'                        → '«Нет, не можешь.»'
+282. '“I can.”'                               → '«Могу.»'
+283. '“You can’t.”'                           → '«Не можешь.»'
+284. '“Can!”'                                 → '«Могу!»'
+285. '“Can’t!”'                               → '«Не можешь!»'
+286. 'An uncomfortable pause.'                → 'Неловкая пауза.'
+287. 'Then Tom said:'                         → 'Тогда Том сказал:'
+288. '“What’s your name?”'                    → '«Как тебя зовут?»'
+289. '“’Tisn’t any of your business,'         → '«Это не твое дело,'
+290. 'maybe.”'                                → 'может быть.»'
+291. '“Well I ’low I’ll _make_ it my business.”' → '«Ну, я думаю, я _сделаю_ это своим делом.»'
+292. '“Well why don’t you?”'                  → '«Ну, почему бы тебе не сделать?»'
+293. '“If you say much,'                      → '«Если ты скажешь много,'
+294. 'I will.”'                               → 'я сделаю.»'
+295. '“Much—much—_much_.'                     → '«Много—много—_много_.'
+296. 'There now.”'                            → 'Вот так.»'
+297. '“Oh,'                                   → '«О,'
+298. 'you think you’re mighty smart,'         → 'ты думаешь, что ты очень умный,'
+299. '_don’t_ you?'                           → '_не так ли_?'
+300. 'I could lick you with one hand tied behind me,' → 'Я мог бы побить тебя одной рукой, привязанной за спиной,'
+301. 'if I wanted to.”'                       → 'если бы я хотел.'
+302. '“Well why don’t you _do_ it?'           → 'Ну почему ты не делаешь это?'
+303. 'You _say_ you can do it.”'              → 'Ты говоришь, что можешь это сделать.'
+304. '“Well I _will_,'                        → 'Ну я сделаю,'
+305. 'if you fool with me.”'                  → 'если ты будешь со мной шутить.'
+306. '“Oh yes—'                               → 'О да—'
+307. 'I’ve seen whole families in the same fix.”' → 'Я видел целые семьи в такой же ситуации.'
+308. '“Smarty!'                               → 'Умник!'
+309. 'You think you’re _some_,'               → 'Ты думаешь, что ты кто-то,'
+310. 'now,'                                   → 'сейчас,'
+311. '_don’t_ you?'                           → 'не так ли?'
+312. 'Oh,'                                    → 'О,'
+313. 'what a hat!”'                           → 'какая шляпа!'
+314. '“You can lump that hat if you don’t like it.' → 'Ты можешь выбросить эту шляпу, если она тебе не нравится.'
+315. 'I dare you to knock it off—'            → 'Я смею тебя сбить её—'
+316. 'and anybody that’ll take a dare will suck eggs.”' → 'и любой, кто примет вызов, будет сосать яйца.'
+317. '“You’re a liar!”'                       → 'Ты лжец!'
+318. '“You’re another.”'                      → 'Ты сам такой.'
+319. '“You’re a fighting liar and dasn’t take it up.”' → 'Ты лжец и боишься принять вызов.'
+320. '“Aw—take a walk!”'                      → 'А—иди погуляй!'
+321. '“Say—'                                  → 'Слушай—'
+322. 'if you give me much more of your sass I’ll take and bounce a rock off’n your head.”' → 'если ты ещё раз огрызнешься, я брошу камень тебе в голову.'
+323. '“Oh,'                                   → 'О,'
+324. 'of _course_ you will.”'                 → 'конечно, ты сделаешь это.'
+325. '“Well I _will_.”'                       → 'Ну я сделаю.'
+326. '“Well why don’t you _do_ it then?'      → 'Ну почему ты не делаешь это тогда?'
+327. 'What do you keep _saying_ you will for?' → 'Зачем ты продолжаешь говорить, что сделаешь?'
+328. 'Why don’t you _do_ it?'                 → 'Почему ты не делаешь это?'
+329. 'It’s because you’re afraid.”'           → 'Это потому что ты боишься.'
+330. '“I _ain’t_ afraid.”'                    → 'Я не боюсь.'
+331. '“You are.”'                             → 'Ты боишься.'
+332. '“I ain’t.”'                             → 'Я не боюсь.'
+333. '“You are.”'                             → 'Ты боишься.'
+334. 'Another pause,'                         → 'Ещё одна пауза,'
+335. 'and more eying and sidling around each other.' → 'и они снова смотрят друг на друга и обходят друг друга.'
+336. 'Presently they were shoulder to shoulder.' → 'Вскоре они оказались плечом к плечу.'
+337. 'Tom said:'                              → 'Том сказал:'
+338. '“Get away from here!”'                  → 'Убирайся отсюда!'
+339. '“Go away yourself!”'                    → 'Уходи сам!'
+340. '“I won’t.”'                             → 'Я не уйду.'
+341. '“I won’t either.”'                      → 'Я тоже не уйду.'
+342. 'So they stood,'                         → 'Так они стояли,'
+343. 'each with a foot placed at an angle as a brace,' → 'каждый с ногой, поставленной под углом как опора,'
+344. 'and both shoving with might and main,'  → 'и оба толкали изо всех сил,'
+345. 'and glowering at each other with hate.' → 'и смотрели друг на друга с ненавистью.'
+346. 'But neither could get an advantage.'    → 'Но никто не мог получить преимущество.'
+347. 'After struggling till both were hot and flushed,' → 'После борьбы, пока оба не раскраснелись и не вспотели,'
+348. 'each relaxed his strain with watchful caution,' → 'каждый ослабил натиск с осторожностью,'
+349. 'and Tom said:'                          → 'и Том сказал:'
+350. '“You’re a coward and a pup.'            → 'Ты трус и щенок.'
+351. 'I’ll tell my big brother on you,'       → 'Я пожалуюсь на тебя своему старшему брату,'
+352. 'and he can thrash you with his little finger,' → 'и он может побить тебя одним мизинцем,'
+353. 'and I’ll make him do it,'               → 'и я заставлю его это сделать,'
+354. 'too.”'                                  → 'тоже.'
+355. '“What do I care for your big brother?'  → '«Что мне твой старший брат?'
+356. 'I’ve got a brother that’s bigger than he is—' → 'У меня есть брат, который больше его —'
+357. 'and what’s more,'                       → 'и более того,'
+358. 'he can throw him over that fence,'      → 'он может перебросить его через этот забор,'
+359. 'too.”'                                  → 'тоже.'
+360. '[Both brothers were imaginary.]'        → '[Оба брата были вымышленными.]'
+361. '“That’s a lie.”'                        → '«Это ложь.»'
+362. '“_Your_ saying so don’t make it so.”'   → '«Твои слова это не делают правдой.»'
+363. 'Tom drew a line in the dust with his big toe,' → 'Том провел линию в пыли большим пальцем ноги,'
+364. 'and said:'                              → 'и сказал:'
+365. '“I dare you to step over that,'         → '«Я вызываю тебя переступить через это,'
+366. 'and I’ll lick you till you can’t stand up.' → 'и я побью тебя, пока ты не сможешь встать.'
+367. 'Anybody that’ll take a dare will steal sheep.”' → 'Кто принимает вызов, тот и овец украдет.»'
+368. 'The new boy stepped over promptly,'     → 'Новый мальчик сразу переступил,'
+369. 'and said:'                              → 'и сказал:'
+370. '“Now you said you’d do it,'             → '«Теперь ты сказал, что сделаешь это,'
+371. 'now let’s see you do it.”'              → 'давай посмотрим, как ты это сделаешь.»'
+372. '“Don’t you crowd me now;'               → '«Не дави на меня сейчас;'
+373. 'you better look out.”'                  → 'тебе лучше быть осторожным.»'
+374. '“Well,'                                 → '«Ну,'
+375. 'you _said_ you’d do it—'                → 'ты сказал, что сделаешь это —'
+376. 'why don’t you do it?”'                  → 'почему не делаешь?»'
+377. '“By jingo!'                             → '«Честное слово!'
+378. 'for two cents I _will_ do it.”'         → 'за два цента я это сделаю.»'
+379. 'The new boy took two broad coppers out of his pocket' → 'Новый мальчик достал из кармана две медные монеты'
+380. 'and held them out with derision.'       → 'и протянул их с насмешкой.'
+381. 'Tom struck them to the ground.'         → 'Том сбил их на землю.'
+382. 'In an instant both boys were rolling and tumbling in the dirt,' → 'В мгновение оба мальчика катались и боролись в пыли,'
+383. 'gripped together like cats;'            → 'сцепившись, как кошки;'
+384. 'and for the space of a minute they tugged and tore at each other’s hair and clothes,' → 'и в течение минуты они тянули и рвали друг другу волосы и одежду,'
+385. 'punched and scratched each other’s nose,' → 'били и царапали носы друг друга,'
+386. 'and covered themselves with dust and glory.' → 'и покрывались пылью и славой.'
+387. 'Presently the confusion took form,'     → 'Вскоре путаница приняла форму,'
+388. 'and through the fog of battle Tom appeared,' → 'и сквозь туман битвы появился Том,'
+389. 'seated astride the new boy,'            → 'сидя верхом на новом мальчике,'
+390. 'and pounding him with his fists.'       → 'и колотя его кулаками.'
+391. '“Holler ’nuff!”'                        → "«Кричи 'достаточно!'»"
+392. 'said he.'                               → 'сказал он.'
+393. 'The boy only struggled to free himself.' → 'Мальчик только пытался освободиться.'
+394. 'He was crying—'                         → 'Он плакал —'
+395. 'mainly from rage.'                      → 'в основном от ярости.'
+396. '“Holler ’nuff!”—'                       → "«Кричи 'достаточно!'» —"
+397. 'and the pounding went on.'              → 'и побои продолжались.'
+398. 'At last the stranger got out a smothered “’Nuff!”' → 'Наконец незнакомец выдавил приглушенное «Достаточно!»'
+399. 'and Tom let him up and said:'           → 'и Том отпустил его и сказал:'
+400. '“Now that’ll learn you.'                → '«Теперь это тебя научит.»'
+401. 'Better look out who you’re fooling with next time.”' → 'Лучше смотри, с кем ты связываешься в следующий раз.'
+402. 'The new boy went off brushing the dust from his clothes,' → 'Новый мальчик ушел, отряхивая пыль с одежды,'
+403. 'sobbing,'                               → 'рыдая,'
+404. 'snuffling,'                             → 'шмыгая,'
+405. 'and occasionally looking back'          → 'и иногда оглядываясь назад'
+406. 'and shaking his head'                   → 'и качая головой'
+407. 'and threatening what he would do to Tom the “next time he caught him out.”' → 'и угрожая, что сделает с Томом, когда «в следующий раз поймает его».'
+408. 'To which Tom responded with jeers,'     → 'На что Том ответил насмешками,'
+409. 'and started off in high feather,'       → 'и отправился в приподнятом настроении,'
+410. 'and as soon as his back was turned the new boy snatched up a stone,' → 'и как только он повернулся спиной, новый мальчик схватил камень,'
+411. 'threw it'                               → 'бросил его'
+412. 'and hit him between the shoulders'      → 'и попал ему между лопаток'
+413. 'and then turned tail'                   → 'и затем повернулся'
+414. 'and ran like an antelope.'              → 'и побежал как антилопа.'
+415. 'Tom chased the traitor home,'           → 'Том погнался за предателем до дома,'
+416. 'and thus found out where he lived.'     → 'и так узнал, где он живет.'
+417. 'He then held a position at the gate for some time,' → 'Затем он занял позицию у ворот на некоторое время,'
+418. 'daring the enemy to come outside,'      → 'вызывая врага выйти наружу,'
+419. 'but the enemy only made faces at him through the window' → 'но враг только корчил ему рожи из окна'
+420. 'and declined.'                          → 'и отказался.'
+421. 'At last the enemy’s mother appeared,'   → 'Наконец появилась мать врага,'
+422. 'and called Tom a bad,'                  → 'и назвала Тома плохим,'
+423. 'vicious,'                               → 'злобным,'
+424. 'vulgar child,'                          → 'вульгарным ребенком,'
+425. 'and ordered him away.'                  → 'и приказала ему уйти.'
+426. 'So he went away;'                       → 'Так что он ушел;'
+427. 'but he said he “’lowed” to “lay” for that boy.' → 'но он сказал, что «собирается» «подкараулить» этого мальчика.'
+428. 'He got home pretty late that night,'    → 'Он вернулся домой довольно поздно в тот вечер,'
+429. 'and when he climbed cautiously in at the window,' → 'и когда он осторожно залез в окно,'
+430. 'he uncovered an ambuscade,'             → 'он обнаружил засаду,'
+431. 'in the person of his aunt;'             → 'в лице своей тети;'
+432. 'and when she saw the state his clothes were in her resolution to turn his Saturday holiday into captivity at hard labor became adamantine in its firmness.' → 'и когда она увидела состояние его одежды, ее решение превратить его субботний выходной в плен с тяжелым трудом стало несокрушимым в своей твердости.'
