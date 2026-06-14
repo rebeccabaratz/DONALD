@@ -21,4 +21,8 @@ debug.keystore
 /.build-outputs/
 
 *.txt
+!tom_sawyer.txt
+!phrases_chapter*.txt
 *.png
+tom_sawyer_librivox/
+tom_sawyer_librivox.zip
