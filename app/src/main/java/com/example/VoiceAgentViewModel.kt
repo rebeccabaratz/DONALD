@@ -206,8 +206,16 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         audioPlayer.drainAndStopStreaming()
 
         if (_state.value != AgentState.PAUSED) {
-            Log.d(TAG, "handleTurnComplete: resuming → startListening")
-            startListening()
+            if (_mode.value == AgentMode.BOOK_READING) {
+                // Reconnect for fresh context — prevents history from accumulating
+                // across phrases, which would grow input token cost quadratically.
+                Log.d(TAG, "handleTurnComplete: BOOK_READING — reconnecting for fresh context")
+                delay(200)
+                reconnectSession()
+            } else {
+                Log.d(TAG, "handleTurnComplete: resuming → startListening")
+                startListening()
+            }
         } else {
             Log.d(TAG, "handleTurnComplete: state=PAUSED, not restarting")
         }
@@ -379,7 +387,10 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
     private fun buildContextText(): String {
         return when (_mode.value) {
-            AgentMode.BOOK_READING -> "Режим: ЧТЕНИЕ КНИГИ."
+            AgentMode.BOOK_READING -> {
+                val phrase = tomSawyerPhrases.getOrNull(_bookIndex.value) ?: ""
+                "Режим: ЧТЕНИЕ КНИГИ. Текущая фраза для оценки: \"$phrase\"."
+            }
             AgentMode.CONVERSATION -> "Режим: БЕСЕДА."
         }
     }
