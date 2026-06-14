@@ -3,6 +3,7 @@ package com.example
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFormat
+import android.media.AudioManager
 import android.media.AudioTrack
 import android.media.MediaPlayer
 import android.util.Base64
@@ -15,12 +16,22 @@ class AudioPlayer(private val context: Context) : AudioSink {
     private var mediaPlayer: MediaPlayer? = null
     private var audioTrack: AudioTrack? = null
     private var framesWritten = 0
+    private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
     // --- Streaming PCM playback via AudioTrack (Live API) ---
 
     override fun startStreamingPlayback(sampleRate: Int) {
         stopStreaming()
         framesWritten = 0
+
+        // Keep audio in NORMAL mode so output routes to A2DP (car music speakers).
+        // If BT SCO is active (phone-call mode), Android routes output to the car's
+        // hands-free speaker instead. Stopping SCO before playback fixes this.
+        audioManager.mode = AudioManager.MODE_NORMAL
+        if (audioManager.isBluetoothScoOn) {
+            audioManager.stopBluetoothSco()
+            audioManager.isBluetoothScoOn = false
+        }
         val minBuf = AudioTrack.getMinBufferSize(
             sampleRate,
             AudioFormat.CHANNEL_OUT_MONO,
