@@ -33,6 +33,7 @@ class VoiceRecorder(private val context: Context) {
     fun startRecording(
         threshold: Int = 1800,
         silenceDurationMs: Long = 1800,
+        isAiSpeaking: () -> Boolean = { false },
         onAudioChunk: (ByteArray) -> Unit,
         onSilenceDetected: () -> Unit,
         onError: (String) -> Unit
@@ -51,7 +52,7 @@ class VoiceRecorder(private val context: Context) {
 
         try {
             audioRecord = AudioRecord(
-                MediaRecorder.AudioSource.MIC,
+                MediaRecorder.AudioSource.VOICE_RECOGNITION,
                 SAMPLE_RATE,
                 AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT,
@@ -81,6 +82,14 @@ class VoiceRecorder(private val context: Context) {
 
                     val amplitude = computeMaxAmplitude(buffer, read)
                     _currentAmplitude.value = amplitude
+
+                    // Mic-gating: while AI is speaking, discard audio entirely.
+                    // Prevents car speakers from bleeding into the microphone input.
+                    if (isAiSpeaking()) {
+                        hasSpoken = false
+                        silenceAccumMs = 0
+                        continue
+                    }
 
                     if (amplitude > threshold) {
                         hasSpoken = true

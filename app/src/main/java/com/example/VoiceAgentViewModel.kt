@@ -312,6 +312,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         voiceRecorder.startRecording(
             threshold = _threshold.value,
             silenceDurationMs = _silenceDurationMs.value,
+            isAiSpeaking = { _state.value == AgentState.SPEAKING },
             onAudioChunk = { pcm ->
                 chunksSent++
                 if (chunksSent == 1) Log.d(TAG, "first audio chunk sent (${pcm.size} bytes)")
