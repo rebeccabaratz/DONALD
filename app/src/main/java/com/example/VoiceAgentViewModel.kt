@@ -395,18 +395,20 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
     private fun buildContextText(): String {
         return when (_mode.value) {
-            AgentMode.BOOK_READING ->
-                "Режим: ЧТЕНИЕ КНИГИ. Текущая фраза №${_bookIndex.value + 1}: " +
-                "\"${tomSawyerPhrases[_bookIndex.value]}\" (по-русски: \"${tomSawyerTranslations[_bookIndex.value]}\")."
-            AgentMode.CONVERSATION ->
-                "Режим: БЕСЕДА."
+            AgentMode.BOOK_READING -> "Режим: ЧТЕНИЕ КНИГИ."
+            AgentMode.CONVERSATION -> "Режим: БЕСЕДА."
         }
     }
 
     private fun buildFullInstructions(): String = buildSystemPrompt() + "\n\n" + buildContextText()
 
+    private var lastSentInstructions = ""
+
     private fun updateSessionContext() {
-        realtimeClient.updateInstructions(buildFullInstructions())
+        val instructions = buildFullInstructions()
+        if (instructions == lastSentInstructions) return
+        lastSentInstructions = instructions
+        realtimeClient.updateInstructions(instructions)
     }
 
 
