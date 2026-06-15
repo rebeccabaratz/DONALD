@@ -404,10 +404,8 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         return when (_mode.value) {
             AgentMode.BOOK_READING -> {
                 val phrase = tomSawyerPhrases.getOrNull(_bookIndex.value) ?: ""
-                "Режим: ЧТЕНИЕ КНИГИ. Ты только что произнёс вслух фразу: \"$phrase\". " +
-                "Пользователь сейчас повторяет её вслух по-английски. " +
-                "Сравни ТОЛЬКО слова (не произношение, не акцент). " +
-                "Если слова совпадают — вызови advance_book(). Если не совпадают или непонятно — вызови repeat_phrase()."
+                "Режим: ЧТЕНИЕ КНИГИ. Текущая фраза для оценки: \"$phrase\". " +
+                "Ты только что произнёс эту фразу пользователю — он сейчас её повторяет."
             }
             AgentMode.CONVERSATION -> "Режим: БЕСЕДА."
         }
