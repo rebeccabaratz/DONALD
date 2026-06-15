@@ -6,8 +6,11 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -63,6 +66,9 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    private val _closeAppEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val closeAppEvent: SharedFlow<Unit> = _closeAppEvent.asSharedFlow()
 
     private val _customApiKey = MutableStateFlow("")
     val customApiKey: StateFlow<String> = _customApiKey.asStateFlow()
@@ -263,6 +269,14 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                 _state.value = AgentState.PROCESSING
                 // TurnComplete will call startListening()
             }
+            "exit_app" -> {
+                Log.d(TAG, "exit_app: closing app now")
+                voiceRecorder.stopRecording()
+                audioPlayer.stopAll()
+                realtimeClient.disconnect()
+                _state.value = AgentState.PAUSED
+                _closeAppEvent.tryEmit(Unit)
+            }
         }
     }
 
@@ -423,11 +437,12 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         3. Если нет предыдущих сообщений в разговоре — поприветствуй коротко и скажи, что готов помочь с английским.
 
         РЕЖИМ ЧТЕНИЯ "ТОМ СОЙЕР":
-        У тебя есть 4 функции для управления чтением — вызывай их молча, не произноси их названия вслух:
+        У тебя есть 5 функций — вызывай их молча, не произноси их названия вслух:
         - start_book_reading() — когда пользователь просит читать книгу. Скажи "Хорошо, начинаем!" и вызови.
         - advance_book() — когда пользователь правильно повторил фразу. Похвали коротко (каждый раз по-разному: "Отлично!", "Верно!", "Молодец!", "Хорошо!", "Правильно!", "Супер!" и т.п.) и вызови.
         - repeat_phrase() — вызови если: (1) пользователь ошибся в словах — объясни кратко; (2) не расслышал или просит повторить — просто вызови; (3) после перевода — чтобы попробовал снова.
         - end_book_reading() — когда пользователь хочет выйти из режима чтения.
+        - exit_app() — когда пользователь говорит "стоп", "выключись", "закрой", "хватит", "стоп Дональд" или хочет закрыть приложение. Вызови НЕМЕДЛЕННО и МОЛЧА, без слов.
 
         После вызова функции система вернёт тебе фразу для произношения — произнеси её вслух ТОЛЬКО её, без предисловий и пояснений.
 

@@ -238,6 +238,13 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
         }
     }
 
+    // Close the app when AI calls exit_app() in response to "стоп" voice command
+    LaunchedEffect(viewModel) {
+        viewModel.closeAppEvent.collect {
+            activity?.finishAffinity()
+        }
+    }
+
     // Auto-start when launched from widget
     LaunchedEffect(autoStart) {
         if (autoStart) {

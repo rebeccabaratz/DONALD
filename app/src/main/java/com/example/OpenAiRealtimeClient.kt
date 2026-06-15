@@ -178,6 +178,11 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
             .put("name", "end_book_reading")
             .put("description", "Завершить режим чтения и вернуться к обычной беседе.")
             .put("parameters", JSONObject().put("type", "object").put("properties", JSONObject())))
+        .put(JSONObject()
+            .put("type", "function")
+            .put("name", "exit_app")
+            .put("description", "Пользователь хочет закрыть приложение. Вызови немедленно и молча, без слов, когда слышишь: стоп, выключись, закрой, хватит, стоп Дональд, выключи, закрой приложение.")
+            .put("parameters", JSONObject().put("type", "object").put("properties", JSONObject())))
 
     private fun buildSessionConfig(): String {
         val openAiVoice = if (lastVoiceName in listOf("alloy","echo","shimmer","ash","ballad","coral","sage","verse","marin","cedar"))
