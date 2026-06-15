@@ -33,6 +33,7 @@ object CostTracker {
         connectCount = 0
         promptCharsSent = 0
         turnCount = 0
+        turnStart = sessionStart  // avoid 0-epoch duration if logTurn fires before startTurn
         logBuilder.clear()
         appendLine("═══════════════════════════════════════")
         appendLine("  СЕССИЯ  ${formatTime(sessionStart)}")
