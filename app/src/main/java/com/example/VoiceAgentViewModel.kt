@@ -143,6 +143,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                                         voiceRecorder.stopRecording()
                                         audioPlayer.startStreamingPlayback(sampleRate = 24000)
                                     }
+                                    CostTracker.addAudioReceived(event.pcmBase64.length)
                                     try {
                                         audioPlayer.writePcmChunk(event.pcmBase64)
                                     } catch (e: Exception) {
@@ -154,6 +155,13 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                             }
                             is OpenAiRealtimeClient.Event.TextChunk -> {
                                 accumulatedText.append(event.text)
+                            }
+                            is OpenAiRealtimeClient.Event.ProcessingStarted -> {
+                                if (_state.value == AgentState.LISTENING) {
+                                    Log.d(TAG, "ProcessingStarted: LISTENING → PROCESSING")
+                                    _state.value = AgentState.PROCESSING
+                                    voiceRecorder.stopRecording()
+                                }
                             }
                             is OpenAiRealtimeClient.Event.TurnComplete -> {
                                 handleTurnComplete()
@@ -210,6 +218,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         }
 
         audioPlayer.drainAndStopStreaming()
+        CostTracker.logTurn(_mode.value.name)
 
         if (_state.value != AgentState.PAUSED) {
             if (_mode.value == AgentMode.BOOK_READING) {
@@ -236,6 +245,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             addTranscriptBubble("Дональд", fullText)
         }
         audioPlayer.drainAndStopStreaming()
+        CostTracker.logTurn("${_mode.value.name}+fn:$name")
 
         if (_state.value == AgentState.PAUSED) return
 
@@ -292,7 +302,10 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
         Log.d(TAG, "startCycle: key=${apiKey.take(8)}... voice=${_selectedVoice.value}")
         _state.value = AgentState.PROCESSING
-        realtimeClient.connect(apiKey, _selectedVoice.value, buildFullInstructions())
+        CostTracker.startSession()
+        val instructions = buildFullInstructions()
+        CostTracker.logConnect(instructions.length)
+        realtimeClient.connect(apiKey, _selectedVoice.value, instructions)
     }
 
     fun stopCycle() {
@@ -302,6 +315,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         voiceRecorder.stopRecording()
         audioPlayer.stopAll()
         realtimeClient.disconnect()
+        CostTracker.endSession(context, "остановлено")
     }
 
     private fun reconnectSession() {
@@ -313,7 +327,9 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         }
         Log.d(TAG, "reconnectSession: key=${apiKey.take(8)}... voice=${_selectedVoice.value}")
         _state.value = AgentState.PROCESSING
-        realtimeClient.connect(apiKey, _selectedVoice.value, buildFullInstructions())
+        val instructions = buildFullInstructions()
+        CostTracker.logConnect(instructions.length, isReconnect = true)
+        realtimeClient.connect(apiKey, _selectedVoice.value, instructions)
     }
 
     private fun startListening() {
@@ -323,6 +339,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         _errorMessage.value = null
 
         var chunksSent = 0
+        CostTracker.startTurn()
         voiceRecorder.startRecording(
             threshold = _threshold.value,
             silenceDurationMs = _silenceDurationMs.value,
@@ -330,6 +347,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             onAudioChunk = { pcm ->
                 chunksSent++
                 if (chunksSent == 1) Log.d(TAG, "first audio chunk sent (${pcm.size} bytes)")
+                CostTracker.addAudioSent(pcm.size)
                 realtimeClient.sendAudioChunk(pcm)
             },
             onSilenceDetected = {
@@ -456,11 +474,15 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         """.trimIndent()
     }
 
+    fun readCostLog(): String = CostTracker.readLog(context)
+    fun clearCostLog() = CostTracker.clearLog(context)
+
     override fun onCleared() {
         super.onCleared()
         AppState.toggleSession = null
         voiceRecorder.stopRecording()
         audioPlayer.stopAll()
         realtimeClient.disconnect()
+        CostTracker.endSession(context, "onCleared")
     }
 }

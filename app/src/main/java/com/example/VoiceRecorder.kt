@@ -71,10 +71,27 @@ class VoiceRecorder(private val context: Context) {
 
             streamingJob = scope.launch {
                 val buffer = ByteArray(CHUNK_BYTES)
+                val chunkMs = CHUNK_BYTES * 1000L / (SAMPLE_RATE * 2)
+
+                // Measure ambient noise floor for 400ms before listening begins.
+                // In a moving car the road/engine noise raises the amplitude floor
+                // significantly. Sampling it first lets us set the effective threshold
+                // above the noise floor so the user's voice can actually be detected.
+                val noiseChunks = (400L / chunkMs).toInt().coerceAtLeast(1)
+                val noisePeaks = IntArray(noiseChunks)
+                for (i in 0 until noiseChunks) {
+                    val read = audioRecord?.read(buffer, 0, buffer.size) ?: break
+                    if (read > 0) noisePeaks[i] = computeMaxAmplitude(buffer, read)
+                }
+                val noiseFloor = noisePeaks.sorted().let { s ->
+                    s[(s.size * 0.9).toInt().coerceIn(0, s.size - 1)]
+                }
+                val effectiveThreshold = maxOf(threshold, (noiseFloor * 1.5).toInt())
+                Log.d(TAG, "noiseFloor=$noiseFloor userThreshold=$threshold effectiveThreshold=$effectiveThreshold")
+
                 var hasSpoken = false
                 var silenceAccumMs = 0L
                 var noSpeechMs = 0L
-                val chunkMs = CHUNK_BYTES * 1000L / (SAMPLE_RATE * 2)
 
                 while (_isRecording.value) {
                     val read = audioRecord?.read(buffer, 0, buffer.size) ?: break
@@ -91,7 +108,7 @@ class VoiceRecorder(private val context: Context) {
                         continue
                     }
 
-                    if (amplitude > threshold) {
+                    if (amplitude > effectiveThreshold) {
                         hasSpoken = true
                         silenceAccumMs = 0
                         noSpeechMs = 0

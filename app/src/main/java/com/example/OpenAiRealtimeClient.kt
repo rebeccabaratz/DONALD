@@ -30,6 +30,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
         data class AudioChunk(val pcmBase64: String) : Event()
         data class TextChunk(val text: String) : Event()
         object TurnComplete : Event()
+        object ProcessingStarted : Event()
         data class FunctionCall(val name: String, val callId: String) : Event()
         data class Error(val message: String) : Event()
         data class Info(val message: String) : Event()
@@ -284,8 +285,10 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                         scope.launch { _events.emit(Event.TurnComplete) }
                     }
                 }
-                "response.created" ->
+                "response.created" -> {
                     Log.d(TAG, "response.created id=${json.optJSONObject("response")?.optString("id")}")
+                    scope.launch { _events.emit(Event.ProcessingStarted) }
+                }
                 "response.output_item.done" ->
                     Log.d(TAG, "output_item.done type=${json.optJSONObject("item")?.optString("type")}")
                 "input_audio_buffer.committed" ->

@@ -553,6 +553,8 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
                 activeApiKey = viewModel.getActiveApiKey(),
                 selectedVoice = selectedVoice,
                 onVoiceChange = { viewModel.selectVoice(it) },
+                onReadCostLog = { viewModel.readCostLog() },
+                onClearCostLog = { viewModel.clearCostLog() },
                 onDismissRequest = { isSettingsExpanded = false }
             )
         }
@@ -570,6 +572,8 @@ fun SettingsDialog(
     activeApiKey: String,
     selectedVoice: String,
     onVoiceChange: (String) -> Unit,
+    onReadCostLog: () -> String,
+    onClearCostLog: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     var keyInput by remember(customApiKey) { mutableStateOf(customApiKey) }
@@ -869,6 +873,89 @@ fun SettingsDialog(
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text("Сбросить", fontSize = 12.sp, color = Color(0xFFFF5252), fontWeight = FontWeight.Bold)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+                Divider(color = Color(0x1F71717A))
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "ЛОГ РАСХОДОВ 📊",
+                    fontSize = 10.sp,
+                    color = Color(0xFFA1A1AA),
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.5.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Показывает сколько аудио отправлено/получено и сколько токенов промпта потрачено за каждую сессию.",
+                    fontSize = 10.sp,
+                    color = Color(0xFF6B7280),
+                    lineHeight = 14.sp
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                var showCostLog by remember { mutableStateOf(false) }
+                var costLogText by remember { mutableStateOf("") }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = { costLogText = onReadCostLog(); showCostLog = true },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0x1A818CF8)),
+                        modifier = Modifier.weight(1f).height(38.dp),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("Показать лог", fontSize = 11.sp, color = Color(0xFF818CF8), fontWeight = FontWeight.Bold)
+                    }
+                    Button(
+                        onClick = { onClearCostLog() },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0x15FF5252)),
+                        modifier = Modifier.weight(1f).height(38.dp),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text("Очистить", fontSize = 11.sp, color = Color(0xFFFF5252), fontWeight = FontWeight.Bold)
+                    }
+                }
+
+                if (showCostLog) {
+                    Dialog(onDismissRequest = { showCostLog = false }) {
+                        Card(
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E2130)),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth().padding(4.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(12.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text("Лог расходов", fontSize = 13.sp, color = Color(0xFF818CF8), fontWeight = FontWeight.Bold)
+                                    IconButton(onClick = { showCostLog = false }, modifier = Modifier.size(28.dp)) {
+                                        Text("❌", fontSize = 12.sp)
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(max = 420.dp)
+                                        .verticalScroll(rememberScrollState())
+                                ) {
+                                    Text(
+                                        text = costLogText,
+                                        fontSize = 10.sp,
+                                        color = Color(0xFFD1D5DB),
+                                        fontFamily = FontFamily.Monospace,
+                                        lineHeight = 14.sp
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
