@@ -913,28 +913,42 @@ fun SettingsDialog(
                 }
 
                 if (showCostLog) {
+                    val clipboardManager = androidx.compose.ui.platform.LocalClipboardManager.current
                     Dialog(onDismissRequest = { showCostLog = false }) {
                         Card(
                             colors = CardDefaults.cardColors(containerColor = Color(0xFF1E2130)),
                             shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.fillMaxWidth().padding(4.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.9f)
+                                .padding(4.dp)
                         ) {
-                            Column(modifier = Modifier.padding(12.dp)) {
+                            Column(modifier = Modifier.padding(12.dp).fillMaxHeight()) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text("Лог расходов", fontSize = 13.sp, color = Color(0xFF818CF8), fontWeight = FontWeight.Bold)
-                                    IconButton(onClick = { showCostLog = false }, modifier = Modifier.size(28.dp)) {
-                                        Text("❌", fontSize = 12.sp)
+                                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                        IconButton(
+                                            onClick = {
+                                                clipboardManager.setText(androidx.compose.ui.text.AnnotatedString(costLogText))
+                                            },
+                                            modifier = Modifier.size(28.dp)
+                                        ) {
+                                            Text("📋", fontSize = 14.sp)
+                                        }
+                                        IconButton(onClick = { showCostLog = false }, modifier = Modifier.size(28.dp)) {
+                                            Text("❌", fontSize = 12.sp)
+                                        }
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .heightIn(max = 420.dp)
+                                        .weight(1f)
                                         .verticalScroll(rememberScrollState())
                                 ) {
                                     Text(

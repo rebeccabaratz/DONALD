@@ -89,9 +89,10 @@ object CostTracker {
         appendLine("  Длительность сессии : ${fmt1(totalSec)}с = ${fmt2(totalSec / 60)}мин")
         appendLine("  Аудио mic→AI (вход) : ${fmt1(sentSec)}с = ${fmt2(sentSec / 60)}мин")
         appendLine("  Аудио AI→mic (выход): ${fmt1(recvSec)}с = ${fmt2(recvSec / 60)}мин")
+        val promptTokensPerConnect = if (connectCount > 0) promptTokens / connectCount else 0
         appendLine("  Ходов разговора     : $turnCount")
         appendLine("  Подключений         : $connectCount (переподкл. ${connectCount - 1})")
-        appendLine("  Токены промпта (≈)  : ~${promptTokens}ток × $connectCount = ~${promptTokens * connectCount}ток")
+        appendLine("  Токены промпта (≈)  : ~${promptTokensPerConnect}ток/подкл × $connectCount = ~${promptTokens}ток всего")
         appendLine("───────────────────────────────────────")
         appendLine("")
 
