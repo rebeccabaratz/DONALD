@@ -59,6 +59,10 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
     @Volatile private var pendingFunctionCallId: String? = null
     @Volatile private var pendingFunctionCallName: String? = null
 
+    // Counts intentional closes (our reconnect logic) so onClosed doesn't
+    // mistake them for unexpected disconnects and trigger a second reconnect.
+    @Volatile private var pendingIntentionalCloses = 0
+
     fun connect(apiKey: String, voiceName: String, systemPrompt: String) {
         lastApiKey = apiKey
         lastVoiceName = voiceName
@@ -145,7 +149,11 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
             try {
                 ready = false
                 setupTimeoutJob?.cancel()
-                Log.d(TAG, "WS closed code=$code reason='$reason'")
+                Log.d(TAG, "WS closed code=$code reason='$reason' intentional=$pendingIntentionalCloses")
+                if (pendingIntentionalCloses > 0) {
+                    pendingIntentionalCloses--
+                    return  // Our own reconnect — don't emit Disconnected
+                }
                 if (code == 1000) {
                     scope.launch { _events.emit(Event.Disconnected) }
                 } else {
@@ -398,7 +406,10 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
 
     private fun disconnectInternal() {
         ready = false
-        webSocket?.close(1000, "Session ended")
-        webSocket = null
+        if (webSocket != null) {
+            pendingIntentionalCloses++
+            webSocket?.close(1000, "Session ended")
+            webSocket = null
+        }
     }
 }
