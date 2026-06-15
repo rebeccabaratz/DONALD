@@ -310,15 +310,6 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
                     )
                 }
 
-                // Settings Button (⚙️)
-                IconButton(
-                    onClick = { isSettingsExpanded = true },
-                    modifier = Modifier
-                        .size(36.dp)
-                        .background(Color(0x1AFFFFFF), RoundedCornerShape(8.dp))
-                ) {
-                    Text("⚙️", fontSize = 16.sp)
-                }
             }
         }
 
@@ -531,14 +522,14 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
                 }
             )
 
-            // Switch theme/mic picker directly
+            // Settings button — moved here from header (header ⚙️ was cut off on small screens)
             IconButton(
-                onClick = { viewModel.toggleReadingModeDirectly() },
+                onClick = { isSettingsExpanded = true },
                 modifier = Modifier
                     .size(48.dp)
                     .background(Color(0x1AFFFFFF), CircleShape)
             ) {
-                Text(if (mode == AgentMode.BOOK_READING) "💬" else "📖", fontSize = 18.sp)
+                Text("⚙️", fontSize = 18.sp)
             }
         }
 
