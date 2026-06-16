@@ -80,6 +80,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     private val realtimeClient = OpenAiRealtimeClient(viewModelScope)
 
     val liveAmplitude: StateFlow<Int> = voiceRecorder.currentAmplitude
+    val outputAmplitude: StateFlow<Int> get() = audioPlayer.outputAmplitude
 
     private val accumulatedText = StringBuilder()
 

@@ -220,6 +220,7 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
     val transcripts by viewModel.transcripts.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val liveAmp by viewModel.liveAmplitude.collectAsState()
+    val outputAmp by viewModel.outputAmplitude.collectAsState()
     val customApiKey by viewModel.customApiKey.collectAsState()
 
     val activeKey = viewModel.getActiveApiKey()
@@ -313,7 +314,14 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Talking avatar — animates mouth in sync with Donald's real output amplitude
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            TikhonovAvatar(state = state, outputAmplitude = outputAmp)
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         // Large status warning if api keys are defaulted
         if (errorMessage != null) {
@@ -1057,6 +1065,119 @@ fun CenterControlRing(state: AgentState, onClick: () -> Unit) {
                     letterSpacing = 0.5.sp
                 )
             }
+        }
+    }
+}
+
+// Cartoon avatar evoking a stern 1970s Soviet intelligence-officer look (fedora,
+// trench coat) — a stylized original drawing, not a likeness reproduction of any
+// real actor. Mouth openness tracks the AI's live output amplitude for free,
+// local lip-sync (no extra API cost).
+@Composable
+fun TikhonovAvatar(state: AgentState, outputAmplitude: Int, modifier: Modifier = Modifier) {
+    val isSpeaking = state == AgentState.SPEAKING
+
+    val targetMouth = if (isSpeaking) (outputAmplitude / 4000f).coerceIn(0.08f, 1f) else 0.04f
+    val mouthOpen by animateFloatAsState(
+        targetValue = targetMouth,
+        animationSpec = tween(80),
+        label = "mouthOpen"
+    )
+
+    val infiniteTransition = rememberInfiniteTransition(label = "blinkTransition")
+    val blink by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 0.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(120, delayMillis = 2600),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "blink"
+    )
+
+    Box(
+        modifier = modifier.size(120.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val w = size.width
+            val h = size.height
+            val cx = w / 2f
+
+            // Coat collar
+            drawRoundRect(
+                color = Color(0xFF2B2E3A),
+                topLeft = Offset(w * 0.12f, h * 0.78f),
+                size = Size(w * 0.76f, h * 0.22f),
+                cornerRadius = CornerRadius(10f, 10f)
+            )
+
+            // Neck
+            drawRoundRect(
+                color = Color(0xFFD8A878),
+                topLeft = Offset(cx - w * 0.10f, h * 0.68f),
+                size = Size(w * 0.20f, h * 0.16f)
+            )
+
+            // Head
+            drawOval(
+                color = Color(0xFFE0AE82),
+                topLeft = Offset(w * 0.22f, h * 0.18f),
+                size = Size(w * 0.56f, h * 0.62f)
+            )
+
+            // Fedora brim + crown — iconic spy silhouette
+            drawOval(
+                color = Color(0xFF1C1E26),
+                topLeft = Offset(w * 0.08f, h * 0.10f),
+                size = Size(w * 0.84f, h * 0.15f)
+            )
+            drawRoundRect(
+                color = Color(0xFF1C1E26),
+                topLeft = Offset(w * 0.30f, -h * 0.02f),
+                size = Size(w * 0.40f, h * 0.19f),
+                cornerRadius = CornerRadius(w * 0.10f, w * 0.10f)
+            )
+
+            // Eyebrows — stern, slightly angled
+            drawLine(
+                color = Color(0xFF3B2A1E),
+                start = Offset(w * 0.32f, h * 0.42f),
+                end = Offset(w * 0.44f, h * 0.40f),
+                strokeWidth = h * 0.018f
+            )
+            drawLine(
+                color = Color(0xFF3B2A1E),
+                start = Offset(w * 0.56f, h * 0.40f),
+                end = Offset(w * 0.68f, h * 0.42f),
+                strokeWidth = h * 0.018f
+            )
+
+            // Eyes (blink animates the vertical scale)
+            val eyeH = (h * 0.045f * blink).coerceAtLeast(1f)
+            drawOval(color = Color.White, topLeft = Offset(w * 0.33f, h * 0.465f - eyeH / 2f), size = Size(w * 0.10f, eyeH))
+            drawOval(color = Color.White, topLeft = Offset(w * 0.57f, h * 0.465f - eyeH / 2f), size = Size(w * 0.10f, eyeH))
+            if (blink > 0.3f) {
+                drawCircle(color = Color(0xFF2B2118), radius = w * 0.018f, center = Offset(w * 0.38f, h * 0.475f))
+                drawCircle(color = Color(0xFF2B2118), radius = w * 0.018f, center = Offset(w * 0.62f, h * 0.475f))
+            }
+
+            // Nose
+            drawLine(
+                color = Color(0xFFB98A60),
+                start = Offset(cx, h * 0.50f),
+                end = Offset(cx - w * 0.02f, h * 0.60f),
+                strokeWidth = h * 0.012f
+            )
+
+            // Mouth — height driven by live AI speech amplitude
+            val mouthW = w * 0.22f
+            val mouthH = (h * 0.10f * mouthOpen).coerceAtLeast(h * 0.012f)
+            drawOval(
+                color = Color(0xFF7A3B33),
+                topLeft = Offset(cx - mouthW / 2f, h * 0.66f - mouthH / 2f),
+                size = Size(mouthW, mouthH)
+            )
         }
     }
 }

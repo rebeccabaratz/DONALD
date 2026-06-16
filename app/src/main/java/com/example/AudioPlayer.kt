@@ -10,6 +10,8 @@ import android.util.Base64
 import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class AudioPlayer(private val context: Context) : AudioSink {
 
@@ -17,6 +19,11 @@ class AudioPlayer(private val context: Context) : AudioSink {
     private var audioTrack: AudioTrack? = null
     private var framesWritten = 0
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+    // Max sample amplitude of the most recently written chunk — drives the
+    // talking-avatar mouth animation. Purely local, no extra API cost.
+    private val _outputAmplitude = MutableStateFlow(0)
+    override val outputAmplitude: StateFlow<Int> = _outputAmplitude
 
     // --- Streaming PCM playback via AudioTrack (Live API) ---
 
@@ -61,6 +68,21 @@ class AudioPlayer(private val context: Context) : AudioSink {
         val bytes = Base64.decode(base64Pcm, Base64.DEFAULT)
         audioTrack?.write(bytes, 0, bytes.size)
         framesWritten += bytes.size / 2  // 16-bit PCM = 2 bytes per frame
+        _outputAmplitude.value = computeMaxAmplitude(bytes)
+    }
+
+    private fun computeMaxAmplitude(bytes: ByteArray): Int {
+        var max = 0
+        var i = 0
+        while (i + 1 < bytes.size) {
+            val lo = bytes[i].toInt() and 0xFF
+            val hi = bytes[i + 1].toInt()
+            val sample = ((hi shl 8) or lo).toShort().toInt()
+            val abs = if (sample < 0) -sample else sample
+            if (abs > max) max = abs
+            i += 2
+        }
+        return max
     }
 
     override fun stopStreaming() {
@@ -71,6 +93,7 @@ class AudioPlayer(private val context: Context) : AudioSink {
         } finally {
             audioTrack = null
             framesWritten = 0
+            _outputAmplitude.value = 0
         }
     }
 
@@ -95,6 +118,7 @@ class AudioPlayer(private val context: Context) : AudioSink {
             try { audioTrack?.release() } catch (_: Exception) {}
             audioTrack = null
             framesWritten = 0
+            _outputAmplitude.value = 0
         }
     }
 

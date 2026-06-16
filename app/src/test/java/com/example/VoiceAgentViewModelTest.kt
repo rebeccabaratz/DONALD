@@ -439,6 +439,7 @@ class VoiceAgentViewModelTest {
         var drainCalls = 0
         var stopAllCalls = 0
 
+        override val outputAmplitude = kotlinx.coroutines.flow.MutableStateFlow(0)
         override fun startStreamingPlayback(sampleRate: Int) { startStreamingCalls++ }
         override fun writePcmChunk(base64Pcm: String) { chunksWritten.add(base64Pcm) }
         override suspend fun drainAndStopStreaming() { drainCalls++ }

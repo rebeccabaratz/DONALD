@@ -73,11 +73,11 @@ class VoiceRecorder(private val context: Context) {
                 val buffer = ByteArray(CHUNK_BYTES)
                 val chunkMs = CHUNK_BYTES * 1000L / (SAMPLE_RATE * 2)
 
-                // Measure ambient noise floor for 400ms before listening begins.
+                // Measure ambient noise floor for 300ms before listening begins.
                 // In a moving car the road/engine noise raises the amplitude floor
                 // significantly. Sampling it first lets us set the effective threshold
                 // above the noise floor so the user's voice can actually be detected.
-                val noiseChunks = (400L / chunkMs).toInt().coerceAtLeast(1)
+                val noiseChunks = (300L / chunkMs).toInt().coerceAtLeast(1)
                 val noisePeaks = IntArray(noiseChunks)
                 for (i in 0 until noiseChunks) {
                     val read = audioRecord?.read(buffer, 0, buffer.size) ?: break
