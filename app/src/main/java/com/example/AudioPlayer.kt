@@ -61,12 +61,22 @@ class AudioPlayer(private val context: Context) : AudioSink {
             .setBufferSizeInBytes(minBuf * 8)
             .setTransferMode(AudioTrack.MODE_STREAM)
             .build()
+
+        if (audioTrack?.state != AudioTrack.STATE_INITIALIZED) {
+            CostTracker.logAudioError("AudioTrack не инициализирован (state=${audioTrack?.state}) — звук не будет слышен")
+        }
         audioTrack?.play()
+        if (audioTrack?.playState != AudioTrack.PLAYSTATE_PLAYING) {
+            CostTracker.logAudioError("AudioTrack.play() не запустил воспроизведение (playState=${audioTrack?.playState})")
+        }
     }
 
     override fun writePcmChunk(base64Pcm: String) {
         val bytes = Base64.decode(base64Pcm, Base64.DEFAULT)
-        audioTrack?.write(bytes, 0, bytes.size)
+        val written = audioTrack?.write(bytes, 0, bytes.size) ?: AudioTrack.ERROR_INVALID_OPERATION
+        if (written < 0) {
+            CostTracker.logAudioError("AudioTrack.write() вернул ошибку $written (${bytes.size} байт не воспроизведено)")
+        }
         framesWritten += bytes.size / 2  // 16-bit PCM = 2 bytes per frame
         _outputAmplitude.value = computeMaxAmplitude(bytes)
     }

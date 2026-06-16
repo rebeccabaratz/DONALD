@@ -65,6 +65,14 @@ object CostTracker {
         turnBytesReceived += bytes
     }
 
+    // Surfaces local playback failures (AudioTrack init/write errors) into the
+    // same log the user already checks — these bytes count as "received" above
+    // even if they never actually played out the speaker.
+    fun logAudioError(message: String) {
+        appendLine("  [ОШИБКА АУДИО] $message")
+        Log.e(TAG, message)
+    }
+
     fun logTurn(label: String) {
         val sentSec = turnBytesSent / (SAMPLE_RATE.toDouble() * BYTES_PER_SAMPLE)
         val recvSec = turnBytesReceived / (SAMPLE_RATE.toDouble() * BYTES_PER_SAMPLE)
