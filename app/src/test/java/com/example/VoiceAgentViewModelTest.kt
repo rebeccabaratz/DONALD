@@ -373,22 +373,18 @@ class VoiceAgentViewModelTest {
         }
 
     // -------------------------------------------------------------------------
-    // Test 9 — BOOK_READING mode: TurnComplete reconnects instead of startListening
+    // Test 9 — BOOK_READING mode: TurnComplete clears history and starts listening
     // -------------------------------------------------------------------------
 
     /**
-     * In BOOK_READING mode, TurnComplete must reconnect (state = PROCESSING)
-     * rather than startListening (state = LISTENING).
+     * In BOOK_READING mode, TurnComplete must clear conversation history and go
+     * straight to LISTENING — no reconnect, no PROCESSING pause.
      *
-     * This keeps the per-phrase context minimal: each new WebSocket session
-     * starts with only the system prompt + current phrase, preventing the
-     * conversation history from growing across all 629 phrases.
-     *
-     * Without this fix: input token cost grows quadratically with phrase count
-     * (~10M tokens for chapter 1 vs ~345K with reconnect).
+     * History is cleared via conversation.item.delete (instant, no round-trip),
+     * keeping per-phrase context minimal without the 1-2s WebSocket reconnect delay.
      */
     @Test
-    fun `TurnComplete in BOOK_READING mode reconnects instead of startListening`() =
+    fun `TurnComplete in BOOK_READING mode clears history and starts listening`() =
         runTest(testDispatcher) {
             val (vm, flow) = buildVmAndFlow()
             seedTranscripts(vm)
@@ -398,29 +394,13 @@ class VoiceAgentViewModelTest {
             advanceTimeBy(100)
             assertEquals("Should be LISTENING after SetupComplete", AgentState.LISTENING, vm.state.value)
 
-            // Record states only after TurnComplete fires
-            val observedAfter = mutableListOf<AgentState>()
-            val job = launch { vm.state.collect { observedAfter.add(it) } }
-
             flow.emit(OpenAiRealtimeClient.Event.TurnComplete)
-            advanceTimeBy(500) // covers the 200ms reconnect delay
+            advanceTimeBy(100)
 
-            job.cancel()
-
-            // StateFlow emits its current value (LISTENING) immediately to new collectors,
-            // so LISTENING appears first in observedAfter. What matters is that the state
-            // then transitioned OUT of LISTENING via the reconnect path — never back into it.
-            // In tests there is no API key, so reconnectSession() ends in PAUSED.
-            // In production it reaches PROCESSING then opens a new WebSocket.
-            val reconnectPathTaken = AgentState.PROCESSING in observedAfter || AgentState.PAUSED in observedAfter
-            assert(reconnectPathTaken) {
-                "Reconnect path (PROCESSING or PAUSED) must be taken after TurnComplete in BOOK_READING. " +
-                "Got states: $observedAfter"
-            }
             assertEquals(
-                "Final state must not be LISTENING — reconnect path was not taken. Got: $observedAfter",
-                false,
-                observedAfter.last() == AgentState.LISTENING
+                "After TurnComplete in BOOK_READING, state must be LISTENING (no reconnect)",
+                AgentState.LISTENING,
+                vm.state.value
             )
         }
 
