@@ -2,10 +2,12 @@ package com.example
 
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.AudioFocusRequest
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTrack
 import android.media.MediaPlayer
+import android.os.Build
 import android.util.Base64
 import android.util.Log
 import java.io.File
@@ -25,6 +27,8 @@ class AudioPlayer(private val context: Context) : AudioSink {
     private val _outputAmplitude = MutableStateFlow(0)
     override val outputAmplitude: StateFlow<Int> = _outputAmplitude
 
+    private var audioFocusRequest: AudioFocusRequest? = null
+
     // --- Streaming PCM playback via AudioTrack (Live API) ---
 
     override fun startStreamingPlayback(sampleRate: Int) {
@@ -32,25 +36,39 @@ class AudioPlayer(private val context: Context) : AudioSink {
         framesWritten = 0
 
         // Keep audio in NORMAL mode so output routes to A2DP (car music speakers).
-        // If BT SCO is active (phone-call mode), Android routes output to the car's
-        // hands-free speaker instead. Stopping SCO before playback fixes this.
+        // Android Auto manages SCO itself — we only stop it if it was left on by
+        // a previous call, but we don't toggle the deprecated isBluetoothScoOn setter.
         audioManager.mode = AudioManager.MODE_NORMAL
         if (audioManager.isBluetoothScoOn) {
             audioManager.stopBluetoothSco()
-            audioManager.isBluetoothScoOn = false
         }
+
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build()
+
+        // Request audio focus before playback — required for Android Auto to route
+        // audio to car speakers instead of silently blocking the AudioTrack output.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+                .setAudioAttributes(audioAttributes)
+                .setOnAudioFocusChangeListener { }
+                .build()
+            audioManager.requestAudioFocus(audioFocusRequest!!)
+        } else {
+            @Suppress("DEPRECATION")
+            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+        }
+
         val minBuf = AudioTrack.getMinBufferSize(
             sampleRate,
             AudioFormat.CHANNEL_OUT_MONO,
             AudioFormat.ENCODING_PCM_16BIT
         )
         audioTrack = AudioTrack.Builder()
-            .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                    .build()
-            )
+            .setAudioAttributes(audioAttributes)
             .setAudioFormat(
                 AudioFormat.Builder()
                     .setSampleRate(sampleRate)
@@ -96,6 +114,10 @@ class AudioPlayer(private val context: Context) : AudioSink {
     }
 
     override fun stopStreaming() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioFocusRequest?.let { audioManager.abandonAudioFocusRequest(it) }
+            audioFocusRequest = null
+        }
         try {
             audioTrack?.apply { stop(); release() }
         } catch (e: Exception) {
