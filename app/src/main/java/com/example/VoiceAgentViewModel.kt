@@ -246,7 +246,6 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                 // Noise floor is measured in parallel with the reconnect delay.
                 Log.d(TAG, "handleTurnComplete: BOOK_READING — reconnecting for fresh context")
                 launchNoiseFloorMeasurement()
-                delay(200)
                 reconnectSession()
             } else {
                 Log.d(TAG, "handleTurnComplete: resuming → startListening")
