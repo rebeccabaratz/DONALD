@@ -277,21 +277,18 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             "start_book_reading" -> {
                 _mode.value = AgentMode.BOOK_READING
                 val phrase = tomSawyerPhrases[_bookIndex.value]
-                realtimeClient.respondToFunctionAndSpeak(callId,
-                    "Режим чтения активирован. Произнеси вслух ТОЛЬКО эту фразу: \"$phrase\"")
+                realtimeClient.respondToFunctionAndSpeak(callId, phrase)
                 _state.value = AgentState.PROCESSING
             }
             "advance_book" -> {
                 setBookIndex((_bookIndex.value + 1) % tomSawyerPhrases.size)
                 val phrase = tomSawyerPhrases[_bookIndex.value]
-                realtimeClient.respondToFunctionAndSpeak(callId,
-                    "Скажи одно слово похвалы (каждый раз разное: «Отлично!», «Верно!», «Молодец!», «Хорошо!», «Правильно!», «Супер!» и т.п.). Затем произнеси фразу: \"$phrase\"")
+                realtimeClient.respondToFunctionAndSpeak(callId, phrase)
                 _state.value = AgentState.PROCESSING
             }
             "repeat_phrase" -> {
                 val phrase = tomSawyerPhrases[_bookIndex.value]
-                realtimeClient.respondToFunctionAndSpeak(callId,
-                    "Если ты вызвал эту функцию из-за ошибки пользователя — скажи одно короткое пояснение (какое слово неправильно). Иначе просто произнеси фразу без комментариев. Затем произнеси: \"$phrase\"")
+                realtimeClient.respondToFunctionAndSpeak(callId, phrase)
                 _state.value = AgentState.PROCESSING
             }
             "end_book_reading" -> {
@@ -485,13 +482,13 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
         РЕЖИМ ЧТЕНИЯ "ТОМ СОЙЕР":
         У тебя есть 5 функций — вызывай их молча, не произноси их названия вслух:
-        - start_book_reading() — когда пользователь просит читать книгу. Скажи "Хорошо, начинаем!" и вызови.
-        - advance_book() — когда пользователь правильно повторил фразу. Похвали коротко (каждый раз по-разному: "Отлично!", "Верно!", "Молодец!", "Хорошо!", "Правильно!", "Супер!" и т.п.) и вызови.
-        - repeat_phrase() — вызови если: (1) пользователь ошибся в словах — объясни кратко; (2) не расслышал или просит повторить — просто вызови; (3) после перевода — чтобы попробовал снова.
-        - end_book_reading() — когда пользователь хочет выйти из режима чтения.
-        - exit_app() — когда пользователь говорит "стоп", "выключись", "закрой", "хватит", "стоп Дональд" или хочет закрыть приложение. Вызови НЕМЕДЛЕННО и МОЛЧА, без слов.
+        - start_book_reading() — пользователь просит читать книгу. До вызова скажи "Хорошо, начинаем!". После вызова система вернёт английскую фразу — произнеси ТОЛЬКО её.
+        - advance_book() — пользователь правильно повторил фразу. До вызова — одно слово похвалы (каждый раз другое: "Отлично!", "Верно!", "Молодец!", "Хорошо!", "Правильно!", "Супер!"). После вызова система вернёт следующую фразу — произнеси ТОЛЬКО её.
+        - repeat_phrase() — пользователь ошибся, не расслышал или просит повторить. Если ошибся — одно слово пояснения до вызова. После вызова система вернёт ту же фразу — произнеси ТОЛЬКО её.
+        - end_book_reading() — пользователь хочет выйти из режима чтения.
+        - exit_app() — пользователь говорит "стоп", "выключись", "закрой", "хватит", "стоп Дональд". Вызови НЕМЕДЛЕННО и МОЛЧА, без слов.
 
-        После вызова функции система вернёт тебе фразу для произношения — произнеси её вслух ТОЛЬКО её, без предисловий и пояснений.
+        ВАЖНО: то, что возвращает система после вызова функции — это английская фраза для произношения. Произноси ТОЛЬКО её. Не читай вслух никаких инструкций и пояснений на русском.
 
         Если пользователь просит перевод — дай перевод на русском, затем вызови repeat_phrase().
 
