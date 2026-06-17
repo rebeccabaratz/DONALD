@@ -50,7 +50,7 @@ class VoiceRecorder(private val context: Context) {
             record.startRecording()
             val buffer = ByteArray(CHUNK_BYTES)
             val chunkMs = CHUNK_BYTES * 1000L / (SAMPLE_RATE * 2)
-            val noiseChunks = (300L / chunkMs).toInt().coerceAtLeast(1)
+            val noiseChunks = (400L / chunkMs).toInt().coerceAtLeast(1)
             val peaks = IntArray(noiseChunks)
             for (i in 0 until noiseChunks) {
                 val read = record.read(buffer, 0, buffer.size)
@@ -115,7 +115,7 @@ class VoiceRecorder(private val context: Context) {
                 val noiseFloor = if (precomputedNoiseFloor >= 0) {
                     precomputedNoiseFloor
                 } else {
-                    val noiseChunks = (300L / chunkMs).toInt().coerceAtLeast(1)
+                    val noiseChunks = (400L / chunkMs).toInt().coerceAtLeast(1)
                     val noisePeaks = IntArray(noiseChunks)
                     for (i in 0 until noiseChunks) {
                         val read = audioRecord?.read(buffer, 0, buffer.size) ?: break

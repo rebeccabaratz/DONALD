@@ -323,6 +323,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         CostTracker.startSession()
         val instructions = buildFullInstructions()
         CostTracker.logConnect(instructions.length)
+        launchNoiseFloorMeasurement()  // runs during WebSocket connect (1-3s gap)
         realtimeClient.connect(apiKey, _selectedVoice.value, instructions)
     }
 
