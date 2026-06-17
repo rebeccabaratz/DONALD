@@ -11,6 +11,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class VoiceRecorder(private val context: Context) {
 
@@ -30,10 +31,46 @@ class VoiceRecorder(private val context: Context) {
     private val _currentAmplitude = MutableStateFlow(0)
     val currentAmplitude: StateFlow<Int> = _currentAmplitude
 
+    // Opens the mic briefly, measures 300ms of ambient noise, closes the mic.
+    // Called during PROCESSING state while AI is generating — mic is idle then,
+    // so the measurement costs zero extra latency before the next listen cycle.
+    suspend fun measureNoiseFloor(): Int = withContext(Dispatchers.Default) {
+        val minBuf = AudioRecord.getMinBufferSize(
+            SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT
+        )
+        if (minBuf <= 0) return@withContext 0
+        var record: AudioRecord? = null
+        try {
+            record = AudioRecord(
+                MediaRecorder.AudioSource.VOICE_RECOGNITION,
+                SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT, maxOf(minBuf, CHUNK_BYTES * 4)
+            )
+            if (record.state != AudioRecord.STATE_INITIALIZED) return@withContext 0
+            record.startRecording()
+            val buffer = ByteArray(CHUNK_BYTES)
+            val chunkMs = CHUNK_BYTES * 1000L / (SAMPLE_RATE * 2)
+            val noiseChunks = (300L / chunkMs).toInt().coerceAtLeast(1)
+            val peaks = IntArray(noiseChunks)
+            for (i in 0 until noiseChunks) {
+                val read = record.read(buffer, 0, buffer.size)
+                if (read > 0) peaks[i] = computeMaxAmplitude(buffer, read)
+            }
+            peaks.sorted().let { s -> s[(s.size * 0.9).toInt().coerceIn(0, s.size - 1)] }
+        } catch (e: Exception) {
+            Log.w(TAG, "measureNoiseFloor failed: ${e.message}")
+            0
+        } finally {
+            try { record?.stop() } catch (_: Exception) {}
+            try { record?.release() } catch (_: Exception) {}
+        }
+    }
+
     fun startRecording(
         threshold: Int = 1800,
         silenceDurationMs: Long = 1800,
         isAiSpeaking: () -> Boolean = { false },
+        precomputedNoiseFloor: Int = -1,
         onAudioChunk: (ByteArray) -> Unit,
         onSilenceDetected: () -> Unit,
         onError: (String) -> Unit
@@ -73,21 +110,21 @@ class VoiceRecorder(private val context: Context) {
                 val buffer = ByteArray(CHUNK_BYTES)
                 val chunkMs = CHUNK_BYTES * 1000L / (SAMPLE_RATE * 2)
 
-                // Measure ambient noise floor for 300ms before listening begins.
-                // In a moving car the road/engine noise raises the amplitude floor
-                // significantly. Sampling it first lets us set the effective threshold
-                // above the noise floor so the user's voice can actually be detected.
-                val noiseChunks = (300L / chunkMs).toInt().coerceAtLeast(1)
-                val noisePeaks = IntArray(noiseChunks)
-                for (i in 0 until noiseChunks) {
-                    val read = audioRecord?.read(buffer, 0, buffer.size) ?: break
-                    if (read > 0) noisePeaks[i] = computeMaxAmplitude(buffer, read)
-                }
-                val noiseFloor = noisePeaks.sorted().let { s ->
-                    s[(s.size * 0.9).toInt().coerceIn(0, s.size - 1)]
+                // Use pre-measured noise floor from PROCESSING state if available,
+                // otherwise fall back to a quick inline measurement (first session turn).
+                val noiseFloor = if (precomputedNoiseFloor >= 0) {
+                    precomputedNoiseFloor
+                } else {
+                    val noiseChunks = (300L / chunkMs).toInt().coerceAtLeast(1)
+                    val noisePeaks = IntArray(noiseChunks)
+                    for (i in 0 until noiseChunks) {
+                        val read = audioRecord?.read(buffer, 0, buffer.size) ?: break
+                        if (read > 0) noisePeaks[i] = computeMaxAmplitude(buffer, read)
+                    }
+                    noisePeaks.sorted().let { s -> s[(s.size * 0.9).toInt().coerceIn(0, s.size - 1)] }
                 }
                 val effectiveThreshold = maxOf(threshold, (noiseFloor * 1.5).toInt())
-                Log.d(TAG, "noiseFloor=$noiseFloor userThreshold=$threshold effectiveThreshold=$effectiveThreshold")
+                Log.d(TAG, "noiseFloor=$noiseFloor (precomputed=${precomputedNoiseFloor >= 0}) userThreshold=$threshold effectiveThreshold=$effectiveThreshold")
 
                 var hasSpoken = false
                 var silenceAccumMs = 0L

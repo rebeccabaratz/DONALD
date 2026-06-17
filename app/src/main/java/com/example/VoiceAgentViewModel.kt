@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,6 +85,22 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
     private val accumulatedText = StringBuilder()
 
+    // Noise floor measured during AI's PROCESSING state so startListening() has
+    // zero extra delay — measurement runs in parallel with network round-trip.
+    private var cachedNoiseFloor = -1
+    private var noiseMeasurementJob: Job? = null
+
+    private fun launchNoiseFloorMeasurement() {
+        noiseMeasurementJob?.cancel()
+        noiseMeasurementJob = viewModelScope.launch {
+            val floor = voiceRecorder.measureNoiseFloor()
+            if (floor > 0) {
+                cachedNoiseFloor = floor
+                Log.d(TAG, "Noise floor ready: $floor")
+            }
+        }
+    }
+
     var tomSawyerPhrases: List<String> = emptyList()
         private set
     var tomSawyerTranslations: List<String> = emptyList()
@@ -162,6 +179,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                                     Log.d(TAG, "ProcessingStarted: LISTENING → PROCESSING")
                                     _state.value = AgentState.PROCESSING
                                     voiceRecorder.stopRecording()
+                                    launchNoiseFloorMeasurement()
                                 }
                             }
                             is OpenAiRealtimeClient.Event.TurnComplete -> {
@@ -225,7 +243,9 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             if (_mode.value == AgentMode.BOOK_READING) {
                 // Reconnect for fresh context — prevents history from accumulating
                 // across phrases, which would grow input token cost quadratically.
+                // Noise floor is measured in parallel with the reconnect delay.
                 Log.d(TAG, "handleTurnComplete: BOOK_READING — reconnecting for fresh context")
+                launchNoiseFloorMeasurement()
                 delay(200)
                 reconnectSession()
             } else {
@@ -334,7 +354,10 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private fun startListening() {
-        Log.d(TAG, "startListening: threshold=${_threshold.value} silence=${_silenceDurationMs.value}ms")
+        noiseMeasurementJob?.cancel()
+        noiseMeasurementJob = null
+        val noiseFloor = cachedNoiseFloor
+        Log.d(TAG, "startListening: threshold=${_threshold.value} silence=${_silenceDurationMs.value}ms noiseFloor=$noiseFloor")
         updateSessionContext()
         _state.value = AgentState.LISTENING
         _errorMessage.value = null
@@ -345,6 +368,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             threshold = _threshold.value,
             silenceDurationMs = _silenceDurationMs.value,
             isAiSpeaking = { _state.value == AgentState.SPEAKING },
+            precomputedNoiseFloor = noiseFloor,
             onAudioChunk = { pcm ->
                 chunksSent++
                 if (chunksSent == 1) Log.d(TAG, "first audio chunk sent (${pcm.size} bytes)")
@@ -356,6 +380,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                     Log.d(TAG, "silence detected after $chunksSent chunks — committing buffer")
                     _state.value = AgentState.PROCESSING
                     realtimeClient.commitAndRespond()
+                    launchNoiseFloorMeasurement()
                 } else {
                     Log.w(TAG, "silence detected but 0 audio chunks sent — skipping empty commit, restarting")
                     viewModelScope.launch { startListening() }
