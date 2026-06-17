@@ -241,12 +241,12 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
         if (_state.value != AgentState.PAUSED) {
             if (_mode.value == AgentMode.BOOK_READING) {
-                // Reconnect for fresh context — prevents history from accumulating
-                // across phrases, which would grow input token cost quadratically.
-                // Noise floor is measured in parallel with the reconnect delay.
-                Log.d(TAG, "handleTurnComplete: BOOK_READING — reconnecting for fresh context")
-                launchNoiseFloorMeasurement()
-                reconnectSession()
+                // Delete all conversation items instead of reconnecting — keeps the
+                // WebSocket open (no setup round-trip) so the pause between phrases
+                // is eliminated. Context cost stays the same as with reconnect.
+                Log.d(TAG, "handleTurnComplete: BOOK_READING — clearing history, startListening")
+                realtimeClient.clearConversationHistory()
+                startListening()
             } else {
                 Log.d(TAG, "handleTurnComplete: resuming → startListening")
                 startListening()
