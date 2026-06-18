@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,6 +85,22 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
     private val accumulatedText = StringBuilder()
 
+    // Noise floor measured during AI's PROCESSING state so startListening() has
+    // zero extra delay — measurement runs in parallel with network round-trip.
+    private var cachedNoiseFloor = -1
+    private var noiseMeasurementJob: Job? = null
+
+    private fun launchNoiseFloorMeasurement() {
+        noiseMeasurementJob?.cancel()
+        noiseMeasurementJob = viewModelScope.launch {
+            val floor = voiceRecorder.measureNoiseFloor()
+            if (floor > 0) {
+                cachedNoiseFloor = floor
+                Log.d(TAG, "Noise floor ready: $floor")
+            }
+        }
+    }
+
     var tomSawyerPhrases: List<String> = emptyList()
         private set
     var tomSawyerTranslations: List<String> = emptyList()
@@ -162,6 +179,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                                     Log.d(TAG, "ProcessingStarted: LISTENING → PROCESSING")
                                     _state.value = AgentState.PROCESSING
                                     voiceRecorder.stopRecording()
+                                    launchNoiseFloorMeasurement()
                                 }
                             }
                             is OpenAiRealtimeClient.Event.TurnComplete -> {
@@ -223,11 +241,12 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
         if (_state.value != AgentState.PAUSED) {
             if (_mode.value == AgentMode.BOOK_READING) {
-                // Reconnect for fresh context — prevents history from accumulating
-                // across phrases, which would grow input token cost quadratically.
-                Log.d(TAG, "handleTurnComplete: BOOK_READING — reconnecting for fresh context")
-                delay(200)
-                reconnectSession()
+                // Delete all conversation items instead of reconnecting — keeps the
+                // WebSocket open (no setup round-trip) so the pause between phrases
+                // is eliminated. Context cost stays the same as with reconnect.
+                Log.d(TAG, "handleTurnComplete: BOOK_READING — clearing history, startListening")
+                realtimeClient.clearConversationHistory()
+                startListening()
             } else {
                 Log.d(TAG, "handleTurnComplete: resuming → startListening")
                 startListening()
@@ -257,21 +276,18 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             "start_book_reading" -> {
                 _mode.value = AgentMode.BOOK_READING
                 val phrase = tomSawyerPhrases[_bookIndex.value]
-                realtimeClient.respondToFunctionAndSpeak(callId,
-                    "Режим чтения активирован. Произнеси вслух ТОЛЬКО эту фразу: \"$phrase\"")
+                realtimeClient.respondToFunctionAndSpeak(callId, phrase)
                 _state.value = AgentState.PROCESSING
             }
             "advance_book" -> {
                 setBookIndex((_bookIndex.value + 1) % tomSawyerPhrases.size)
                 val phrase = tomSawyerPhrases[_bookIndex.value]
-                realtimeClient.respondToFunctionAndSpeak(callId,
-                    "Скажи одно слово похвалы (каждый раз разное: «Отлично!», «Верно!», «Молодец!», «Хорошо!», «Правильно!», «Супер!» и т.п.). Затем произнеси фразу: \"$phrase\"")
+                realtimeClient.respondToFunctionAndSpeak(callId, phrase)
                 _state.value = AgentState.PROCESSING
             }
             "repeat_phrase" -> {
                 val phrase = tomSawyerPhrases[_bookIndex.value]
-                realtimeClient.respondToFunctionAndSpeak(callId,
-                    "Если ты вызвал эту функцию из-за ошибки пользователя — скажи одно короткое пояснение (какое слово неправильно). Иначе просто произнеси фразу без комментариев. Затем произнеси: \"$phrase\"")
+                realtimeClient.respondToFunctionAndSpeak(callId, phrase)
                 _state.value = AgentState.PROCESSING
             }
             "end_book_reading" -> {
@@ -306,6 +322,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         CostTracker.startSession()
         val instructions = buildFullInstructions()
         CostTracker.logConnect(instructions.length)
+        launchNoiseFloorMeasurement()  // runs during WebSocket connect (1-3s gap)
         realtimeClient.connect(apiKey, _selectedVoice.value, instructions)
     }
 
@@ -334,7 +351,10 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private fun startListening() {
-        Log.d(TAG, "startListening: threshold=${_threshold.value} silence=${_silenceDurationMs.value}ms")
+        noiseMeasurementJob?.cancel()
+        noiseMeasurementJob = null
+        val noiseFloor = cachedNoiseFloor
+        Log.d(TAG, "startListening: threshold=${_threshold.value} silence=${_silenceDurationMs.value}ms noiseFloor=$noiseFloor")
         updateSessionContext()
         _state.value = AgentState.LISTENING
         _errorMessage.value = null
@@ -345,6 +365,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             threshold = _threshold.value,
             silenceDurationMs = _silenceDurationMs.value,
             isAiSpeaking = { _state.value == AgentState.SPEAKING },
+            precomputedNoiseFloor = noiseFloor,
             onAudioChunk = { pcm ->
                 chunksSent++
                 if (chunksSent == 1) Log.d(TAG, "first audio chunk sent (${pcm.size} bytes)")
@@ -356,6 +377,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
                     Log.d(TAG, "silence detected after $chunksSent chunks — committing buffer")
                     _state.value = AgentState.PROCESSING
                     realtimeClient.commitAndRespond()
+                    launchNoiseFloorMeasurement()
                 } else {
                     Log.w(TAG, "silence detected but 0 audio chunks sent — skipping empty commit, restarting")
                     viewModelScope.launch { startListening() }
@@ -454,21 +476,21 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         СТИЛЬ РЕЧИ: говори живо и естественно, как настоящий человек в разговоре. Меняй темп — где-то ускоряйся, где-то делай паузу. Выделяй важные слова интонацией. Никакого монотонного равномерного ритма — это звучит механически. Говори с теплотой и участием.
 
         ПРАВИЛА:
-        1. Пользователь говорит на русском или иврите. Отвечай только на русском языке.
+        1. Пользователь говорит на русском или иврите. Отвечай на том же языке, на котором говорит пользователь: русский → русский, иврит → иврит.
         2. Будь тёплым и очень кратким — 1-2 предложения, лучше одно. Не добавляй лишних слов.
         3. Если нет предыдущих сообщений в разговоре — поприветствуй коротко и скажи, что готов помочь с английским.
 
         РЕЖИМ ЧТЕНИЯ "ТОМ СОЙЕР":
         У тебя есть 5 функций — вызывай их молча, не произноси их названия вслух:
-        - start_book_reading() — когда пользователь просит читать книгу. Скажи "Хорошо, начинаем!" и вызови.
-        - advance_book() — когда пользователь правильно повторил фразу. Похвали коротко (каждый раз по-разному: "Отлично!", "Верно!", "Молодец!", "Хорошо!", "Правильно!", "Супер!" и т.п.) и вызови.
-        - repeat_phrase() — вызови если: (1) пользователь ошибся в словах — объясни кратко; (2) не расслышал или просит повторить — просто вызови; (3) после перевода — чтобы попробовал снова.
-        - end_book_reading() — когда пользователь хочет выйти из режима чтения.
-        - exit_app() — когда пользователь говорит "стоп", "выключись", "закрой", "хватит", "стоп Дональд" или хочет закрыть приложение. Вызови НЕМЕДЛЕННО и МОЛЧА, без слов.
+        - start_book_reading() — пользователь просит читать книгу. До вызова скажи одну фразу на языке пользователя ("Хорошо, начинаем!" / "טוב, מתחילים!"). После вызова система вернёт английскую фразу — произнеси ТОЛЬКО её.
+        - advance_book() — пользователь правильно повторил фразу. До вызова — одно слово похвалы на языке пользователя (русский: "Отлично!", "Верно!", "Молодец!", "Супер!"; иврит: "מצוין!", "כל הכבוד!", "נכון!", "נהדר!"). После вызова система вернёт следующую фразу — произнеси ТОЛЬКО её.
+        - repeat_phrase() — пользователь ошибся, не расслышал или просит повторить. Если ошибся — одно слово пояснения на языке пользователя до вызова. После вызова система вернёт ту же фразу — произнеси ТОЛЬКО её.
+        - end_book_reading() — пользователь хочет выйти из режима чтения.
+        - exit_app() — пользователь говорит "стоп"/"עצור"/"סגור", "выключись", "закрой". Вызови НЕМЕДЛЕННО и МОЛЧА, без слов.
 
-        После вызова функции система вернёт тебе фразу для произношения — произнеси её вслух ТОЛЬКО её, без предисловий и пояснений.
+        ВАЖНО: то, что возвращает система после вызова функции — это английская фраза для произношения. Произноси ТОЛЬКО её. Не добавляй ничего на русском или иврите.
 
-        Если пользователь просит перевод — дай перевод на русском, затем вызови repeat_phrase().
+        Если пользователь просит перевод — дай перевод на его языке, затем вызови repeat_phrase().
 
         ОЦЕНКА ПОВТОРА: только ПРАВИЛЬНОСТЬ СЛОВ, не произношение и не акцент.
         Акцент — это нормально. Пользователь НЕ обязан говорить как носитель языка.

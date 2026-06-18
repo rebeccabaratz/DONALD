@@ -64,6 +64,10 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
     // mistake them for unexpected disconnects and trigger a second reconnect.
     @Volatile private var pendingIntentionalCloses = 0
 
+    // IDs of all conversation items created in this session.
+    // Used by clearConversationHistory() to delete them without reconnecting.
+    private val conversationItemIds = java.util.Collections.synchronizedList(mutableListOf<String>())
+
     fun connect(apiKey: String, voiceName: String, systemPrompt: String) {
         lastApiKey = apiKey
         lastVoiceName = voiceName
@@ -77,6 +81,7 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
         setupCompletedEmitted = false
         pendingFunctionCallId = null
         pendingFunctionCallName = null
+        conversationItemIds.clear()
 
         Log.d(TAG, "Connecting to OpenAI Realtime API voice=$lastVoiceName")
 
@@ -295,8 +300,11 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     Log.d(TAG, "audio buffer committed item=${json.optString("item_id")}")
                 "input_audio_buffer.cleared" ->
                     Log.d(TAG, "audio buffer cleared")
-                "conversation.item.created" ->
-                    Log.d(TAG, "conversation.item.created id=${json.optJSONObject("item")?.optString("id")}")
+                "conversation.item.created" -> {
+                    val itemId = json.optJSONObject("item")?.optString("id") ?: ""
+                    if (itemId.isNotEmpty()) conversationItemIds.add(itemId)
+                    Log.d(TAG, "conversation.item.created id=$itemId (total: ${conversationItemIds.size})")
+                }
                 "error" -> {
                     val err = json.optJSONObject("error")
                     val code = err?.optString("code") ?: ""
@@ -399,6 +407,25 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                 .toString()
         )
         webSocket?.send(JSONObject().put("type", "response.create").toString())
+    }
+
+    // Deletes all conversation items on the server without closing the WebSocket.
+    // Equivalent to reconnect in terms of context reset, but instant — no
+    // session setup round-trip required.
+    fun clearConversationHistory() {
+        if (!ready) return
+        val ids = synchronized(conversationItemIds) {
+            conversationItemIds.toList().also { conversationItemIds.clear() }
+        }
+        Log.d(TAG, "clearConversationHistory: deleting ${ids.size} items")
+        for (id in ids) {
+            webSocket?.send(
+                JSONObject()
+                    .put("type", "conversation.item.delete")
+                    .put("item_id", id)
+                    .toString()
+            )
+        }
     }
 
     fun disconnect() {
