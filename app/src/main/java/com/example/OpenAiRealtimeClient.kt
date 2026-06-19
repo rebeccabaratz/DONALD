@@ -66,7 +66,8 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
 
     // IDs of all conversation items created in this session.
     // Used by clearConversationHistory() to delete them without reconnecting.
-    private val conversationItemIds = java.util.Collections.synchronizedList(mutableListOf<String>())
+    // Using a Set to avoid duplicate deletes (same item may arrive via multiple events).
+    private val conversationItemIds = java.util.Collections.synchronizedSet(mutableSetOf<String>())
 
     fun connect(apiKey: String, voiceName: String, systemPrompt: String) {
         lastApiKey = apiKey
@@ -259,13 +260,18 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                 }
                 "response.output_item.added" -> {
                     val item = json.optJSONObject("item")
+                    val itemId = item?.optString("id") ?: ""
+                    // Track here (not just conversation.item.created) because the
+                    // conversation.item.created for assistant responses arrives after
+                    // response.done — too late for clearConversationHistory().
+                    if (itemId.isNotEmpty()) conversationItemIds.add(itemId)
                     val itemType = item?.optString("type")
                     if (itemType == "function_call") {
-                        pendingFunctionCallId = item.optString("call_id")
-                        pendingFunctionCallName = item.optString("name")
+                        pendingFunctionCallId = item?.optString("call_id")
+                        pendingFunctionCallName = item?.optString("name")
                         Log.d(TAG, "function_call started: name=${pendingFunctionCallName} id=${pendingFunctionCallId}")
                     } else {
-                        Log.d(TAG, "output_item.added type=$itemType")
+                        Log.d(TAG, "output_item.added type=$itemType id=$itemId")
                     }
                 }
                 "response.function_call_arguments.delta" -> {
@@ -296,8 +302,11 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                 }
                 "response.output_item.done" ->
                     Log.d(TAG, "output_item.done type=${json.optJSONObject("item")?.optString("type")}")
-                "input_audio_buffer.committed" ->
-                    Log.d(TAG, "audio buffer committed item=${json.optString("item_id")}")
+                "input_audio_buffer.committed" -> {
+                    val itemId = json.optString("item_id")
+                    if (itemId.isNotEmpty()) conversationItemIds.add(itemId)
+                    Log.d(TAG, "audio buffer committed item=$itemId")
+                }
                 "input_audio_buffer.cleared" ->
                     Log.d(TAG, "audio buffer cleared")
                 "conversation.item.created" -> {
@@ -310,8 +319,8 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
                     val code = err?.optString("code") ?: ""
                     val msg = err?.optString("message") ?: "Ошибка OpenAI"
                     Log.e(TAG, "API error code=$code message=$msg")
-                    if (code == "input_audio_buffer_commit_empty") {
-                        Log.w(TAG, "Empty buffer commit ignored (no audio recorded)")
+                    if (code == "input_audio_buffer_commit_empty" || code == "item_not_found") {
+                        Log.w(TAG, "Suppressed non-fatal API error: $code")
                     } else {
                         scope.launch { _events.emit(Event.Error(msg)) }
                     }
