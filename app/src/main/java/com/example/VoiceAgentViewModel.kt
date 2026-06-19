@@ -89,7 +89,6 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     // zero extra delay — measurement runs in parallel with network round-trip.
     private var cachedNoiseFloor = -1
     private var noiseMeasurementJob: Job? = null
-    private var phrasesSinceReconnect = 0
 
     private fun launchNoiseFloorMeasurement() {
         noiseMeasurementJob?.cancel()
@@ -242,20 +241,12 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
         if (_state.value != AgentState.PAUSED) {
             if (_mode.value == AgentMode.BOOK_READING) {
-                phrasesSinceReconnect++
-                if (phrasesSinceReconnect >= 10) {
-                    // Full reconnect every 10 phrases to guarantee clean server context.
-                    // clearConversationHistory() misses some items due to event ordering,
-                    // so context slowly accumulates → model slows down and speaks wrong phrases.
-                    // SetupComplete handler calls startListening() when transcripts are non-empty.
-                    Log.d(TAG, "handleTurnComplete: BOOK_READING — periodic reconnect (phrase $phrasesSinceReconnect)")
-                    phrasesSinceReconnect = 0
-                    reconnectSession()
-                } else {
-                    Log.d(TAG, "handleTurnComplete: BOOK_READING — clearing history, startListening")
-                    realtimeClient.clearConversationHistory()
-                    startListening()
-                }
+                // Delete all conversation items instead of reconnecting — keeps the
+                // WebSocket open (no setup round-trip) so the pause between phrases
+                // is eliminated. Context cost stays the same as with reconnect.
+                Log.d(TAG, "handleTurnComplete: BOOK_READING — clearing history, startListening")
+                realtimeClient.clearConversationHistory()
+                startListening()
             } else {
                 Log.d(TAG, "handleTurnComplete: resuming → startListening")
                 startListening()
@@ -301,7 +292,6 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
             }
             "end_book_reading" -> {
                 _mode.value = AgentMode.CONVERSATION
-                phrasesSinceReconnect = 0
                 realtimeClient.respondToFunctionAndSpeak(callId, "ok")
                 _state.value = AgentState.PROCESSING
                 // TurnComplete will call startListening()
