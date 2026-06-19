@@ -154,7 +154,7 @@ class OpenAiRealtimeClientTest {
         runTest(testDispatcher) {
             val (client, fake) = buildReadyClient()
 
-            client.respondToFunctionAndSpeak("call_abc", "Произнеси вслух: \"No answer.\"")
+            client.respondToFunctionAndSpeak("call_abc", "No answer.")
 
             assertEquals("Expected exactly 2 messages", 2, fake.sent.size)
 
@@ -163,16 +163,16 @@ class OpenAiRealtimeClientTest {
             val item = fnOutput.getJSONObject("item")
             assertEquals("function_call_output", item.getString("type"))
             assertEquals("call_abc", item.getString("call_id"))
-            assertTrue(
-                "output must contain the phrase text",
-                item.getString("output").contains("No answer.")
-            )
 
             val responseCreate = JSONObject(fake.sent[1])
             assertEquals(
                 "Second message must be response.create to trigger AI speech",
                 "response.create",
                 responseCreate.getString("type")
+            )
+            assertTrue(
+                "instructions must contain the phrase text",
+                responseCreate.getJSONObject("response").getString("instructions").contains("No answer.")
             )
         }
 
