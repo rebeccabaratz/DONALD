@@ -391,22 +391,29 @@ class OpenAiRealtimeClient(private val scope: CoroutineScope) {
         )
     }
 
-    // Sends function_call_output with the phrase instruction, then triggers response.create.
-    // No session.update is sent here — original session audio config (PCM 24000Hz) is preserved,
-    // ensuring the AI's response is audio not text.
-    fun respondToFunctionAndSpeak(callId: String, phraseInstruction: String) {
+    // Responds to a function call and instructs the model to speak a specific phrase.
+    // The phrase goes into response.create.instructions (not function_call_output) so it
+    // is never stored in conversation history and cannot be confused with older phrases
+    // from accumulated context.
+    fun respondToFunctionAndSpeak(callId: String, phrase: String) {
         if (!ready) return
-        Log.d(TAG, "respondToFunctionAndSpeak callId=$callId '${phraseInstruction.take(60)}'")
+        Log.d(TAG, "respondToFunctionAndSpeak callId=$callId '${phrase.take(60)}'")
         webSocket?.send(
             JSONObject()
                 .put("type", "conversation.item.create")
                 .put("item", JSONObject()
                     .put("type", "function_call_output")
                     .put("call_id", callId)
-                    .put("output", phraseInstruction))
+                    .put("output", "ok"))
                 .toString()
         )
-        webSocket?.send(JSONObject().put("type", "response.create").toString())
+        webSocket?.send(
+            JSONObject()
+                .put("type", "response.create")
+                .put("response", JSONObject()
+                    .put("instructions", "Произнеси ТОЛЬКО эту фразу дословно, без единого лишнего слова: \"$phrase\""))
+                .toString()
+        )
     }
 
     // Deletes all conversation items on the server without closing the WebSocket.
