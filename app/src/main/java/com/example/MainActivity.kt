@@ -280,7 +280,7 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
         ) {
             Column {
                 Text(
-                    text = "ДОНАЛЬД • АГЕНТ",
+                    text = "АНГЕНТ",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Black,
                     color = Color(0xFF818CF8),
@@ -1095,7 +1095,10 @@ fun TikhonovAvatar(state: AgentState, modifier: Modifier = Modifier) {
     }
 
     val model = if (isSpeaking) {
-        ImageRequest.Builder(context).data(R.raw.tikhonov_talking).build()
+        ImageRequest.Builder(context)
+            .data(R.raw.tikhonov_talking)
+            .placeholder(R.drawable.tikhonov_silent)
+            .build()
     } else {
         ImageRequest.Builder(context).data(R.drawable.tikhonov_silent).build()
     }
