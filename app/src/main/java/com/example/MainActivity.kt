@@ -2,6 +2,7 @@ package com.example
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Space
 import androidx.activity.ComponentActivity
@@ -17,7 +18,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -93,6 +93,12 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ui.theme.MyApplicationTheme
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
+import androidx.compose.ui.layout.ContentScale
 import kotlinx.coroutines.delay
 import kotlin.math.sin
 
@@ -190,7 +196,7 @@ fun PermissionRequiredScreen(onRequestPermission: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
-            text = "Без доступа к микрофону Дональд не сможет слышать вас и помогать практиковаться в английском во время езды. Пожалуйста, выдайте разрешение.",
+            text = "Без доступа к микрофону Ангент не сможет слышать вас и помогать практиковаться в английском во время езды. Пожалуйста, выдайте разрешение.",
             fontSize = 14.sp,
             color = Color(0xFFABAFB3),
             textAlign = TextAlign.Center,
@@ -220,7 +226,6 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
     val transcripts by viewModel.transcripts.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val liveAmp by viewModel.liveAmplitude.collectAsState()
-    val outputAmp by viewModel.outputAmplitude.collectAsState()
     val customApiKey by viewModel.customApiKey.collectAsState()
 
     val activeKey = viewModel.getActiveApiKey()
@@ -275,7 +280,7 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
         ) {
             Column {
                 Text(
-                    text = "ДОНАЛЬД • АГЕНТ",
+                    text = "АНГЕНТ",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Black,
                     color = Color(0xFF818CF8),
@@ -318,7 +323,7 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
 
         // Talking avatar — animates mouth in sync with Donald's real output amplitude
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            TikhonovAvatar(state = state, outputAmplitude = outputAmp)
+            TikhonovAvatar(state = state)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -471,7 +476,7 @@ fun DashboardScreen(viewModel: VoiceAgentViewModel, autoStart: Boolean = false) 
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Нажмите на круг внизу, чтобы разбудить Дональда.",
+                        text = "Нажмите на круг внизу, чтобы разбудить Ангента.",
                         fontSize = 12.sp,
                         color = Color(0xFF4B5563),
                         textAlign = TextAlign.Center,
@@ -1072,115 +1077,43 @@ fun CenterControlRing(state: AgentState, onClick: () -> Unit) {
 // Cartoon avatar evoking a stern 1970s Soviet intelligence-officer look (fedora,
 // trench coat) — a stylized original drawing, not a likeness reproduction of any
 // real actor. Mouth openness tracks the AI's live output amplitude for free,
-// local lip-sync (no extra API cost).
 @Composable
-fun TikhonovAvatar(state: AgentState, outputAmplitude: Int, modifier: Modifier = Modifier) {
+fun TikhonovAvatar(state: AgentState, modifier: Modifier = Modifier) {
     val isSpeaking = state == AgentState.SPEAKING
+    val context = LocalContext.current
 
-    val targetMouth = if (isSpeaking) (outputAmplitude / 4000f).coerceIn(0.08f, 1f) else 0.04f
-    val mouthOpen by animateFloatAsState(
-        targetValue = targetMouth,
-        animationSpec = tween(80),
-        label = "mouthOpen"
-    )
-
-    val infiniteTransition = rememberInfiniteTransition(label = "blinkTransition")
-    val blink by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0.05f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(120, delayMillis = 2600),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "blink"
-    )
-
-    Box(
-        modifier = modifier.size(120.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val w = size.width
-            val h = size.height
-            val cx = w / 2f
-
-            // Coat collar
-            drawRoundRect(
-                color = Color(0xFF2B2E3A),
-                topLeft = Offset(w * 0.12f, h * 0.78f),
-                size = Size(w * 0.76f, h * 0.22f),
-                cornerRadius = CornerRadius(10f, 10f)
-            )
-
-            // Neck
-            drawRoundRect(
-                color = Color(0xFFD8A878),
-                topLeft = Offset(cx - w * 0.10f, h * 0.68f),
-                size = Size(w * 0.20f, h * 0.16f)
-            )
-
-            // Head
-            drawOval(
-                color = Color(0xFFE0AE82),
-                topLeft = Offset(w * 0.22f, h * 0.18f),
-                size = Size(w * 0.56f, h * 0.62f)
-            )
-
-            // Fedora brim + crown — iconic spy silhouette
-            drawOval(
-                color = Color(0xFF1C1E26),
-                topLeft = Offset(w * 0.08f, h * 0.10f),
-                size = Size(w * 0.84f, h * 0.15f)
-            )
-            drawRoundRect(
-                color = Color(0xFF1C1E26),
-                topLeft = Offset(w * 0.30f, -h * 0.02f),
-                size = Size(w * 0.40f, h * 0.19f),
-                cornerRadius = CornerRadius(w * 0.10f, w * 0.10f)
-            )
-
-            // Eyebrows — stern, slightly angled
-            drawLine(
-                color = Color(0xFF3B2A1E),
-                start = Offset(w * 0.32f, h * 0.42f),
-                end = Offset(w * 0.44f, h * 0.40f),
-                strokeWidth = h * 0.018f
-            )
-            drawLine(
-                color = Color(0xFF3B2A1E),
-                start = Offset(w * 0.56f, h * 0.40f),
-                end = Offset(w * 0.68f, h * 0.42f),
-                strokeWidth = h * 0.018f
-            )
-
-            // Eyes (blink animates the vertical scale)
-            val eyeH = (h * 0.045f * blink).coerceAtLeast(1f)
-            drawOval(color = Color.White, topLeft = Offset(w * 0.33f, h * 0.465f - eyeH / 2f), size = Size(w * 0.10f, eyeH))
-            drawOval(color = Color.White, topLeft = Offset(w * 0.57f, h * 0.465f - eyeH / 2f), size = Size(w * 0.10f, eyeH))
-            if (blink > 0.3f) {
-                drawCircle(color = Color(0xFF2B2118), radius = w * 0.018f, center = Offset(w * 0.38f, h * 0.475f))
-                drawCircle(color = Color(0xFF2B2118), radius = w * 0.018f, center = Offset(w * 0.62f, h * 0.475f))
+    val imageLoader = remember(context) {
+        ImageLoader.Builder(context)
+            .components {
+                if (Build.VERSION.SDK_INT >= 28) {
+                    add(ImageDecoderDecoder.Factory())
+                } else {
+                    add(GifDecoder.Factory())
+                }
             }
-
-            // Nose
-            drawLine(
-                color = Color(0xFFB98A60),
-                start = Offset(cx, h * 0.50f),
-                end = Offset(cx - w * 0.02f, h * 0.60f),
-                strokeWidth = h * 0.012f
-            )
-
-            // Mouth — height driven by live AI speech amplitude
-            val mouthW = w * 0.22f
-            val mouthH = (h * 0.10f * mouthOpen).coerceAtLeast(h * 0.012f)
-            drawOval(
-                color = Color(0xFF7A3B33),
-                topLeft = Offset(cx - mouthW / 2f, h * 0.66f - mouthH / 2f),
-                size = Size(mouthW, mouthH)
-            )
-        }
+            .build()
     }
+
+    val model = if (isSpeaking) {
+        ImageRequest.Builder(context)
+            .data(R.raw.tikhonov_talking)
+            .placeholder(R.drawable.tikhonov_silent)
+            .build()
+    } else {
+        ImageRequest.Builder(context).data(R.drawable.tikhonov_silent).build()
+    }
+
+    AsyncImage(
+        model = model,
+        imageLoader = imageLoader,
+        contentDescription = "Ангент",
+        modifier = modifier
+            .size(120.dp)
+            .clip(CircleShape),
+        contentScale = ContentScale.Crop
+    )
 }
+
 
 @Composable
 fun AmbientWaveform(
@@ -1257,15 +1190,15 @@ fun AmbientWaveform(
 
 @Composable
 fun ChatBubble(message: BubbleMessage) {
-    val isDonald = message.sender == "Дональд"
+    val isAgent = message.sender == "Ангент"
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        horizontalArrangement = if (isDonald) Arrangement.Start else Arrangement.End
+        horizontalArrangement = if (isAgent) Arrangement.Start else Arrangement.End
     ) {
-        if (isDonald) {
+        if (isAgent) {
             // Little round avatar indicating Donald is talking
             Box(
                 modifier = Modifier
@@ -1281,7 +1214,7 @@ fun ChatBubble(message: BubbleMessage) {
 
         Column(
             modifier = Modifier.weight(1f, fill = false),
-            horizontalAlignment = if (isDonald) Alignment.Start else Alignment.End
+            horizontalAlignment = if (isAgent) Alignment.Start else Alignment.End
         ) {
             // Message bubble content
             Box(
@@ -1290,12 +1223,12 @@ fun ChatBubble(message: BubbleMessage) {
                         RoundedCornerShape(
                             topStart = 16.dp,
                             topEnd = 16.dp,
-                            bottomStart = if (isDonald) 4.dp else 16.dp,
-                            bottomEnd = if (isDonald) 16.dp else 4.dp
+                            bottomStart = if (isAgent) 4.dp else 16.dp,
+                            bottomEnd = if (isAgent) 16.dp else 4.dp
                         )
                     )
                     .background(
-                        if (isDonald) Color(0xFF1F2232) else Color(0xFF6366F1)
+                        if (isAgent) Color(0xFF1F2232) else Color(0xFF6366F1)
                     )
                     .padding(horizontal = 14.dp, vertical = 10.dp)
             ) {
@@ -1309,7 +1242,7 @@ fun ChatBubble(message: BubbleMessage) {
             }
         }
 
-        if (!isDonald) {
+        if (!isAgent) {
             Spacer(modifier = Modifier.width(8.dp))
             // User Avatar
             Box(

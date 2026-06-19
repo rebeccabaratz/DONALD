@@ -231,7 +231,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
         if (fullText.isNotEmpty()) {
             Log.d(TAG, "AI reply: \"${fullText.take(80)}\"")
-            addTranscriptBubble("Дональд", fullText)
+            addTranscriptBubble("Ангент", fullText)
         } else {
             Log.w(TAG, "handleTurnComplete: no text accumulated")
         }
@@ -262,7 +262,7 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
         Log.d(TAG, "handleFunctionCall: $name callId=$callId textLen=${fullText.length}")
 
         if (fullText.isNotEmpty()) {
-            addTranscriptBubble("Дональд", fullText)
+            addTranscriptBubble("Ангент", fullText)
         }
         audioPlayer.drainAndStopStreaming()
         CostTracker.logTurn("${_mode.value.name}+fn:$name")
@@ -434,10 +434,10 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
     fun toggleReadingModeDirectly() {
         if (_mode.value == AgentMode.CONVERSATION) {
             _mode.value = AgentMode.BOOK_READING
-            addTranscriptBubble("Дональд", "[Переход в режим книги 'Том Сойер']")
+            addTranscriptBubble("Ангент", "[Переход в режим книги 'Том Сойер']")
         } else {
             _mode.value = AgentMode.CONVERSATION
-            addTranscriptBubble("Дональд", "[Прекращено чтение. Переход к беседе]")
+            addTranscriptBubble("Ангент", "[Прекращено чтение. Переход к беседе]")
         }
     }
 
@@ -471,14 +471,14 @@ class VoiceAgentViewModel(application: Application) : AndroidViewModel(applicati
 
     private fun buildSystemPrompt(): String {
         return """
-        Ты — Дональд, дружелюбный голосовой помощник и преподаватель английского языка.
+        Ты — Ангент, дружелюбный голосовой помощник и преподаватель английского языка.
 
         СТИЛЬ РЕЧИ: говори живо и естественно, как настоящий человек в разговоре. Меняй темп — где-то ускоряйся, где-то делай паузу. Выделяй важные слова интонацией. Никакого монотонного равномерного ритма — это звучит механически. Говори с теплотой и участием.
 
         ПРАВИЛА:
         1. Пользователь говорит на русском или иврите. Отвечай на том же языке, на котором говорит пользователь: русский → русский, иврит → иврит.
         2. Будь тёплым и очень кратким — 1-2 предложения, лучше одно. Не добавляй лишних слов.
-        3. Если нет предыдущих сообщений в разговоре — поприветствуй коротко и скажи, что готов помочь с английским.
+        3. Если нет предыдущих сообщений в разговоре — поприветствуй коротко, представься ("Я Ангент") и скажи, что готов помочь с английским.
 
         РЕЖИМ ЧТЕНИЯ "ТОМ СОЙЕР":
         У тебя есть 5 функций — вызывай их молча, не произноси их названия вслух:
